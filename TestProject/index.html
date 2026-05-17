@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Netlify Function</title>
+</head>
+<body>
+  <h1>Test i funksionit Netlify</h1>
+  <button id="callBtn">Thirr funksionin</button>
+  <p id="output"></p>
+
+  <script>
+    document.getElementById('callBtn').addEventListener('click', async () => {
+      try {
+        const response = await fetch('/.netlify/functions/hello');
+        const data = await response.json();
+        document.getElementById('output').textContent = data.message;
+      } catch (err) {
+        document.getElementById('output').textContent = 'Gabim: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
