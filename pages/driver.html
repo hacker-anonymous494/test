@@ -678,7 +678,7 @@
                 <li class="nav-item"><a href="driver.html" class="nav-link active"><i class="fas fa-user-tie"></i> Shofer</a></li>
             </ul>
             
-            <div class="auth-buttons">
+            <div class="auth-buttons" id="auth-buttons">
                 <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
                 <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Regjistrohu</a>
             </div>
@@ -1192,6 +1192,21 @@
 
     <!-- JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+      (function() {
+        const interval = setInterval(() => {
+          if (window.authManager && typeof window.authManager.isAuthenticated === 'function') {
+            clearInterval(interval);
+            const isDriver = window.authManager.getUserType() === 'driver';
+            if (!isDriver) {
+              alert('Kjo faqe është vetëm për shoferët e autobusëve.');
+              window.location.href = '/index.html';
+            }
+          }
+        }, 100);
+      })();
+    </script>
     <script src="../script.js"></script>
     <script>
         // Inicializimi i faqes për shoferët

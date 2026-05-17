@@ -100,6 +100,10 @@ class AuthManager {
     }
   }
 
+  getUserType() {
+    return this.userData?.userType || null;
+  }
+
   clearLocalData() {
     this.isLoggedIn = false;
     this.userData = null;
@@ -130,17 +134,48 @@ class AuthManager {
     const authButtons = document.getElementById('auth-buttons');
     if (!authButtons) return;
 
+    const pagePrefix = window.location.pathname.startsWith('/pages/') ? '' : 'pages/';
+
     if (this.isAuthenticated() && this.userData) {
-      authButtons.style.display = 'none';
-      const userProfile = document.getElementById('user-profile');
-      if (userProfile) userProfile.style.display = 'block';
+      authButtons.style.display = 'flex';
+      authButtons.innerHTML = `
+        <div class="user-dropdown">
+          <button class="user-profile-btn" id="user-profile-btn">
+            <i class="fas fa-user-circle"></i>
+            <span>${this.userData.firstName || this.userData.email?.split('@')[0] || 'User'}</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="dropdown-menu" id="user-dropdown-menu">
+            <a href="${pagePrefix}profile.html"><i class="fas fa-user"></i> Profili</a>
+            <a href="${pagePrefix}saved-routes.html"><i class="fas fa-bookmark"></i> Rrugët e Ruajtura</a>
+            <div class="divider"></div>
+            <a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Dil</a>
+          </div>
+        </div>
+      `;
+
+      const logoutLink = document.getElementById('logout-link');
+      if (logoutLink) logoutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.logout();
+      });
+
+      const profileBtn = document.getElementById('user-profile-btn');
+      const dropdownMenu = document.getElementById('user-dropdown-menu');
+      if (profileBtn && dropdownMenu) {
+        profileBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownMenu.classList.toggle('show');
+        });
+        document.addEventListener('click', () => {
+          dropdownMenu.classList.remove('show');
+        });
+      }
     } else {
       authButtons.style.display = 'flex';
-      const userProfile = document.getElementById('user-profile');
-      if (userProfile) userProfile.style.display = 'none';
       authButtons.innerHTML = `
-        <a href="pages/login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
-        <a href="pages/register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Regjistrohu</a>
+        <a href="${pagePrefix}login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
+        <a href="${pagePrefix}register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Regjistrohu</a>
       `;
     }
   }
