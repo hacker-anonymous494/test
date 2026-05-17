@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identifikohu - Sherbimijone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 50px;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+        }
+        
+        .auth-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .auth-image {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: var(--text-light);
+            text-align: center;
+        }
+        
+        .auth-image h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .auth-image p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .auth-image img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 30px;
+        }
+        
+        .auth-form-container {
+            flex: 1;
+            padding: 50px;
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .auth-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .form-group input {
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .auth-btn {
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: var(--text-secondary);
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+        
+        .auth-divider span {
+            padding: 0 20px;
+            font-size: 14px;
+        }
+        
+        .social-auth {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .social-btn:hover {
+            background-color: var(--bg-secondary);
+        }
+        
+        .social-btn.google i {
+            color: #DB4437;
+        }
+        
+        .social-btn.facebook i {
+            color: #4267B2;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-secondary);
+        }
+        
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+            }
+            
+            .auth-image {
+                display: none;
+            }
+            
+            .auth-form-container {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header i thjeshtë për faqet e auth -->
+    <header class="header" style="position: relative; background: transparent; box-shadow: none;">
+        <nav class="navbar" style="justify-content: center;">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-bus"></i>
+                    <span class="logo-text">Sherbimijone</span>
+                </div>
+                <div class="tagline">Transporti Juaj në Tiranë</div>
+            </div>
+            
+            <a href="../index.html" class="btn btn-outline" style="position: absolute; right: 20px;">
+                <i class="fas fa-home"></i> Kthehu në kryefaqe
+            </a>
+        </nav>
+    </header>
+
+    <main class="auth-page">
+        <div class="auth-container">
+            <div class="auth-image">
+                <h2>Mirë se vini përsëri!</h2>
+                <p>Identifikohu për të aksesuar të gjitha veçoritë e platformës sonë të transportit.</p>
+                <div class="features-list">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Ruaj rrugët e preferuara</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Shiko historikun e udhëtimeve</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Rezervo taksi me çmim fiks</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Merr njoftime në kohë reale</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h1>Identifikohu</h1>
+                    <p>Shkruani kredencialet tuaja për të hyrë në llogari</p>
+                </div>
+                
+                <form class="auth-form" id="login-form">
+                    <div class="form-group">
+                        <label for="email">Email ose Numri i Telefonit</label>
+                        <input type="text" id="email" name="email" placeholder="shembull@email.com ose +355 XX XXX XXXX" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Fjalëkalimi</label>
+                        <input type="password" id="password" name="password" placeholder="Shkruani fjalëkalimin tuaj" required>
+                        <div class="password-toggle" style="position: relative;">
+                            <i class="fas fa-eye" id="toggle-password" style="position: absolute; right: 15px; top: -35px; cursor: pointer; color: var(--text-secondary);"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Mbaj mend mua</label>
+                        </div>
+                        <a href="forgot-password.html" class="forgot-password">Keni harruar fjalëkalimin?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary auth-btn">
+                        <i class="fas fa-sign-in-alt"></i> Identifikohu
+                    </button>
+                    
+                    <div class="auth-divider">
+                        <span>ose identifikohu me</span>
+                    </div>
+                    
+                    <div class="social-auth">
+                        <button type="button" class="social-btn google">
+                            <i class="fab fa-google"></i>
+                            <span>Vazhdo me Google</span>
+                        </button>
+                        <button type="button" class="social-btn facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Vazhdo me Facebook</span>
+                        </button>
+                    </div>
+                    
+                    <div class="auth-footer">
+                        <p>Nuk keni një llogari? <a href="register.html">Regjistrohu tani</a></p>
+                        <p style="margin-top: 10px; font-size: 14px;">Duke vazhduar, ju pranoni <a href="#">Kushtet e Përdorimit</a> dhe <a href="#">Politikën e Privatësisë</a> tonë.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+<script src="../config.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const loginForm = document.getElementById('login-form');
+  
+  const togglePassword = document.getElementById('toggle-password');
+  const passwordInput = document.getElementById('password');
+  if (togglePassword && passwordInput) {
+    togglePassword.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+  }
+
+  loginForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const emailPhone = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const remember = document.getElementById('remember').checked;
+    
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke identifikuar...';
+    submitBtn.disabled = true;
+    
+    const result = await window.authManager.login(emailPhone, password, remember);
+    
+    if (result.success) {
+      window.location.href = '../index.html';
+    } else {
+      alert(result.error);
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    }
+  });
+  
+  document.querySelectorAll('.social-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      alert('Login me rrjete sociale do të implementohet së shpejti.');
+    });
+  });
+});
+</script>
+</body>
+</html>

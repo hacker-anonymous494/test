@@ -1,0 +1,19 @@
+{
+  "name": "sherbimijone-functions",
+  "version": "1.0.0",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
+    "cookie": "^1.1.1",
+    "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "description": "",
+  "main": "auth.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

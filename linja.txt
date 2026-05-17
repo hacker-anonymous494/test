@@ -1,0 +1,1321 @@
+const busLines = {
+  "4": {
+    name: "Qender - City Park",
+    directions: {
+      forward: {
+        from: "Qender",
+        to: "City Park",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("name: Qender,id: 1, lat: "),
+          emptyStop("name: Ura Limuthit,id: 2, lat: "),
+          emptyStop("name: Qafe Kashar,id: 3 ,lat:  "),
+          emptyStop("name: Megatek ,id: 4,lat:  "),
+          emptyStop("name: Radio Stacioni ,id: 5,lat:  "),
+          emptyStop("name: DPM,id: 6,lat:  "),
+          emptyStop("name: Mbikalimi,id: 7,lat:  "),
+          emptyStop("name: DPSHTRr,id: 8,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),
+          emptyStop("name: ,id: ,lat:  "),        
+          emptyStop("City Park")
+        ]
+      },
+      backward: {
+        from: "City Park",
+        to: "Qender",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("City Park"),
+          emptyStop("Laprake"),
+          emptyStop("Zogu i Zi"),
+          emptyStop("21 Dhjetori"),
+          emptyStop("Qender")
+        ]
+      }
+    }
+  },
+
+  "6": {
+    name: "Qender - Laprake",
+    directions: {
+      forward: {
+        from: "Qender",
+        to: "Laprake",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Qender"),
+          emptyStop("Zogu i Zi"),
+          emptyStop("Laprake")
+        ]
+      },
+      backward: {
+        from: "Laprake",
+        to: "Qender",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Laprake"),
+          emptyStop("Zogu i Zi"),
+          emptyStop("Qender")
+        ]
+      }
+    }
+  },
+
+  "15A": {
+    name: "Kombinat - Kinostudio",
+    directions: {
+      forward: {
+        from: "Kombinat",
+        to: "Kinostudio",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Kombinat"),
+          emptyStop("Mapo"),
+          emptyStop("UKT Tirane"),
+          emptyStop("Misto Mame Tirane"),
+          emptyStop("Kthesa Yzberisht (L)"),
+          emptyStop("Tregu"),
+          emptyStop("Parku"),
+          emptyStop("Poliklinika 9"),
+          emptyStop("Kisha Katolike"),
+          emptyStop("Banka e Shqipërisë"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Selvija"),
+          emptyStop("Medreseja"),
+          emptyStop("QSUT"),
+          emptyStop("Mjekësia"),
+          emptyStop("Shkolla Bashkuar"),
+          emptyStop("Rruga Ura"),
+          emptyStop("Kinostudio Tirane"),
+          emptyStop("Aleksander Moisiu Tirane")
+        ]
+      },
+      backward: {
+        from: "Kinostudio",
+        to: "Kombinat",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Aleksander Moisiu Tirane"),
+          emptyStop("Kinostudio Tirane"),
+          emptyStop("Rruga Ura"),
+          emptyStop("Shkolla Bashkuar"),
+          emptyStop("Mjekësia"),
+          emptyStop("QSUT"),
+          emptyStop("Medreseja"),
+          emptyStop("Selvija"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Banka e Shqipërisë"),
+          emptyStop("Kisha Katolike"),
+          emptyStop("Poliklinika 9"),
+          emptyStop("Parku"),
+          emptyStop("Tregu"),
+          emptyStop("Kthesa Yzberisht (L)"),
+          emptyStop("Misto Mame Tirane"),
+          emptyStop("UKT Tirane"),
+          emptyStop("Mapo"),
+          emptyStop("Kombinat")
+        ]
+      }
+    }
+  },
+
+  "15B": {
+    name: "Kombinat - Tufine",
+    directions: {
+      forward: {
+        from: "Kombinat",
+        to: "Tufine",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Kombinat"),
+          emptyStop("Mapo"),
+          emptyStop("UKT Tirane"),
+          emptyStop("Misto Mame Tirane"),
+          emptyStop("Kthesa Yzberisht (L)"),
+          emptyStop("Tregu"),
+          emptyStop("Parku"),
+          emptyStop("Poliklinika 9"),
+          emptyStop("Kisha Katolike"),
+          emptyStop("Banka e Shqipërisë"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Selvija"),
+          emptyStop("Medreseja"),
+          emptyStop("QSUT"),
+          emptyStop("Mjekësia"),
+          emptyStop("Shkolla Bashkuar"),
+          emptyStop("Rruga Ura"),
+          emptyStop("Ura Gjirozës"),
+          emptyStop("Shefqet Kuka"),
+          emptyStop("Profarma"),
+          emptyStop("Elez Isufi"),
+          emptyStop("Instituti Ndërtimit"),
+          emptyStop("Varrezat Tufinë"),
+          emptyStop("Xhamia Tirane"),
+          emptyStop("Rruga Arbërit")
+        ]
+      },
+      backward: {
+        from: "Tufine",
+        to: "Kombinat",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Rruga Arbërit"),
+          emptyStop("Xhamia Tirane"),
+          emptyStop("Varrezat Tufinë"),
+          emptyStop("Instituti Ndërtimit"),
+          emptyStop("Elez Isufi"),
+          emptyStop("Profarma"),
+          emptyStop("Shefqet Kuka"),
+          emptyStop("Ura Gjirozës"),
+          emptyStop("Rruga Ura"),
+          emptyStop("Shkolla Bashkuar"),
+          emptyStop("Mjekësia"),
+          emptyStop("QSUT"),
+          emptyStop("Medreseja"),
+          emptyStop("Selvija"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Banka e Shqipërisë"),
+          emptyStop("Kisha Katolike"),
+          emptyStop("Poliklinika 9"),
+          emptyStop("Parku"),
+          emptyStop("Tregu"),
+          emptyStop("Kthesa Yzberisht (L)"),
+          emptyStop("Misto Mame Tirane"),
+          emptyStop("UKT Tirane"),
+          emptyStop("Mapo"),
+          emptyStop("Kombinat")
+        ]
+      }
+    }
+  },
+
+  "1^A": {
+    name: "Allias – Selitë",
+    directions: {
+      forward: {
+        from: "Allias",
+        to: "Selitë",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("name: Allias, lat: 41.350600931531055, lng: 19.83142407301831"),
+          emptyStop("name: Kopshti 27, lat: 41.348355568762166, lng: 19.833278940125563"),
+          emptyStop("name: Parafabrikatet, lat: 41.346684827262315, lng: 19.836750480098683"),
+          emptyStop("name: Bajram Curri, lat: 41.34615861027379, lng: 19.838274509205597"),
+          emptyStop("name: Shkolla Bashkuar, lat: 41.34452972496524, lng: 19.837340124177068"),
+          emptyStop("name: Mjekesia, lat: 41.34239967448422, lng: 19.833954030688282"),
+          emptyStop("name: QSUT, lat: 41.34030253723853, lng: 19.829740183463645"),
+          emptyStop("name: Tregu 5 Maji, lat: 41.33992394142414, lng: 19.825684683592147"),
+          emptyStop("name: Dispanseria, lat: 41.337676486901316, lng: 19.82113565707091"),
+          emptyStop("name: Stacioni i Trenit (V), lat: 41.33596727573982, lng: 19.817082875960253"),
+          emptyStop("name: Shkencat e Natyres, lat: 41.33525351770269, lng: 19.81630612844817"),
+          emptyStop("name: Muzeu Kombetar, lat: 41.33017013743166, lng: 19.816651403688645"),
+          emptyStop("name: Shallvaret, lat: 41.323906458180254, lng: 19.81731464393755"),
+          emptyStop("name: Brigada 8, lat: 41.321631287177865, lng: 19.813566256722357"),
+          emptyStop("name: Rruga Moskat, lat: 41.31929267099034, lng: 19.814232354024337"),
+          emptyStop("name: Posta 8, lat: 41.318213383367734, lng: 19.812902502119332"),
+          emptyStop("name: Komuna Parisit (L), lat: 41.3186934636998, lng: 19.80767278147995"),
+          emptyStop("name: Lulishtja (P), lat: 41.31664552537694, lng: 19.806827129120247"),
+          emptyStop("name: Tish Daija, lat: 41.31638265510161, lng: 19.80583004179582"),
+          emptyStop("name: Dhimiter Shuteriqi, lat: 41.31447739752773, lng: 19.804247204096406"),
+          emptyStop("name: Qendra Kristal, lat: 41.313971746985615, lng: 19.801534568712388"),
+          emptyStop("name: Selite, lat: 41.31549362942514, lng: 19.79746572566445")
+        ]
+      },
+      backward: {
+        from: "Selitë",
+        to: "Allias",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("name: Rrapo Hekali (L), lat: 41.31351023207845, lng: 19.801026653703662"),
+          emptyStop("name: Nenkalimi (L), lat: 41.31216701125626, lng: 19.80455915338009"),
+          emptyStop("name: Qendra Kristal, lat: 41.313971746985615, lng: 19.801534568712388"),
+          emptyStop("name: Prokop Mima, lat: 41.31398933875762, lng: 19.805687289776664"),
+          emptyStop("name: Lulishtja (P), lat: 41.31665368030724, lng: 19.806837207954672"),
+          emptyStop("name: Stadiumi Dinamo (V), lat: 41.31931463001116, lng: 19.80837460700835"),
+          emptyStop("name: Lulishte Cajupi, lat: 41.322347853495046, lng: 19.811043026546095"),
+          emptyStop("name: Drejtoria Policise B, lat: 41.32483703474414, lng: 19.81273769083543"),
+          emptyStop("name: Parku Rinia, lat: 41.32554951212781, lng: 19.81664103418093"),
+          emptyStop("name: 15 Kateshi, lat: 41.3305780200479, lng: 19.819153264478597"),
+          emptyStop("name: Materniteti, lat: 41.33475178820072, lng: 19.816817472196245"),
+          emptyStop("name: Stacioni i Trenit (V), lat: 41.33602589942502, lng: 19.81704095242899"),
+          emptyStop("name: Dispanseria, lat: 41.337672299863215, lng: 19.821204299561273"),
+          emptyStop("name: Tregu 5 Maji lat: 41.339951618885415, lng: 19.825706576261013"),
+          emptyStop("name: QSUT, lat: 41.34032900222491, lng: 19.829843935698502"),
+          emptyStop("name: Mjekesia, lat: 41.342435069262415, lng: 19.834007147232143"),
+          emptyStop("name: Shkolla Bashkuar, lat: 41.3445212364927, lng: 19.8373743419047"),
+          emptyStop("name: Bajram Curri, lat: 41.346169978306065, lng: 19.838357270228204"),
+          emptyStop("name: Parafabrikatet lat: 41.346659265308865, lng: 19.83675463120747"),
+          emptyStop("name: Kopshti , lat: 41.34831227874976, lng: 19.833285807255667"),
+          emptyStop("name: Allias, lat: 41.350601365546424, lng: 19.8314183362585")
+        ]
+      }
+    }
+  },
+
+  "1^B": {
+    name: "Allias – Kodra e Diellit2",
+    directions: {
+      forward: {
+        from: "Allias",
+        to: "Kodra e Diellit 2",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("name: Allias, lat: 41.350600931531055, lng: 19.83142407301831"),
+          emptyStop("name: Kopshti 27, lat: 41.348355568762166, lng: 19.833278940125563"),
+          emptyStop("name: Parafabrikatet, lat: 41.346684827262315, lng: 19.836750480098683"),
+          emptyStop("name: Bajram Curri, lat: 41.34615861027379, lng: 19.838274509205597"),
+          emptyStop("name: Shkolla Bashkuar, lat: 41.34452972496524, lng: 19.837340124177068"),
+          emptyStop("name: Mjekesia, lat: 41.34239967448422, lng: 19.833954030688282"),
+          emptyStop("name: QSUT, lat: 41.34030253723853, lng: 19.829740183463645"),
+          emptyStop("name: Tregu 5 Maji, lat: 41.33992394142414, lng: 19.825684683592147"),
+          emptyStop("name: Dispanseria, lat: 41.337676486901316, lng: 19.82113565707091"),
+          emptyStop("name: Stacioni i Trenit (V), lat: 41.33596727573982, lng: 19.817082875960253"),
+          emptyStop("name: Shkencat e Natyres, lat: 41.33525351770269, lng: 19.81630612844817"),
+          emptyStop("name: Muzeu Kombetar, lat: 41.33017013743166, lng: 19.816651403688645"),
+          emptyStop("name: Shallvaret, lat: 41.323906458180254, lng: 19.81731464393755"),
+          emptyStop("name: Brigada 8, lat: 41.321631287177865, lng: 19.813566256722357"),
+          emptyStop("name: Rruga Moskat, lat: 41.31929267099034, lng: 19.814232354024337"),
+          emptyStop("name: Posta 8, lat: 41.318213383367734, lng: 19.812902502119332"),
+          emptyStop("name: Komuna Parisit (L), lat: 41.3186934636998, lng: 19.80767278147995"),
+          emptyStop("name: Lulishtja (P), lat: 41.31664552537694, lng: 19.806827129120247"),
+          emptyStop("name: Tish Daija, lat: 41.31638265510161, lng: 19.80583004179582"),
+          emptyStop("name: Dhimiter Shuteriqi, lat: 41.31447739752773, lng: 19.804247204096406"),
+          emptyStop("name: Qendra Kristal, lat: 41.313971746985615, lng: 19.801534568712388"),
+          emptyStop("name: Nenkalimi (L), lat: 41.31228404493925, lng: 19.804553667247685"),
+          emptyStop("name: Rapo Hekali (L), lat: 41.3136214209276, lng: 19.800965194122217"),
+          emptyStop("name: Selite (J), lat: 41.32044057961478, lng: 19.799829119919032"),
+          emptyStop("name: Mentor Xhemali, lat: 41.31398389750533, lng: 19.79825876539829"),
+          emptyStop("name: Rexhep Pinari, lat: 41.31044582472434, lng: 19.798146926768325"),
+          emptyStop("name: Kodra Diellit 2, lat: 41.30716701355048, lng: 19.79840289608302")
+        ]
+      },
+      backward: {
+        from: "Kodra e Diellit 2",
+        to: "Allias",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("name: Rexhep Pinari, lat: 41.31052471908455, lng: 19.797964047913954"),
+          emptyStop("name: Mentor Xhemali, lat: 41.314037986108296, lng: 19.798416564630635"),
+          emptyStop("name: Selitë, lat: 41.31548821347877, lng: 19.79764724404068"),
+          emptyStop("name: Rapo Hekali (L), lat: 41.31343217828931, lng: 19.80104658611549"),
+          emptyStop("name: Nenkalimi (L), lat: 41.31216701125626, lng: 19.80455915338009"),
+          emptyStop("name: Qendra Kristal, lat: 41.313971746985615, lng: 19.801534568712388"),
+          emptyStop("name: Prokop Mima, lat: 41.31398933875762, lng: 19.805687289776664"),
+          emptyStop("name: Lulishtja (P), lat: 41.31665368030724, lng: 19.806837207954672"),
+          emptyStop("name: Stadiumi Dinamo (V), lat: 41.31931463001116, lng: 19.80837460700835"),
+          emptyStop("name: Lulishte Cajupi, lat: 41.322347853495046, lng: 19.811043026546095"),
+          emptyStop("name: Drejtoria Policise B, lat: 41.32483703474414, lng: 19.81273769083543"),
+          emptyStop("name: Parku Rinia, lat: 41.32554951212781, lng: 19.81664103418093"),
+          emptyStop("name: 15 Kateshi, lat: 41.3305780200479, lng: 19.819153264478597"),
+          emptyStop("name: Materniteti, lat: 41.33475178820072, lng: 19.816817472196245"),
+          emptyStop("name: Stacioni i Trenit (V), lat: 41.33602589942502, lng: 19.81704095242899"),
+          emptyStop("name: Dispanseria, lat: 41.337672299863215, lng: 19.821204299561273"),
+          emptyStop("name: Tregu 5 Maji lat: 41.339951618885415, lng: 19.825706576261013"),
+          emptyStop("name: QSUT, lat: 41.34032900222491, lng: 19.829843935698502"),
+          emptyStop("name: Mjekesia, lat: 41.342435069262415, lng: 19.834007147232143"),
+          emptyStop("name: Shkolla Bashkuar, lat: 41.3445212364927, lng: 19.8373743419047"),
+          emptyStop("name: Bajram Curri, lat: 41.346169978306065, lng: 19.838357270228204"),
+          emptyStop("name: Parafabrikatet lat: 41.346659265308865, lng: 19.83675463120747"),
+          emptyStop("name: Kopshti , lat: 41.34831227874976, lng: 19.833285807255667"),
+          emptyStop("name: Allias, lat: 41.350601365546424, lng: 19.8314183362585")
+        ]
+      }
+    }
+  },
+
+  "2": {
+    name: "Teg - Kopeshti Zoologjik - Ish Stacioni i Trenit",
+    directions: {
+      forward: {
+        from: "Teg",
+        to: "Vellezerit Frasheri",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("name: Terminali Juglindor, lat: 41.283428042442665, lng: 19.85583645297369"),
+          emptyStop("name: TEG, lat: 41.28314591511079, lng: 19.858469086053134"),
+          emptyStop("name: Tuneli, lat: 41.30540432149013, lng: 19.822379711425498"),
+          emptyStop("name: Liqeni Thatë, lat: 41.30538063826397, lng: 19.815831227592454"),
+          emptyStop("name: Rruga Peti (P), lat: 41.30723253537963, lng: 19.813587959302737"),
+          emptyStop("name: Kopshti Zoologjik, lat: 41.30904172205299, lng: 19.811142035726217"),
+          emptyStop("name: Rruga e Kosovarëve, lat: 41.312606520841015, lng: 19.814783437759043"),
+          emptyStop("name: Petro Nini Luarasi (V), lat: 41.31756236485891, lng: 19.815050003139508"),
+          emptyStop("name: Sheshi Willson (J), lat: 41.31779073380217, lng: 19.81509177923818"),
+          emptyStop("name: Libri Universitar, lat: 41.31921552144608, lng: 19.818285540619154"),
+          emptyStop("name: Rektorati (V), lat: 41.317849942961274, lng: 19.822053571517884"),
+          emptyStop("name: Piramida, lat: 41.32286198438079, lng: 19.82003648709124"),
+          emptyStop("name: 9 Kateshet, lat: 41.32951310863547, lng: 19.821503022520673"),
+          emptyStop("name: Barrikadat, lat: 41.33554226650967, lng: 19.818123496084517"),
+          emptyStop("name: Shkencat e Natyres lat: 41.33540018777184, lng: 19.81656118813987"),
+          emptyStop("name: Muzeu Kombetar, lat: 41.33014640515574, lng: 19.81648976292007"),
+          emptyStop("name: Shallvaret, lat: 41.32397135154883, lng: 19.817320817521733"),
+          emptyStop("name: Vellezerit Frasheri, lat: 41.323570688921855, lng: 19.81871622307013")
+        ]
+      },
+      backward: {
+        from: "Vellezerit Frasheri",
+        to: "Teg",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("name: Piramida, lat: 41.323238607430945, lng: 19.819718004028523"),
+          emptyStop("name: Libri Universitar, lat: 41.31927136851898, lng: 19.818110052410216"),
+          emptyStop("name: Sheshi Willson (J), lat: 41.31776407621051, lng: 19.81480433790546"),
+          emptyStop("name: Petro Nini Luarasi (V), lat: 41.31756236485891, lng: 19.815050003139508"),
+          emptyStop("name: Liqeni Thatë, lat: 41.30578649324648, lng: 19.814872472518466"),
+          emptyStop("name: Rruga e Kosovarëve, lat: 41.31223617941182, lng: 19.81419013811188"),
+          emptyStop("name: Kopshti Zoologjik, lat: 41.30906235360021, lng: 19.810961216224754"),
+          emptyStop("name: Rruga Peti (P), lat: 41.30723253537963, lng: 19.813587959302737"),
+          emptyStop("name: Liqeni Thatë, lat: 41.30538063826397, lng: 19.815831227592454"),
+          emptyStop("name: Tuneli, lat: 41.30540432149013, lng: 19.822379711425498"),
+          emptyStop("name: TEG, lat: 41.28314591511079, lng: 19.858469086053134"),
+        ]
+      }
+    }
+  },
+
+  "3^a": {
+    name: "Kashar",
+    direction: "clockwise",
+    isCircular: true,
+    schedule: { startTime: null, endTime: null, headway: null },
+    stops: [
+        emptyStop("name: Mëzez, lat: 41.33831131092539, lng: 19.76395053189844"),
+        emptyStop("name: Ish-Xhenio, lat: 41.33383295616884, lng: 19.769969325452248"),
+        emptyStop("name: Pallati Minierave, lat: 41.32841977819003, lng: 19.774049951786846"),
+        emptyStop("name: Yzberisht, lat: 41.32653193665834, lng: 19.773838482364976"),
+        emptyStop("name: Besim Alla, lat: 41.32494624902717, lng: 19.77421498534773"),
+        emptyStop("name: Bego Hoxha, lat: 41.32389133063776, lng: 19.776702048424355"),
+        emptyStop("name: Joklin Persi, lat: 41.32350486304801, lng: 19.77905160635736"),
+        emptyStop("name: Kombinati Mishit, lat: 41.32305594889752, lng: 19.781871186662098"),
+        emptyStop("name: Kthesa Yzberisht, lat: 41.319917964613055, lng: 19.78437237355774"),
+        emptyStop("name: Tregu, lat: 41.32093859528734, lng: 19.78710937376031"),
+        emptyStop("name: Ura Teknologjike, lat: 41.32277413514167, lng: 19.79304173618817"),
+        emptyStop("name: Ndre Mjeda, lat: 41.32383297395377, lng: 19.796611203184636"),
+        emptyStop("name: Myhedin Llagami (P), lat: 41.32407642172047, lng: 19.79825886141814"),
+        emptyStop("name: Poliklinika 9, lat: 41.32642732124589, lng: 19.80502309937812"),
+        emptyStop("name: Kisha Katolike, lat: 41.32769202634917, lng: 19.80929356085576"),
+        emptyStop("name: Banka Shqipërisë, lat: 41.32833311863932, lng: 19.815056903578295"),
+        emptyStop("name: Qemal Stafa, lat: 41.3323947177915, lng: 19.80611850505206"),
+        emptyStop("name: Kthesa Yzberisht, lat: 41.319917964613055, lng: 19.78437237355774"),
+        emptyStop("name: Asllan Rusi, lat: 41.33417215332083, lng: 19.800896316893574"),
+        emptyStop("name: Ana Komnena(L), lat: 41.335543595376336, lng: 19.79724460271401"),
+        emptyStop("name: Pandi Dardha, lat: 41.3354072534551, lng: 19.797946848329804"),
+        emptyStop("name: Pallatet Arabe, lat: 41.33717162007331, lng: 19.792271333652238"),
+        emptyStop("name: Blloku Gintash, lat: 41.33816174192527, lng: 19.78989470402933),
+        emptyStop("name: Sheshi Shqiponja, lat: 41.33792974880397, lng: 19.785562932094102"),
+        emptyStop("name: Lumi Lanë, lat: 41.33506535563935, lng: 19.78334152766162"),
+        emptyStop("name: Kristaq Mone, lat: 41.33261783904999, lng: 19.78383709594256"),
+        emptyStop("name: Aleksandri Madh, lat: 41.331561186730355, lng: 19.783841486866844"),
+        emptyStop("name: Kryqëzimi Kashar, lat: 41.33044107355306, lng: 19.78451271735903"),
+        emptyStop("name: Nexho Konomi, lat: 41.33028695222126, lng: 19.78511272427397"),
+        emptyStop("name: Tom Plezha, lat: 41.32933893070486, lng: 19.78405457960053"),
+        emptyStop("name: Njësia Kashar, lat: 41.33073460671734, lng: 19.780669924418312"),
+        emptyStop("name: Erzen Lita, lat: 41.334253710683186, lng: 19.775379634194596"),
+        emptyStop("name: Serat, lat: 41.34079998985432, lng: 19.765643300154533")
+    ]
+  },
+
+  "3^b": {
+    name: "Kashar",
+    direction: "anticlockwise",
+    isCircular: true,
+    schedule: { startTime: null, endTime: null, headway: null },
+    stops: [
+        emptyStop("name: Mëzez, lat: 41.33832231840918, lng: 19.763779116057876"),
+        emptyStop("name: Ish-Xhenio, lat: 41.33395510437747, lng: 19.769999627620482"),
+        emptyStop("name: Pallati Minierave, lat: 41.32841977819003, lng: 19.774049951786846"),
+        emptyStop("name: Yzberisht, lat: 41.32648812105233, lng: 19.773733861545033"), 
+        emptyStop("name: Besim Alla, lat: 41.32489289430102, lng: 19.774049208823207"),
+        emptyStop("name: Bego Hoxha, lat: 41.32374177537357, lng: 19.776593941562773"),
+        emptyStop("name: Joklin Persi, lat: 41.32339946338897, lng: 19.77910583128999"),
+        emptyStop("name: Kombinati Mishit, lat: 41.32303054118797, lng: 19.781654662515816"),
+        emptyStop("name: Kthesa Yzberisht, lat: 41.319917964613055, lng: 19.78437237355774"),
+        emptyStop("name: Tregu, lat: 41.32090108271164, lng: 19.787395719500562"),
+        emptyStop("name: Ura Teknologjike, lat: 41.32274849669806, lng: 19.79351209555733"),
+        emptyStop("name: Ndre Mjeda, lat: 41.32383297395377, lng: 19.796611203184636"),
+        emptyStop("name: Myhedin Llagami (P), lat: 41.32407642172047, lng: 19.79825886141814"),
+        emptyStop("name: Poliklinika 9, lat: 41.3259666158593, lng: 19.804278795657446"),
+        emptyStop("name: Kisha Katolike, lat: 41.327603401860294, lng: 19.809658341267482"),
+        emptyStop("name: Banka Shqipërisë, lat: 41.328099473749226, lng: 19.81558261776055"),
+        emptyStop("name: Biblioteka, lat: 41.32836703564817, lng: 19.820952417130638"),
+        emptyStop("name: Mine Peza, lat: 41.33358486212586, lng: 19.806731903500186"),
+        emptyStop("name: Asllan Rusi, lat: 41.334178927552465, lng: 19.801572954850716"),
+        emptyStop("name: Ana Komnena(L), lat: 41.335543595376336, lng: 19.79724460271401"),
+        emptyStop("name: Pandi Dardha, lat: 41.3354072534551, lng: 19.797946848329804"),
+        emptyStop("name: Pallatet Arabe, lat: 41.337158072169636, lng: 19.79312841233052"),
+        emptyStop("name: Blloku Gintash, lat: 41.338121464555506, lng: 19.790431145811276"),
+        emptyStop("name: Sheshi Shqiponja, lat: 41.33852923099161, lng: 19.7850892855241"),
+        emptyStop("name: Lumi Lanë, lat: 41.33574074785545, lng: 19.783054454120443"),
+        emptyStop("name: Kristaq Mone, lat: 41.33261783904999, lng: 19.78383709594256"),
+        emptyStop("name: Aleksandri Madh, lat: 41.331561186730355, lng: 19.783841486866844"),
+        emptyStop("name: Kryqëzimi Kashar, lat: 41.33044107355306, lng: 19.78451271735903"),
+        emptyStop("name: Nexho Konomi, lat: 41.33028695222126, lng: 19.78511272427397"),
+        emptyStop("name: Tom Plezha, lat: 41.32939935496966, lng: 19.783641518926245"),
+        emptyStop("name: Njësia Kashar, lat: 41.33120525770551, lng: 19.78026164257263"),
+        emptyStop("name: Erzen Lita, lat: 41.334201019463364, lng: 19.775778347731695"),
+        emptyStop("name: Serat, lat: 41.34069838620017, lng: 19.76544256336854")
+    ]
+  },
+
+  "5^a": {
+    name: "Qendër – Uzina Autotraktori",
+    directions: {
+      forward: {
+        from: "Rrethrrotullimi",
+        to: "Shkolla Baletit",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Rrethrrotullimi"),
+          emptyStop("Banesat Sociale"),
+          emptyStop("Uzina e Vjetër"),
+          emptyStop("Novruz Qoshja"),
+          emptyStop("Pallatet Shkozë"),
+          emptyStop("Poligrafiku"),
+          emptyStop("Markata"),
+          emptyStop("Kushtrimi Lirisë"),
+          emptyStop("Sheshi Camëria"4),
+          emptyStop("Ali Demi"),
+          emptyStop("1 Maji (P)"),
+          emptyStop("Sheshi Ali Demi"),
+          emptyStop("Leopold Bertold"),
+          emptyStop("Brryli"),
+          emptyStop("Ministria Jashtme"),
+          emptyStop("ATSH"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Parku Rinia"),
+          emptyStop("Shkolla Baletit")
+        ]
+      },
+      backward: {
+        from: "Shkolla Baletit",
+        to: "Rrethrrotullimi",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Shkolla Baletit"),
+          emptyStop("Parku Rinia"),
+          emptyStop("9 Katëshet"),
+          emptyStop("ATSH"),
+          emptyStop("Ministria Jashtme"),
+          emptyStop("Brryli"),
+          emptyStop("Leopold Bertold"),
+          emptyStop("Sheshi Ali Demi"),
+          emptyStop("1 Maji (P)"),
+          emptyStop("Ali Demi"),
+          emptyStop("Sheshi Camëria"),
+          emptyStop("Kushtrimi Lirisë"),
+          emptyStop("Markata"),
+          emptyStop("Poligrafiku"),
+          emptyStop("Pallatet Shkozë"),
+          emptyStop("Novruz Qoshja"),
+          emptyStop("Uzina e Vjetër"),
+          emptyStop("Banesat Sociale"),
+          emptyStop("Rrethrrotullimi")
+        ]
+      }
+    }
+  },
+
+  "5^b": {
+    name: "Institut - Qendër",
+    directions: {
+      forward: {
+        from: "Instituti Bujqësor",
+        to: "Mine Peza",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Instituti Bujqësor"),
+          emptyStop("Kodër Kamëz"),
+          emptyStop("Ura Paskuqanit"),
+          emptyStop("Treshi"),
+          emptyStop("Pallatet e Reja"),
+          emptyStop("Terminali (L)"),
+          emptyStop("Kthesa Kamzës"),
+          emptyStop("Sheshi Shqiponja"),
+          emptyStop("Blloku Gintash"),
+          emptyStop("Pallatet Arabe"),
+          emptyStop("Kupola"),
+          emptyStop("Asllan Rusi"),
+          emptyStop("Karl Topia"),
+          emptyStop("Qemal Stafa"),
+          emptyStop("Gjethja"),
+          emptyStop("Muzeu Kombëtar"),
+          emptyStop("Mine Peza")
+        ]
+      },
+      backward: {
+        from: "Mine Peza",
+        to: "Instituti Bujqësor",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Mine Peza"),
+          emptyStop("Muzeu Kombëtar"),
+          emptyStop("Gjethja"),
+          emptyStop("Qemal Stafa"),
+          emptyStop("Karl Topia"),
+          emptyStop("Asllan Rusi"),
+          emptyStop("Kupola"),
+          emptyStop("Pallatet Arabe"),
+          emptyStop("Blloku Gintash"),
+          emptyStop("Sheshi Shqiponja"),
+          emptyStop("Kthesa Kamzës"),
+          emptyStop("Terminali (L)"),
+          emptyStop("Pallatet e Reja"),
+          emptyStop("Treshi"),
+          emptyStop("Ura Paskuqanit"),
+          emptyStop("Kodër Kamëz"),
+          emptyStop("Instituti Bujqësor")
+        ]
+      }
+    }
+  },
+
+  "8^a": {
+    name: "Qendër - T.E.G",
+    directions: {
+      forward: {
+        from: "Teg",
+        to: "Shkolla Baletit",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Teg"),
+          emptyStop("Haxhi Dushku"),
+          emptyStop("Panorama Liqenit"),
+          emptyStop("Xhamia"),
+          emptyStop("Policia Ushtarake"),
+          emptyStop("Rrethrrotullimi (V)"),
+          emptyStop("Pallati Brigadave (V)"),
+          emptyStop("Dëshmorët (V)"),
+          emptyStop("Haki Shehu"),
+          emptyStop("Vilat Gjermane"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Posta"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Dollari"),
+          emptyStop("ATSH"),
+          emptyStop("Parku Rinia"),
+          emptyStop("Shkolla Baletit")
+        ]
+      },
+      backward: {
+        from: "Shkolla Baletit",
+        to: "Teg",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Shkolla Baletit"),
+          emptyStop("Parku Rinia"),
+          emptyStop("ATSH"),
+          emptyStop("Dollari"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Posta"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Vilat Gjermane"),
+          emptyStop("Haki Shehu"),
+          emptyStop("Dëshmorët (V)"),
+          emptyStop("Pallati Brigadave (V)"),
+          emptyStop("Rrethrrotullimi (V)"),
+          emptyStop("Policia Ushtarake"),
+          emptyStop("Xhamia"),
+          emptyStop("Panorama Liqenit"),
+          emptyStop("Haxhi Dushku"),
+          emptyStop("Teg")
+        ]
+      }
+    }
+  },
+
+  "8^b": {
+    name: "Qendër - Sanatorium",
+    directions: {
+      forward: {
+        from: "Sanatoriumi",
+        to: "Dollari",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Sanatoriumi"),
+          emptyStop("Nuri Arapi"),
+          emptyStop("Shefqet Ndroqi (P)"),
+          emptyStop("Rrethrrotullimi (V)"),
+          emptyStop("Pallati Brigadave (V)"),
+          emptyStop("Dëshmorët (V)"),
+          emptyStop("Haki Shehu"),
+          emptyStop("Vilat Gjermane"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Posta"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Dollari")
+        ]
+      },
+      backward: {
+        from: "Dollari",
+        to: "Sanatoriumi",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Dollari"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Posta"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Vilat Gjermane"),
+          emptyStop("Haki Shehu"),
+          emptyStop("Dëshmorët (V)"),
+          emptyStop("Pallati Brigadave (V)"),
+          emptyStop("Rrethrrotullimi (V)"),
+          emptyStop("Shefqet Ndroqi (P)"),
+          emptyStop("Nuri Arapi"),
+          emptyStop("Sanatoriumi")
+        ]
+      }
+    }
+  },
+
+  "8^c": {
+    name: "Qendër - Sauk i Vjetër",
+    directions: {
+      forward: {
+        from: "Sauk i Vjetër",
+        to: "Dollari",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Sauk i Vjetër"),
+          emptyStop("Mbikalimi"),
+          emptyStop("Rrethrrotullimi (J)"),
+          emptyStop("Pallati Brigadave (V)"),
+          emptyStop("Dëshmorët (V)"),
+          emptyStop("Haki Shehu"),
+          emptyStop("Vilat Gjermane"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Posta"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Dollari")
+        ]
+      },
+      backward: {
+        from: "Dollari",
+        to: "Sauk i Vjetër",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Dollari"),
+          emptyStop("9 Katëshet"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Posta"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Vilat Gjermane"),
+          emptyStop("Haki Shehu"),
+          emptyStop("Dëshmorët (V)"),
+          emptyStop("Pallati Brigadave (V)"),
+          emptyStop("Rrethrrotullimi (J)"),
+          emptyStop("Mbikalimi"),
+          emptyStop("Sauk i Vjetër")
+        ]
+      }
+    }
+  },
+
+  "9^a": {
+    name: "Qytet Studenti - Jordan Misja",
+    directions: {
+      forward: {
+        from: "Collakët",
+        to: "Dollari",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Collakët"),
+          emptyStop("Xhamia"),
+          emptyStop("Depo Ujit"),
+          emptyStop("Haki Gjici"),
+          emptyStop("Kompleksi"),
+          emptyStop("Godina 26"),
+          emptyStop("Godina 15"),
+          emptyStop("Ekonomiku"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Posta"),
+          emptyStop("Biblioteka"),
+          emptyStop("Materniteti"),
+          emptyStop("Treni (P)"),
+          emptyStop("Burgu"),
+          emptyStop("Kolegj"),
+          emptyStop("Rruga Vjosa"),
+          emptyStop("Ali Progri"),
+          emptyStop("Rruga Sejdini"),
+          emptyStop("Shinat e Trenit"),
+          emptyStop("Shkencat e Natyrës"),
+          emptyStop("Dollari")
+        ]
+      },
+      backward: {
+        from: "Dollari",
+        to: "Collakët",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Dollari"),
+          emptyStop("Shkencat e Natyrës"),
+          emptyStop("Shinat e Trenit"),
+          emptyStop("Rruga Sejdini"),
+          emptyStop("Ali Progri"),
+          emptyStop("Rruga Vjosa"),
+          emptyStop("Kolegj"),
+          emptyStop("Burgu"),
+          emptyStop("Treni (P)"),
+          emptyStop("Materniteti"),
+          emptyStop("Biblioteka"),
+          emptyStop("Posta"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Ekonomiku"),
+          emptyStop("Godina 15"),
+          emptyStop("Godina 26"),
+          emptyStop("Kompleksi"),
+          emptyStop("Haki Gjici"),
+          emptyStop("Depo Ujit"),
+          emptyStop("Xhamia"),
+          emptyStop("Collakët")
+        ]
+      }
+    }
+  },
+
+  "9^b": {
+    name: "Vilat Gjermane - Jordan Misja",
+    directions: {
+      forward: {
+        from: "Collakët",
+        to: "Dollari",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Collakët"),
+          emptyStop("Xhamia"),
+          emptyStop("Depo Ujit"),
+          emptyStop("Irfan Tershana"),
+          emptyStop("Bicaket"),
+          emptyStop("Jup Kastrati"),
+          emptyStop("Ambasada Palestines"),
+          emptyStop("Vëllezerit Kondi"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Posta"),
+          emptyStop("Biblioteka"),
+          emptyStop("Materniteti"),
+          emptyStop("Treni (P)"),
+          emptyStop("Burgu"),
+          emptyStop("Kolegj"),
+          emptyStop("Rruga Vjosa"),
+          emptyStop("Ali Progri"),
+          emptyStop("Rruga Sejdini"),
+          emptyStop("Shinat e Trenit"),
+          emptyStop("Shkencat e Natyrës"),
+          emptyStop("Dollari")
+        ]
+      },
+      backward: {
+        from: "Dollari",
+        to: "Collakët",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Dollari"),
+          emptyStop("Shkencat e Natyrës"),
+          emptyStop("Shinat e Trenit"),
+          emptyStop("Rruga Sejdini"),
+          emptyStop("Ali Progri"),
+          emptyStop("Rruga Vjosa"),
+          emptyStop("Kolegj"),
+          emptyStop("Burgu"),
+          emptyStop("Treni (P)"),
+          emptyStop("Materniteti"),
+          emptyStop("Biblioteka"),
+          emptyStop("Posta"),
+          emptyStop("Liceu Artistik"),
+          emptyStop("Fiologjiku"),
+          emptyStop("Vëllezerit Kondi"),
+          emptyStop("Ambasada Palestines"),
+          emptyStop("Jup Kastrati"),
+          emptyStop("Bicaket"),
+          emptyStop("Irfan Tershana"),
+          emptyStop("Depo Ujit"),
+          emptyStop("Xhamia"),
+          emptyStop("Collakët")
+        ]
+      }
+    }
+  },
+
+  "10^a": {
+    name: "Materniteti i Ri - Qendër",
+    directions: {
+      forward: {
+        from: "Odhise Grillo",
+        to: "Anastas Kulurjoti",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Odhise Grillo"),
+          emptyStop("Materniteti i Ri"),
+          emptyStop("Brryli"),
+          emptyStop("Ministria Jashtme"),
+          emptyStop("ATSH"),
+          emptyStop("Biblioteka"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Shkolla Baletit"),
+          emptyStop("Sheshi Ali Demi"),
+          emptyStop("Ministria Shëndetësisë"),
+          emptyStop("Leopold Bertold"),
+          emptyStop("Anastas Kulurjoti")
+        ]
+      },
+      backward: {
+        from: "Anastas Kulurjoti",
+        to: "Odhise Grillo",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Anastas Kulurjoti"),
+          emptyStop("Leopold Bertold"),
+          emptyStop("Ministria Shëndetësisë"),
+          emptyStop("Sheshi Ali Demi"),
+          emptyStop("Shkolla Baletit"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Biblioteka"),
+          emptyStop("ATSH"),
+          emptyStop("Ministria Jashtme"),
+          emptyStop("Brryli"),
+          emptyStop("Materniteti i Ri"),
+          emptyStop("Odhise Grillo")
+        ]
+      }
+    }
+  },
+
+  "10^b": {
+    name: "Qendër - Mihal Grameno",
+    directions: {
+      forward: {
+        from: "Collakët",
+        to: "Biblioteka",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Collakët"),
+          emptyStop("Xhamia"),
+          emptyStop("Depo Ujit"),
+          emptyStop("Haki Gjici"),
+          emptyStop("Market"),
+          emptyStop("Ali Visha"),
+          emptyStop("Mihal Grameno"),
+          emptyStop("Tregu Elektrik"),
+          emptyStop("Njësia 2"),
+          emptyStop("Shkolla Baletit"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Biblioteka")
+        ]
+      },
+      backward: {
+        from: "Biblioteka",
+        to: "Collakët",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Biblioteka"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Shkolla Baletit"),
+          emptyStop("Njësia 2"),
+          emptyStop("Tregu Elektrik"),
+          emptyStop("Mihal Grameno"),
+          emptyStop("Ali Visha"),
+          emptyStop("Market"),
+          emptyStop("Haki Gjici"),
+          emptyStop("Depo Ujit"),
+          emptyStop("Xhamia"),
+          emptyStop("Collakët")
+        ]
+      }
+    }
+  },
+
+  "10^c": {
+    name: "Rrethrotullimi Shkozë - Ish - Fusha e Aviacionit",
+    directions: {
+      forward: {
+        from: "Dhora Leka",
+        to: "ATSH",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Dhora Leka"),
+          emptyStop("Simon Gjoni"),
+          emptyStop("Helikopteret"),
+          emptyStop("Fusha Aviacionit"),
+          emptyStop("Konviktet"),
+          emptyStop("Zjarrfikës"),
+          emptyStop("Poliklinika 9"),
+          emptyStop("Kisha Katolike"),
+          emptyStop("Banka Shqiperisë"),
+          emptyStop("Biblioteka"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Shkolla Baletit"),
+          emptyStop("Ministria e Shëndetësisë"),
+          emptyStop("Lopold Bertold"),
+          emptyStop("Materniteti i Ri"),
+          emptyStop("Marketi"),
+          emptyStop("Kopshti 56"),
+          emptyStop("Rrethrrotullimi"),
+          emptyStop("Selman Riza"),
+          emptyStop("Odhise Grillo"),
+          emptyStop("Brryli"),
+          emptyStop("Ministria Jashtme"),
+          emptyStop("ATSH")
+        ]
+      },
+      backward: {
+        from: "ATSH",
+        to: "Dhora Leka",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("ATSH"),
+          emptyStop("Ministria Jashtme"),
+          emptyStop("Brryli"),
+          emptyStop("Odhise Grillo"),
+          emptyStop("Selman Riza"),
+          emptyStop("Rrethrrotullimi"),
+          emptyStop("Kopshti 56"),
+          emptyStop("Marketi"),
+          emptyStop("Materniteti i Ri"),
+          emptyStop("Lopold Bertold"),
+          emptyStop("Ministria e Shëndetësisë"),
+          emptyStop("Shkolla Baletit"),
+          emptyStop("Parlamenti (J)"),
+          emptyStop("Biblioteka"),
+          emptyStop("Banka Shqiperisë"),
+          emptyStop("Kisha Katolike"),
+          emptyStop("Poliklinika 9"),
+          emptyStop("Zjarrfikës"),
+          emptyStop("Konviktet"),
+          emptyStop("Fusha Aviacionit"),
+          emptyStop("Helikopteret"),
+          emptyStop("Simon Gjoni"),
+          emptyStop("Dhora Leka")
+        ]
+      }
+    }
+  },
+
+  // ✅ Linja 11 (rrethore) e ndarë në 11A dhe 11B
+  "11A": {
+    name: "Porcelani (Orar - Clockwise)",
+    directions: {
+      forward: {
+        from: "Hysen Bastari",
+        to: "Biblioteka Tirane",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Hysen Bastari"),
+          emptyStop("Teleferiku"),
+          emptyStop("Thome Filipeu"),
+          emptyStop("Fizika Bërthamore"),
+          emptyStop("Fresku"),
+          emptyStop("IKV Tirane"),
+          emptyStop("Artistike Migjeni Tirane"),
+          emptyStop("Oxhaku (L) Tirane"),
+          emptyStop("Varri Bamit Tirane"),
+          emptyStop("Xhamlliku"),
+          emptyStop("Hoxha Tahsim"),
+          emptyStop("Optika"),
+          emptyStop("Pazari i Ri"),
+          emptyStop("Hysen Bastari"),
+          emptyStop("Qendra Shëndetësore"),
+          emptyStop("Biblioteka Tirane")
+        ]
+      }
+    }
+  },
+  "11B": {
+    name: "Porcelani (Antiorar - Counter-clockwise)",
+    directions: {
+      forward: {
+        from: "Biblioteka Tirane",
+        to: "Hysen Bastari",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Biblioteka Tirane"),
+          emptyStop("Qendra Shëndetësore"),
+          emptyStop("Hysen Bastari"),
+          emptyStop("Pazari i Ri"),
+          emptyStop("Optika"),
+          emptyStop("Hoxha Tahsim"),
+          emptyStop("Xhamlliku"),
+          emptyStop("Varri Bamit Tirane"),
+          emptyStop("Oxhaku (L) Tirane"),
+          emptyStop("Artistike Migjeni Tirane"),
+          emptyStop("IKV Tirane"),
+          emptyStop("Fresku"),
+          emptyStop("Fizika Bërthamore"),
+          emptyStop("Thome Filipeu"),
+          emptyStop("Teleferiku"),
+          emptyStop("Hysen Bastari")
+        ]
+      }
+    }
+  },
+
+  "12": {
+    name: "Uzina Dinamo - Sharrë",
+    directions: {
+      forward: {
+        from: "Shinat e Trenit",
+        to: "Materniteti",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Shinat e Trenit"),
+          emptyStop("Rruga Sejdini"),
+          emptyStop("Filip Jano"),
+          emptyStop("Nënstacioni Elektrik"),
+          emptyStop("Rruga Besa"),
+          emptyStop("Frigoriferi Tirane"),
+          emptyStop("Siri Kodra Tirane"),
+          emptyStop("Treni (V)"),
+          emptyStop("Shkencat e Natyrës"),
+          emptyStop("Banka e Shqipërisë"),
+          emptyStop("Kisha Katolike"),
+          emptyStop("Poliklinika 9"),
+          emptyStop("Parku"),
+          emptyStop("Ura Teknologjike"),
+          emptyStop("Tregu Tirane"),
+          emptyStop("Kthesa Yzberisht (L)"),
+          emptyStop("Misto Mame Tirane"),
+          emptyStop("UKT Tirane"),
+          emptyStop("Mapo Tirane"),
+          emptyStop("Kombinat"),
+          emptyStop("Zjarrfikësja Tirane"),
+          emptyStop("Varrezat Sharrë"),
+          emptyStop("Kthesa Sharrë"),
+          emptyStop("Prush Tirane"),
+          emptyStop("Fabrika Tullave"),
+          emptyStop("Karburanti Tirane"),
+          emptyStop("15 Katëshi"),
+          emptyStop("Materniteti")
+        ]
+      },
+      backward: {
+        from: "Materniteti",
+        to: "Shinat e Trenit",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Materniteti"),
+          emptyStop("15 Katëshi"),
+          emptyStop("Karburanti Tirane"),
+          emptyStop("Fabrika Tullave"),
+          emptyStop("Prush Tirane"),
+          emptyStop("Kthesa Sharrë"),
+          emptyStop("Varrezat Sharrë"),
+          emptyStop("Zjarrfikësja Tirane"),
+          emptyStop("Kombinat"),
+          emptyStop("Mapo Tirane"),
+          emptyStop("UKT Tirane"),
+          emptyStop("Misto Mame Tirane"),
+          emptyStop("Kthesa Yzberisht (L)"),
+          emptyStop("Tregu Tirane"),
+          emptyStop("Ura Teknologjike"),
+          emptyStop("Parku"),
+          emptyStop("Poliklinika 9"),
+          emptyStop("Kisha Katolike"),
+          emptyStop("Banka e Shqipërisë"),
+          emptyStop("Shkencat e Natyrës"),
+          emptyStop("Treni (V)"),
+          emptyStop("Siri Kodra Tirane"),
+          emptyStop("Frigoriferi Tirane"),
+          emptyStop("Rruga Besa"),
+          emptyStop("Nënstacioni Elektrik"),
+          emptyStop("Filip Jano"),
+          emptyStop("Rruga Sejdini"),
+          emptyStop("Shinat e Trenit")
+        ]
+      }
+    }
+  },
+
+  "13A": {
+    name: "Tirana e Re (Orar - Clockwise)",
+    directions: {
+      forward: {
+        from: "Rektorati (V) Tirane",
+        to: "Parku Rinia",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Rektorati (V) Tirane"),
+          emptyStop("Piramida Tirane"),
+          emptyStop("15 Katëshi"),
+          emptyStop("Materniteti"),
+          emptyStop("Harry Fultz"),
+          emptyStop("Don Bosko Bus stop"),
+          emptyStop("Asllan Rusi"),
+          emptyStop("Kupola"),
+          emptyStop("Pallatet Arabe"),
+          emptyStop("Blloku Gintash"),
+          emptyStop("Terminali (L)"),
+          emptyStop("Sheshi Shqiponja"),
+          emptyStop("Lumi Lanë"),
+          emptyStop("Aleksandri Madh (J)"),
+          emptyStop("Kryqëzimi Kashar (J)"),
+          emptyStop("Nexho Konomi (V)"),
+          emptyStop("Kristaq Dollaku"),
+          emptyStop("Teodor Keko"),
+          emptyStop("Pallati me Shigjeta"),
+          emptyStop("Selitë"),
+          emptyStop("Vasil Shanto"),
+          emptyStop("Komuna Parisit (L)"),
+          emptyStop("Posta 8 Tirane"),
+          emptyStop("Libri Universitar"),
+          emptyStop("Shkencat e Natyrës"),
+          emptyStop("Muzeu Kombëtar"),
+          emptyStop("Parku Rinia")
+        ]
+      }
+    }
+  },
+  "13B": {
+    name: "Tirana e Re (Antiorar - Counter-clockwise)",
+    directions: {
+      forward: {
+        from: "Parku Rinia",
+        to: "Rektorati (V) Tirane",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Parku Rinia"),
+          emptyStop("Muzeu Kombëtar"),
+          emptyStop("Shkencat e Natyrës"),
+          emptyStop("Libri Universitar"),
+          emptyStop("Posta 8 Tirane"),
+          emptyStop("Komuna Parisit (L)"),
+          emptyStop("Vasil Shanto"),
+          emptyStop("Selitë"),
+          emptyStop("Pallati me Shigjeta"),
+          emptyStop("Teodor Keko"),
+          emptyStop("Kristaq Dollaku"),
+          emptyStop("Nexho Konomi (V)"),
+          emptyStop("Kryqëzimi Kashar (J)"),
+          emptyStop("Aleksandri Madh (J)"),
+          emptyStop("Lumi Lanë"),
+          emptyStop("Sheshi Shqiponja"),
+          emptyStop("Terminali (L)"),
+          emptyStop("Blloku Gintash"),
+          emptyStop("Pallatet Arabe"),
+          emptyStop("Kupola"),
+          emptyStop("Asllan Rusi"),
+          emptyStop("Don Bosko Bus stop"),
+          emptyStop("Harry Fultz"),
+          emptyStop("Materniteti"),
+          emptyStop("15 Katëshi"),
+          emptyStop("Piramida Tirane"),
+          emptyStop("Rektorati (V) Tirane")
+        ]
+      }
+    }
+  },
+
+  // ✅ Linja 16 (rrethore) e ndarë në 16A dhe 16B
+  "16A": {
+    name: "Linja e Gjelbër (Orar - Clockwise)",
+    directions: {
+      forward: {
+        from: "Farmacia 10 Tirane",
+        to: "Dispanseria Tirane",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Farmacia 10 Tirane"),
+          emptyStop("Çajupi"),
+          emptyStop("Odhise Paskali"),
+          emptyStop("Brryli"),
+          emptyStop("Ministria Jashtme Tirane"),
+          emptyStop("ATSH"),
+          emptyStop("Xhamia Namazgjasë"),
+          emptyStop("Shallvaret"),
+          emptyStop("Drejtoria Policisë"),
+          emptyStop("Gjykata"),
+          emptyStop("Vasil Shanto"),
+          emptyStop("Lulishte 1 Maji Tirane"),
+          emptyStop("Kinema Agimi Tirane"),
+          emptyStop("Vëllezerit Frashëri"),
+          emptyStop("Shkolla Baletit Tirane"),
+          emptyStop("Sheshi Ali Demi"),
+          emptyStop("Ministria Shëndetësisë"),
+          emptyStop("Sabaudin Gabrani"),
+          emptyStop("Inxhinieria"),
+          emptyStop("Karl Topia"),
+          emptyStop("Don Bosko Bus Stop"),
+          emptyStop("Harry Fultz"),
+          emptyStop("Treni (V)"),
+          emptyStop("Dispanseria Tirane")
+        ]
+      }
+    }
+  },
+  "16B": {
+    name: "Linja e Gjelbër (Antiorar - Counter-clockwise)",
+    directions: {
+      forward: {
+        from: "Dispanseria Tirane",
+        to: "Farmacia 10 Tirane",
+        schedule: { startTime: null, endTime: null, headway: null },
+        stops: [
+          emptyStop("Dispanseria Tirane"),
+          emptyStop("Treni (V)"),
+          emptyStop("Harry Fultz"),
+          emptyStop("Don Bosko Bus Stop"),
+          emptyStop("Karl Topia"),
+          emptyStop("Inxhinieria"),
+          emptyStop("Sabaudin Gabrani"),
+          emptyStop("Ministria Shëndetësisë"),
+          emptyStop("Sheshi Ali Demi"),
+          emptyStop("Shkolla Baletit Tirane"),
+          emptyStop("Vëllezerit Frashëri"),
+          emptyStop("Kinema Agimi Tirane"),
+          emptyStop("Lulishte 1 Maji Tirane"),
+          emptyStop("Vasil Shanto"),
+          emptyStop("Gjykata"),
+          emptyStop("Drejtoria Policisë"),
+          emptyStop("Shallvaret"),
+          emptyStop("Xhamia Namazgjasë"),
+          emptyStop("ATSH"),
+          emptyStop("Ministria Jashtme Tirane"),
+          emptyStop("Brryli"),
+          emptyStop("Odhise Paskali"),
+          emptyStop("Çajupi"),
+          emptyStop("Farmacia 10 Tirane")
+        ]
+      }
+    }
+  }
+};
+
+module.exports = busLines;

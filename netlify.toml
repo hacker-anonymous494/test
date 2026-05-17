@@ -1,0 +1,15 @@
+[build]
+  base = "."
+  publish = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Comment out for development
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200

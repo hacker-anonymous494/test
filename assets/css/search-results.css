@@ -1,0 +1,370 @@
+/* Search Results Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal.show {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: var(--bg-primary);
+    z-index: 10;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 24px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+/* Route Options */
+.route-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.route-option {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.route-option:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.route-option.recommended {
+    border: 2px solid var(--primary-color);
+    background: linear-gradient(135deg, rgba(26, 115, 232, 0.05) 0%, rgba(26, 115, 232, 0.02) 100%);
+}
+
+.recommended-badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.route-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.route-type {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.route-type-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.route-info h4 {
+    margin: 0 0 5px 0;
+    color: var(--text-primary);
+    font-size: 18px;
+}
+
+.route-details {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.route-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.route-time, .route-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.route-time i, .route-price i {
+    color: var(--primary-color);
+}
+
+.route-time span {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.route-price span {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+/* Route Steps */
+.route-steps {
+    border-left: 2px solid var(--border-color);
+    margin: 20px 0 20px 25px;
+    padding-left: 20px;
+}
+
+.route-step {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.route-step:last-child {
+    margin-bottom: 0;
+}
+
+.route-step::before {
+    content: '';
+    position: absolute;
+    left: -31px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+}
+
+.route-step .step-icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-description {
+    margin: 0 0 5px 0;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.step-duration {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* Route Actions */
+.route-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Info Cards */
+.bus-info-card, .taxi-info-card {
+    background: var(--bg-tertiary);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.bus-info-header, .taxi-info-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.bus-info-header i, .taxi-info-header i {
+    color: var(--primary-color);
+    font-size: 20px;
+}
+
+.bus-info-header h5, .taxi-info-header h5 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.bus-info-content, .taxi-info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bus-info-row, .taxi-info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.bus-info-row span, .taxi-info-row span {
+    color: var(--text-secondary);
+}
+
+.bus-info-row strong, .taxi-info-row strong {
+    color: var(--text-primary);
+}
+
+.taxi-pricing {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color);
+    font-size: 13px;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.no-results i {
+    font-size: 48px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.no-results h4 {
+    margin: 0 0 10px 0;
+    color: var(--text-primary);
+}
+
+.no-results p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal.show {
+        padding: 10px;
+    }
+    
+    .modal-content {
+        max-height: 95vh;
+    }
+    
+    .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .route-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .route-summary {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .route-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .route-actions .btn {
+        width: 100%;
+    }
+}

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sherbimijone - Transporti Juaj në Tiranë</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header dhe Navigimi -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-bus"></i>
+                    <span class="logo-text">Sherbimijone</span>
+                </div>
+                <div class="tagline">Transporti Juaj në Tiranë</div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#home" class="nav-link active"><i class="fas fa-home"></i> Kryefaqja</a></li>
+                <li class="nav-item"><a href="#features" class="nav-link"><i class="fas fa-star"></i> Veçoritë</a></li>
+                <li class="nav-item"><a href="#how-it-works" class="nav-link"><i class="fas fa-play-circle"></i> Si Funksionon</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link"><i class="fas fa-phone"></i> Kontakt</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link"><i class="fas fa-globe"></i> Shqip <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="lang-option" data-lang="sq">Shqip</a></li>
+                        <li><a href="#" class="lang-option" data-lang="en">English</a></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="auth-buttons" id="auth-buttons"></div>
+            
+            <div class="theme-toggle">
+                <input type="checkbox" id="theme-switch" class="theme-switch">
+                <label for="theme-switch" class="theme-label">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                    <span class="theme-ball"></span>
+                </label>
+            </div>
+            
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Seksioni Hero -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Gjeni Rrugën Më të Shpejtë në Tiranë</h1>
+            <p class="hero-subtitle">Platforma e parë inteligjente për transportin publik dhe taksi në kryeqytetin tuaj</p>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <div class="input-group">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" id="from-location" placeholder="Nga po niseni? (ose përdorni lokacionin aktual)" autocomplete="off">
+                        <button class="btn-current-location" id="current-location-btn">
+                            <i class="fas fa-crosshairs"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-flag-checkered"></i>
+                        <input type="text" id="to-location" placeholder="Ku dëshironi të shkoni?" autocomplete="off">
+                    </div>
+                    
+                    <div class="search-options">
+                        <div class="option">
+                            <input type="radio" id="fastest" name="route-option" checked>
+                            <label for="fastest"><i class="fas fa-bolt"></i> Më e shpejta</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="cheapest" name="route-option">
+                            <label for="cheapest"><i class="fas fa-coins"></i> Më e lira</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="fewest-transfers" name="route-option">
+                            <label for="fewest-transfers"><i class="fas fa-exchange-alt"></i> Më pak ndërrime</label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-search" id="search-route-btn">
+                        <i class="fas fa-search"></i> Gjej Rrugën
+                    </button>
+                </div>
+                
+                <div class="quick-actions">
+                    <a href="pages/map.html" class="quick-action">
+                        <i class="fas fa-map"></i>
+                        <span>Harta e Stacioneve</span>
+                    </a>
+                    <a href="pages/taxi.html" class="quick-action">
+                        <i class="fas fa-taxi"></i>
+                        <span>Rezervo Taksi</span>
+                    </a>
+                    <a href="pages/driver.html" class="quick-action">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Modi Shofer</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-map" id="hero-map"></div>
+    </section>
+
+    <!-- Seksioni Veçoritë -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Pse të Zgjidhni Sherbimijone?</h2>
+            <p class="section-subtitle">Platforma jonë ju ofron të gjitha mjetet e nevojshme për lëvizje të shpejtë dhe të sigurt në Tiranë</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3 class="feature-title">Kërkimi i Rrugës</h3>
+                    <p class="feature-description">Gjeni rrugën më të shpejtë dhe më efikase duke përdorur algoritmin tonë inteligjent.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Harta në Kohë Reale</h3>
+                    <p class="feature-description">Ndjekni autobusët në kohë reale dhe shikoni trafikun në rrugët e Tiranës.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-taxi"></i>
+                    </div>
+                    <h3 class="feature-title">Rezervim Taksi</h3>
+                    <p class="feature-description">Rezervoni taksi me çmim fiks ose lidhuni me kompanitë ekzistuese të taksive.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="feature-title">Njoftime në Kohë Reale</h3>
+                    <p class="feature-description">Merrni njoftime për ndryshime në rrugë, vonesa të autobusëve dhe ngjarje të tjera.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h3 class="feature-title">Oraret e Autobusëve</h3>
+                    <p class="feature-description">Aksesoni oraret e sakta të të gjitha linjave të autobusëve në Tiranë.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="feature-title">Profili Personal</h3>
+                    <p class="feature-description">Ruani rrugët tuaja të preferuara, historikun e kërkimeve dhe preferencat tuaja.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seksioni Si Funksionon -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Si Funksionon Sherbimijone?</h2>
+            <p class="section-subtitle">Vetëm 4 hapa të thjeshtë për të gjetur rrugën më të mirë</p>
+            
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Regjistrohuni</h3>
+                        <p>Krijoni një llogari falas për të përdorur të gjitha veçoritë e platformës.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Gjeni Rrugën</h3>
+                        <p>Shkruani pikën e nisjes dhe destinacionin për të gjetur rrugën më të mirë.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Zgjidhni Opsionin</h3>
+                        <p>Zgjidhni mes rrugës më të shpejtë, më të lirë ose me më pak ndërrime.</p>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Nisni Udhetimin</h3>
+                        <p>Ndiqni udhëzimet hap pas hapi dhe shijoni udhëtimin tuaj.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seksioni Statistikat -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat">
+                    <h3 class="stat-number" data-count="150">0</h3>
+                    <p class="stat-label">Linja Autobusësh</p>
+                </div>
+                
+                <div class="stat">
+                    <h3 class="stat-number" data-count="1200">0</h3>
+                    <p class="stat-label">Stacione</p>
+                </div>
+                
+                <div class="stat">
+                    <h3 class="stat-number" data-count="50000">0</h3>
+                    <p class="stat-label">Përdorues Aktivë</p>
+                </div>
+                
+                <div class="stat">
+                    <h3 class="stat-number" data-count="98">0</h3>
+                    <p class="stat-label">% Kënaqësi</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seksioni Kontakt -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Na Kontaktoni</h2>
+            <p class="section-subtitle">Keni pyetje ose sugjerime? Na dërgoni një mesazh</p>
+            
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h3>Adresa</h3>
+                            <p>Rr. "Myslym Shyri", Tirana, Albania</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h3>Telefoni</h3>
+                            <p>+355 4X XXX XXXX</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h3>Email</h3>
+                            <p>info@sherbimijone.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <form class="contact-form" id="contact-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="Emri Juaj" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="email" placeholder="Email Juaj" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="text" placeholder="Subjekti" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <textarea placeholder="Mesazhi Juaj" rows="5" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Dërgo Mesazhin</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-bus"></i>
+                        <span class="logo-text">Sherbimijone</span>
+                    </div>
+                    <p class="footer-description">Platforma kryesore për transportin publik dhe taksi në Tiranë. Ne bëjmë udhëtimin tuaj më të lehtë, më të shpejtë dhe më të sigurt.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Lidhje të Shpejta</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Kryefaqja</a></li>
+                        <li><a href="#features">Veçoritë</a></li>
+                        <li><a href="#how-it-works">Si Funksionon</a></li>
+                        <li><a href="pages/map.html">Harta</a></li>
+                        <li><a href="pages/taxi.html">Taksi</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Informacion</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Rreth Nesh</a></li>
+                        <li><a href="#">Politika e Privatësisë</a></li>
+                        <li><a href="#">Kushtet e Përdorimit</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#contact">Kontakt</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Lajmet e Fundit</h3>
+                    <div class="newsletter">
+                        <p>Regjistrohuni për të marrë lajmet dhe përditësimet më të fundit.</p>
+                        <div class="newsletter-form">
+                            <input type="email" placeholder="Email Juaj">
+                            <button class="btn btn-primary">Regjistrohu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Sherbimijone. Të gjitha të drejtat e rezervuara.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal për Rezultatet e Kërkimit -->
+    <div class="modal" id="search-results-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Rezultatet e Kërkimit</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="route-options" id="route-options">
+                    <!-- Rezultatet do të shtohen këtu nga JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="config.js"></script>
+    <!--script src="security-measures.js"></script-->
+    <script src="assets/js/auth.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

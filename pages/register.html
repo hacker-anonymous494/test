@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regjistrohu - Sherbimijone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 50px;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+        }
+        
+        .auth-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .auth-image {
+            flex: 1;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: var(--text-light);
+            text-align: center;
+        }
+        
+        .auth-image h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .auth-image p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .features-list {
+            text-align: left;
+            margin-top: 30px;
+            width: 100%;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .feature i {
+            color: var(--accent-color);
+            font-size: 20px;
+        }
+        
+        .auth-form-container {
+            flex: 1;
+            padding: 50px;
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .auth-header h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        
+        .form-group input, 
+        .form-group select {
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+        
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+        
+        .strength-meter {
+            height: 5px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .terms input {
+            margin-top: 5px;
+        }
+        
+        .terms label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .terms a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .terms a:hover {
+            text-decoration: underline;
+        }
+        
+        .auth-btn {
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: var(--text-secondary);
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+        
+        .auth-divider span {
+            padding: 0 20px;
+            font-size: 14px;
+        }
+        
+        .social-auth {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .social-btn:hover {
+            background-color: var(--bg-secondary);
+        }
+        
+        .social-btn.google i {
+            color: #DB4437;
+        }
+        
+        .social-btn.facebook i {
+            color: #4267B2;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-secondary);
+        }
+        
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+            }
+            
+            .auth-image {
+                display: none;
+            }
+            
+            .auth-form-container {
+                padding: 30px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        
+        /* Rregullime për header */
+        .header {
+            position: relative !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        
+        .navbar {
+            justify-content: center !important;
+        }
+        
+        .navbar .btn-outline {
+            position: absolute;
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header i thjeshtë për faqet e auth -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-bus"></i>
+                    <span class="logo-text">Sherbimijone</span>
+                </div>
+                <div class="tagline">Transporti Juaj në Tiranë</div>
+            </div>
+            
+            <a href="../index.html" class="btn btn-outline">
+                <i class="fas fa-home"></i> Kthehu në kryefaqe
+            </a>
+        </nav>
+    </header>
+
+    <main class="auth-page">
+        <div class="auth-container">
+            <div class="auth-image">
+                <h2>Krijo Llogarinë Tuaj</h2>
+                <p>Bashkohuni me mijëra përdorues të tjerë që përdorin Sherbimijone çdo ditë për lëvizje më të lehta në Tiranë.</p>
+                <div class="features-list">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Gjeni rrugën më të shpejtë në Tiranë</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Rezervoni taksi me çmim fiks</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Shikoni autobusët në kohë reale</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Merrni njoftime për ndryshime</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Ruani rrugët tuaja të preferuara</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h1>Regjistrohu</h1>
+                    <p>Krijoni llogarinë tuaj falas për të filluar</p>
+                </div>
+                
+                <form class="auth-form" id="register-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first-name">Emri *</label>
+                            <input type="text" id="first-name" name="first-name" placeholder="Emri juaj" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="last-name">Mbiemri *</label>
+                            <input type="text" id="last-name" name="last-name" placeholder="Mbiemri juaj" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" placeholder="shembull@email.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Numri i Telefonit *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+355 XX XXX XXXX" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-type">Lloji i Përdoruesit *</label>
+                        <select id="user-type" name="user-type" required>
+                            <option value="">Zgjidhni llojin e përdoruesit</option>
+                            <option value="passenger">Pasagjer</option>
+                            <option value="driver">Shofer</option>
+                            <option value="taxi-driver">Shofer Taksi</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Fjalëkalimi *</label>
+                        <input type="password" id="password" name="password" placeholder="Krijoni një fjalëkalim të fortë" required>
+                        <div class="password-toggle" style="position: relative;">
+                            <i class="fas fa-eye" id="toggle-password" style="position: absolute; right: 15px; top: -35px; cursor: pointer; color: var(--text-secondary);"></i>
+                        </div>
+                        <div class="password-strength">
+                            <span id="strength-text">Forca e fjalëkalimit: </span>
+                            <div class="strength-meter">
+                                <div class="strength-fill" id="strength-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password">Konfirmo Fjalëkalimin *</label>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Përsërisni fjalëkalimin" required>
+                    </div>
+                    
+                    <div class="terms">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">
+                            Unë pranoj <a href="#">Kushtet e Përdorimit</a> dhe <a href="#">Politikën e Privatësisë</a> të Sherbimijone. *
+                        </label>
+                    </div>
+                    
+                    <div class="terms">
+                        <input type="checkbox" id="newsletter" name="newsletter">
+                        <label for="newsletter">
+                            Dëshiroj të marr email me lajme, përditësime dhe oferta speciale nga Sherbimijone.
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary auth-btn">
+                        <i class="fas fa-user-plus"></i> Krijo Llogarinë
+                    </button>
+                    
+                    <div class="auth-divider">
+                        <span>ose regjistrohu me</span>
+                    </div>
+                    
+                    <div class="social-auth">
+                        <button type="button" class="social-btn google">
+                            <i class="fab fa-google"></i>
+                            <span>Vazhdo me Google</span>
+                        </button>
+                        <button type="button" class="social-btn facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            <span>Vazhdo me Facebook</span>
+                        </button>
+                    </div>
+                    
+                    <div class="auth-footer">
+                        <p>Keni tashmë një llogari? <a href="login.html">Identifikohu këtu</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="../config.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const registerForm = document.getElementById('register-form');
+      
+      const togglePassword = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          this.classList.toggle('fa-eye');
+          this.classList.toggle('fa-eye-slash');
+        });
+      }
+      
+      const passwordField = document.getElementById('password');
+      const strengthText = document.getElementById('strength-text');
+      const strengthFill = document.getElementById('strength-fill');
+      if (passwordField && strengthText && strengthFill) {
+        passwordField.addEventListener('input', function() {
+          const password = this.value;
+          let strength = 0;
+          if (password.length >= 8) strength += 1;
+          if (password.length >= 12) strength += 1;
+          if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 1;
+          if (/\d/.test(password)) strength += 1;
+          if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+          
+          let strengthLevel = '', color = '', width = 0;
+          switch(strength) {
+            case 0: case 1: strengthLevel = 'Shumë i dobët'; color = '#ff4444'; width = 20; break;
+            case 2: strengthLevel = 'I dobët'; color = '#ffbb33'; width = 40; break;
+            case 3: strengthLevel = 'Mesatar'; color = '#ffbb33'; width = 60; break;
+            case 4: strengthLevel = 'I fortë'; color = '#00C851'; width = 80; break;
+            case 5: strengthLevel = 'Shumë i fortë'; color = '#00C851'; width = 100; break;
+            default: strengthLevel = ''; color = '#ccc'; width = 0;
+          }
+          strengthText.textContent = `Forca e fjalëkalimit: ${strengthLevel}`;
+          strengthFill.style.width = `${width}%`;
+          strengthFill.style.backgroundColor = color;
+        });
+      }
+      
+      registerForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+          firstName: document.getElementById('first-name').value,
+          lastName: document.getElementById('last-name').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          userType: document.getElementById('user-type').value,
+          password: document.getElementById('password').value,
+        };
+        
+        const confirmPassword = document.getElementById('confirm-password').value;
+        const termsChecked = document.getElementById('terms').checked;
+        
+        if (formData.password !== confirmPassword) {
+          alert('Fjalëkalimet nuk përputhen!');
+          return;
+        }
+        if (!termsChecked) {
+          alert('Ju duhet të pranoni kushtet e përdorimit!');
+          return;
+        }
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke krijuar llogarinë...';
+        submitBtn.disabled = true;
+        
+        const result = await window.authManager.register(formData);
+        
+        if (result.success) {
+          alert('Regjistrimi u krye me sukses!');
+          window.location.href = '../index.html';
+        } else {
+          alert(result.error);
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        }
+      });
+      
+      document.querySelectorAll('.social-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          alert('Regjistrimi me rrjete sociale do të implementohet së shpejti.');
+        });
+      });
+    });
+    </script>
+  </body>
