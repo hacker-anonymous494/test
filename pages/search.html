@@ -758,6 +758,16 @@
                                 <div class="checkbox-custom"></div>
                                 <label for="use-current-location" class="checkbox-label">Përdor lokacionin aktual për nisje</label>
                             </div>
+
+                            <!-- NEW BUTTONS: pick from map -->
+                            <div class="map-pick-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
+                                <button type="button" class="btn btn-outline map-pick-btn" id="pick-origin-btn" style="flex:1; font-size:14px;">
+                                    <i class="fas fa-map-marker-alt"></i> Cakto nisjen nga harta
+                                </button>
+                                <button type="button" class="btn btn-outline map-pick-btn" id="pick-dest-btn" style="flex:1; font-size:14px;">
+                                    <i class="fas fa-flag-checkered"></i> Cakto destinacionin nga harta
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
@@ -848,10 +858,15 @@
                     </div>
                     
                     <!-- Butoni i Kërkimit -->
-                    <button type="submit" class="btn btn-primary search-btn">
+                    <button type="submit" id="search-btn" class="btn btn-primary search-btn">
                         <i class="fas fa-search"></i> Kërko Rrugë
                     </button>
                 </form>
+
+                <!-- Status message for map picking -->
+                <div id="pick-status" style="margin-top: 15px; font-size: 13px; text-align: center; color: var(--primary-color); display: none;">
+                    <i class="fas fa-hand-pointer"></i> <span id="pick-status-text"></span>
+                </div>
             </div>
             
             <!-- Rezultatet dhe Harta -->
@@ -985,6 +1000,9 @@
   let currentResults = [];
   let savedRoutes    = [];
   let selectedRouteId = null;
+  let pickingMode = null;            // 'origin' or 'dest'
+  let pendingOriginCoords = null;    // exact lat/lng from map pick
+  let pendingDestCoords   = null;
 
   // ── Map init ───────────────────────────────────────────────────────────────
   function initMap() {
@@ -993,6 +1011,55 @@
       attribution: '© OpenStreetMap contributors',
       maxZoom: 19,
     }).addTo(map);
+
+    // Add click listener for picking
+    map.on('click', async (e) => {
+      if (!pickingMode) return;
+
+      const { lat, lng } = e.latlng;
+      const statusDiv = document.getElementById('pick-status');
+      const statusSpan = document.getElementById('pick-status-text');
+
+      if (pickingMode === 'origin') {
+        statusSpan.innerText = 'Duke vendosur nisjen...';
+        await setPickedLocation(lat, lng, 'origin');
+        pickingMode = null;
+        document.getElementById('pick-origin-btn').classList.remove('active');
+        statusDiv.style.display = 'none';
+      } else if (pickingMode === 'dest') {
+        statusSpan.innerText = 'Duke vendosur destinacionin...';
+        await setPickedLocation(lat, lng, 'dest');
+        pickingMode = null;
+        document.getElementById('pick-dest-btn').classList.remove('active');
+        statusDiv.style.display = 'none';
+      }
+    });
+  }
+
+  async function reverseGeocode(lat, lng) {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&countrycodes=al`;
+      const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
+      const data = await res.json();
+      return data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    } catch {
+      return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    }
+  }
+
+  async function setPickedLocation(lat, lng, type) {
+    const address = await reverseGeocode(lat, lng);
+    if (type === 'origin') {
+      document.getElementById('from-location').value = address;
+      pendingOriginCoords = { lat, lng };
+      if (markerOrigin) map.removeLayer(markerOrigin);
+      addOriginMarker(lat, lng, address);
+    } else {
+      document.getElementById('to-location').value = address;
+      pendingDestCoords = { lat, lng };
+      if (markerDest) map.removeLayer(markerDest);
+      addDestMarker(lat, lng, address);
+    }
   }
 
   function clearMap() {
@@ -1085,7 +1152,22 @@
     try {
       clearMap();
 
-      const [fromGeo, toGeo] = await Promise.all([geocode(fromVal), geocode(toVal)]);
+      let fromGeo, toGeo;
+
+      if (pendingOriginCoords) {
+        fromGeo = { lat: pendingOriginCoords.lat, lon: pendingOriginCoords.lng, display_name: document.getElementById('from-location').value };
+        pendingOriginCoords = null;
+      } else {
+        fromGeo = await geocode(fromVal);
+      }
+
+      if (pendingDestCoords) {
+        toGeo = { lat: pendingDestCoords.lat, lon: pendingDestCoords.lng, display_name: document.getElementById('to-location').value };
+        pendingDestCoords = null;
+      } else {
+        toGeo = await geocode(toVal);
+      }
+
       if (!fromGeo) { alert('Nuk u gjet lokacioni i nisjes. Provoni emër tjetër.'); return; }
       if (!toGeo)   { alert('Nuk u gjet destinacioni. Provoni emër tjetër.'); return; }
 
@@ -1382,6 +1464,41 @@
       const f = document.getElementById('from-location');
       const t = document.getElementById('to-location');
       [f.value, t.value] = [t.value, f.value];
+      // also swap pending coords and markers
+      [pendingOriginCoords, pendingDestCoords] = [pendingDestCoords, pendingOriginCoords];
+      if (markerOrigin) map.removeLayer(markerOrigin);
+      if (markerDest) map.removeLayer(markerDest);
+      if (pendingOriginCoords) addOriginMarker(pendingOriginCoords.lat, pendingOriginCoords.lng, f.value);
+      if (pendingDestCoords) addDestMarker(pendingDestCoords.lat, pendingDestCoords.lng, t.value);
+    });
+
+    document.getElementById('from-location').addEventListener('input', () => {
+      pendingOriginCoords = null;
+    });
+    document.getElementById('to-location').addEventListener('input', () => {
+      pendingDestCoords = null;
+    });
+
+    // Map picking buttons
+    const pickOriginBtn = document.getElementById('pick-origin-btn');
+    const pickDestBtn   = document.getElementById('pick-dest-btn');
+    const pickStatus    = document.getElementById('pick-status');
+    const pickStatusText = document.getElementById('pick-status-text');
+
+    pickOriginBtn?.addEventListener('click', () => {
+      pickingMode = 'origin';
+      pickOriginBtn.classList.add('active');
+      pickDestBtn.classList.remove('active');
+      pickStatusText.innerText = 'Klikoni në hartë për të caktuar pikën e nisjes.';
+      pickStatus.style.display = 'block';
+    });
+
+    pickDestBtn?.addEventListener('click', () => {
+      pickingMode = 'dest';
+      pickDestBtn.classList.add('active');
+      pickOriginBtn.classList.remove('active');
+      pickStatusText.innerText = 'Klikoni në hartë për të caktuar destinacionin.';
+      pickStatus.style.display = 'block';
     });
 
     // Current location
@@ -1470,6 +1587,21 @@
   font-size: 13px; color: var(--text-secondary);
 }
 .route-meta-bar i { color: var(--primary-color); margin-right: 4px; }
+
+/* Map picking buttons */
+.map-pick-btn {
+    transition: all 0.2s ease;
+}
+.map-pick-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+#pick-status {
+    background: var(--bg-tertiary);
+    padding: 8px;
+    border-radius: var(--border-radius);
+}
 </style>
 </body>
 </html>
