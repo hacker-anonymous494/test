@@ -872,6 +872,16 @@
             .stats-grid      { grid-template-columns: 1fr 1fr; }
             .achievements-grid { grid-template-columns: repeat(2, 1fr); }
         }
+
+                /* Navbar responsiveness for profile page */
+                @media (max-width: 992px) {
+                    .navbar { flex-wrap: wrap; }
+                    .auth-buttons { order: 3; margin-left: auto; }
+                    .theme-toggle { order: 2; }
+                    .hamburger { order: 1; }
+                    .nav-menu { order: 4; width: 100%; }
+                }
+                .user-profile-btn { padding: 8px 12px; }
     </style>
 </head>
 <body>
@@ -894,20 +904,7 @@
                 <li class="nav-item"><a href="profile.html" class="nav-link active"><i class="fas fa-user"></i> Profili</a></li>
             </ul>
 
-            <div class="user-menu">
-                <div class="user-dropdown">
-                    <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
-                    <div class="user-name" id="nav-user-name">User</div>
-                    <i class="fas fa-chevron-down"></i>
-                    <ul class="user-dropdown-menu">
-                        <li><a href="profile.html"><i class="fas fa-user"></i> Profili Im</a></li>
-                        <li><a href="settings.html"><i class="fas fa-cog"></i> Cilësimet</a></li>
-                        <li><a href="history.html"><i class="fas fa-history"></i> Historia</a></li>
-                        <li><hr></li>
-                        <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
-                    </ul>
-                </div>
-            </div>
+            <div class="auth-buttons" id="auth-buttons"></div>
 
             <div class="theme-toggle">
                 <input type="checkbox" id="theme-switch" class="theme-switch">
@@ -1358,44 +1355,61 @@
     <!-- Hidden file input for avatar -->
     <input type="file" id="avatar-file-input" accept="image/*" style="display:none;">
 
+    <script src="../assets/js/auth.js"></script>
+
     <script>
     (function () {
         'use strict';
 
-        // ── Data ──────────────────────────────────────────────
-        const DEFAULT_USER = {
-            firstName:    'Andi',
-            lastName:     'Kelmendi',
-            email:        'andi.kelmendi@shembull.al',
-            phone:        '+355 69 123 4567',
-            address:      '',
-            dob:          '',
-            gender:       '',
-            bio:          '',
-            userType:     'passenger',
-            registeredAt: new Date(Date.now() - 45 * 86400000).toISOString(),
-            preferences:  {
-                searchType:  'fastest',
-                maxWalkMin:  12,
-                language:    'sq',
-                accessible:  '0',
-            },
-            privacy: {
-                emailNotif:     true,
-                pushNotif:      true,
-                publicProfile:  false,
-                locationShare:  false,
-            },
-        };
+        // (auth check will run below before rendering)
 
-        function loadUser() {
-            return { ...DEFAULT_USER, ...JSON.parse(localStorage.getItem('userData') || '{}') };
-        }
+                // ── Data & auth helpers ─────────────────────────────────
+                // Get real user from authManager
+                function getCurrentUser() {
+                    if (window.authManager && window.authManager.isAuthenticated()) {
+                        return window.authManager.getCurrentUser();
+                    }
+                    // Fallback to localStorage (for demo)
+                    return JSON.parse(localStorage.getItem('userData') || 'null') || null;
+                }
 
-        function saveUser(data) {
-            const merged = { ...loadUser(), ...data };
-            localStorage.setItem('userData', JSON.stringify(merged));
-        }
+                function loadUser() {
+                    const realUser = getCurrentUser();
+                    if (realUser) {
+                        return {
+                            firstName:    realUser.firstName || '',
+                            lastName:     realUser.lastName || '',
+                            email:        realUser.email || '',
+                            phone:        realUser.phone || '',
+                            address:      '',
+                            dob:          '',
+                            gender:       '',
+                            bio:          '',
+                            userType:     realUser.userType || 'passenger',
+                            registeredAt: realUser.createdAt || new Date().toISOString(),
+                            preferences:  realUser.preferences || {
+                                searchType:  'fastest',
+                                maxWalkMin:  12,
+                                language:    'sq',
+                                accessible:  '0',
+                            },
+                            privacy: {
+                                emailNotif:    true,
+                                pushNotif:     true,
+                                publicProfile: false,
+                                locationShare: false,
+                            },
+                        };
+                    }
+                    // Fallback if not logged in
+                    return { firstName: 'Guest', lastName: '', email: '', userType: 'passenger', registeredAt: new Date().toISOString() };
+                }
+
+                function saveUser(data) {
+                    // Keep local storage for demo convenience
+                    const merged = { ...loadUser(), ...data };
+                    localStorage.setItem('userData', JSON.stringify(merged));
+                }
 
         const ACTIVITY = [
             { type: 'search', icon: 'fa-search',        label: 'Kërkoi rrugë',   desc: 'Sheshi Skënderbej → Aeroporti', time: '2 orë më parë' },
@@ -1770,15 +1784,6 @@
             setTimeout(() => window.location.href = '../index.html', 2000);
         });
 
-        // ── Logout ───────────────────────────────────────────
-        document.getElementById('logout-btn')?.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (confirm('Jeni i sigurt që dëshironi të dilni?')) {
-                localStorage.removeItem('isLoggedIn');
-                window.location.href = 'login.html';
-            }
-        });
-
         // ── Theme ────────────────────────────────────────────
         const themeSwitch = document.getElementById('theme-switch');
         const savedTheme  = localStorage.getItem('theme') || 'light';
@@ -1797,17 +1802,16 @@
             navMenu.classList.toggle('active');
         });
 
-        // ── User dropdown ─────────────────────────────────────
-        const dropdown     = document.querySelector('.user-dropdown');
-        const dropdownMenu = document.querySelector('.user-dropdown-menu');
-        dropdown?.addEventListener('click', e => { e.stopPropagation(); dropdownMenu.classList.toggle('show'); });
-        document.addEventListener('click', () => dropdownMenu?.classList.remove('show'));
-
-        // ── Auth guard ────────────────────────────────────────
-        // const isLoggedIn = localStorage.getItem('isLoggedIn');
-        // if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+        // (Auth UI injected by auth.js)
 
         // ── Init ─────────────────────────────────────────────
+        // Auth guard: ensure authenticated (use authManager if available, otherwise localStorage fallback)
+        if (window.authManager && typeof window.authManager.isAuthenticated === 'function') {
+            if (!window.authManager.isAuthenticated()) { window.location.href = 'login.html'; return; }
+        } else if (!localStorage.getItem('isLoggedIn')) {
+            window.location.href = 'login.html'; return;
+        }
+
         const userData = loadUser();
         populateProfile(userData);
         renderActivity();
