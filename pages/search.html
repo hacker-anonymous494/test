@@ -1070,14 +1070,22 @@
   }
 
   function addOriginMarker(lat, lng, label) {
-    markerOrigin = L.circleMarker([lat, lng], {
-      radius: 10, color: '#1a73e8', fillColor: '#fff', fillOpacity: 1, weight: 3,
+    markerOrigin = L.marker([lat, lng], {
+      icon: L.divIcon({
+        html: '<i class="fas fa-walking" style="font-size: 24px; color: #34A853; background: white; border-radius: 50%; padding: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></i>',
+        iconSize: [32, 32],
+        className: 'origin-marker-icon'
+      })
     }).addTo(map).bindPopup(`<b>Nisja:</b> ${label}`);
   }
 
   function addDestMarker(lat, lng, label) {
-    markerDest = L.circleMarker([lat, lng], {
-      radius: 10, color: '#ea4335', fillColor: '#fff', fillOpacity: 1, weight: 3,
+    markerDest = L.marker([lat, lng], {
+      icon: L.divIcon({
+        html: '<i class="fas fa-flag-checkered" style="font-size: 28px; color: #ea4335; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));"></i>',
+        iconSize: [28, 28],
+        className: 'dest-marker-icon'
+      })
     }).addTo(map).bindPopup(`<b>Destinacioni:</b> ${label}`);
   }
 
@@ -1151,39 +1159,51 @@
 
       let layer;
       let stepBounds = [from, to];
+
       if (step.type === 'walk') {
         layer = L.polyline([from, to], {
           color: '#34A853', weight: 3, dashArray: '6 6', opacity: 0.85,
         });
       } else if (step.polyline) {
+        // Decode and use the full polyline for this bus step
         const decodedPoints = decodePolyline(step.polyline);
-        const clippedPoints = clipPolyline(decodedPoints, step.fromCoords, step.toCoords);
-        const polylinePoints = clippedPoints.length > 1 ? clippedPoints : [from, to];
-        layer = L.polyline(polylinePoints, {
-          color:   step.lineColor || '#1a73e8',
-          weight:  highlight ? 6 : 4,
-          opacity: highlight ? 1.0 : 0.75,
-        });
-        stepBounds = polylinePoints;
-        const midMarker = L.circleMarker(from, {
+        if (decodedPoints.length > 1) {
+          layer = L.polyline(decodedPoints, {
+            color:   step.lineColor || '#1a73e8',
+            weight:  highlight ? 6 : 4,
+            opacity: highlight ? 1.0 : 0.75,
+          });
+          stepBounds = decodedPoints;
+        } else {
+          layer = L.polyline([from, to], {
+            color:   step.lineColor || '#1a73e8',
+            weight:  highlight ? 6 : 4,
+            opacity: highlight ? 1.0 : 0.75,
+          });
+        }
+
+        const stopMarker = L.circleMarker(from, {
           radius: 5, color: step.lineColor || '#1a73e8',
           fillColor: '#fff', fillOpacity: 1, weight: 2,
-        }).bindPopup(`Linja ${step.lineNumber}: ${step.fromStation}`);
-        midMarker.addTo(map);
-        routeLayers.push(midMarker);
+        }).bindPopup(`<b>${step.fromStation}</b><br>Linja ${step.lineNumber}`);
+        stopMarker.addTo(map);
+        routeLayers.push(stopMarker);
       } else {
+        // No polyline – straight line
         layer = L.polyline([from, to], {
           color:   step.lineColor || '#1a73e8',
           weight:  highlight ? 6 : 4,
           opacity: highlight ? 1.0 : 0.75,
         });
-        const midMarker = L.circleMarker(from, {
+
+        const stopMarker = L.circleMarker(from, {
           radius: 5, color: step.lineColor || '#1a73e8',
           fillColor: '#fff', fillOpacity: 1, weight: 2,
-        }).bindPopup(`Linja ${step.lineNumber}: ${step.fromStation}`);
-        midMarker.addTo(map);
-        routeLayers.push(midMarker);
+        }).bindPopup(`<b>${step.fromStation}</b><br>Linja ${step.lineNumber}`);
+        stopMarker.addTo(map);
+        routeLayers.push(stopMarker);
       }
+
       layer.addTo(map);
       routeLayers.push(layer);
       bounds.push(...stepBounds);
