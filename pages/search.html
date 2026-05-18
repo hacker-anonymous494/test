@@ -1325,6 +1325,9 @@
           <button class="btn btn-outline action-btn" onclick="window.showOnMap(${route.id})">
             <i class="fas fa-map-marked-alt"></i> Harta
           </button>
+          <button class="btn btn-outline action-btn" onclick="window.openRouteModal(${route.id})">
+            <i class="fas fa-info-circle"></i> Detaje
+          </button>
           <button class="btn btn-primary action-btn" onclick="window.selectRoute(${route.id})">
             <i class="fas fa-check-circle"></i> Zgjidh
           </button>
@@ -1369,6 +1372,30 @@
   window.showRouteDetails = function (routeId) {
     window.showOnMap(routeId);
   };
+
+  window.openRouteModal = function(routeId) {
+    const route = currentResults.find(r => r.id === routeId);
+    if (!route) return;
+    const modal = document.getElementById('route-details-modal');
+    const contentDiv = document.getElementById('route-details-content');
+    contentDiv.innerHTML = renderRouteDetails(route);
+    modal.classList.add('active');
+  };
+
+  function renderRouteDetails(route) {
+    const stepsHtml = route.steps.map((step, idx) => {
+      if (step.type === 'walk') {
+        return `<div class="step-item"><strong>Hapi ${idx + 1}:</strong> Ecni ${step.distanceM || Math.round(step.time * 66)} metra drejt ${step.toStation} (${step.time} min)</div>`;
+      } else {
+        return `<div class="step-item"><strong>Hapi ${idx + 1}:</strong> Linja ${step.lineNumber} nga ${step.fromStation} në ${step.toStation} (${step.time} min)</div>`;
+      }
+    }).join('');
+    return `<h4>${route.title}</h4>
+            <p><i class="fas fa-clock"></i> Koha totale: ${route.totalTime} min</p>
+            <p><i class="fas fa-exchange-alt"></i> Ndërrime: ${route.transfers}</p>
+            <p><i class="fas fa-coins"></i> Çmimi: ${route.fare} L</p>
+            <div class="route-steps"><div class="steps-list">${stepsHtml}</div></div>`;
+  }
 
   window.selectRoute = function (routeId) {
     selectedRouteId = routeId;
@@ -1601,6 +1628,176 @@
     background: var(--bg-tertiary);
     padding: 8px;
     border-radius: var(--border-radius);
+}
+
+/* ===== MODAL ===== */
+.driver-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+}
+
+.driver-modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-primary);
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalFadeIn 0.25s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: 0.2s;
+}
+
+.modal-close:hover {
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 25px;
+    overflow-y: auto;
+    flex: 1;
+    color: var(--text-primary);
+}
+
+.modal-body .route-steps {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin-top: 0;
+}
+
+.modal-body .step-item {
+    margin-bottom: 15px;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    .modal-header h3 {
+        font-size: 1.2rem;
+    }
+    .modal-body {
+        padding: 18px;
+    }
+}
+
+/* ===== RESPONSIVE NAVBAR & AUTH BUTTONS ===== */
+@media (max-width: 768px) {
+    .navbar {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+    }
+    .logo-container {
+        flex: 1;
+    }
+    .auth-buttons {
+        order: 3;
+        margin-left: auto;
+        margin-right: 10px;
+    }
+    .theme-toggle {
+        order: 4;
+    }
+    .hamburger {
+        order: 5;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-buttons {
+        max-width: 140px;
+    }
+    .user-profile-btn {
+        padding: 6px 10px !important;
+        font-size: 13px !important;
+    }
+    .user-profile-btn span {
+        display: none;
+    }
+    .user-profile-btn i:first-child {
+        margin-right: 0;
+    }
+    .theme-toggle {
+        margin-left: 5px;
+    }
+}
+
+.user-dropdown {
+    position: relative;
+}
+.dropdown-menu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    min-width: 180px;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    transition: 0.2s;
+}
+@media (max-width: 480px) {
+    .dropdown-menu {
+        right: -10px;
+        min-width: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hamburger {
+        margin-left: 5px;
+    }
+    .theme-toggle {
+        margin-right: 5px;
+    }
 }
 </style>
 </body>
