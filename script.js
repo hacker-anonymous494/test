@@ -103,6 +103,9 @@ document.addEventListener('DOMContentLoaded', function() {
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
+
+            // Expose map globally so other scripts (picker) can access it
+            window.heroMap = map;
             
             // Shto marker për stacionet kryesore të autobusëve në Tiranë
             const busStations = [
@@ -113,12 +116,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 { name: 'Aeroporti Nënë Tereza', lat: 41.4147, lng: 19.7206 }
             ];
             
+            // Optional: bus station markers (commented out to avoid clutter)
+            /*
             busStations.forEach(station => {
                 L.marker([station.lat, station.lng])
                     .addTo(map)
                     .bindPopup(`<b>${station.name}</b><br>Stacion kryesor i autobusëve`)
                     .openPopup();
             });
+            */
         }
     }
     
