@@ -117,6 +117,7 @@ async function buildTransitGraph() {
         lineColor:    lineMeta.color_hex || '#1a73e8',
         fare:         lineMeta.base_fare_lek || 40,
         linePolyline: lineMeta.shape_encoded || null,
+        polyline:     lineMeta.shape_encoded || null,
         edgeType:     'bus',
         isAccessible: lineMeta.is_accessible || false,
       };
@@ -153,6 +154,7 @@ async function buildTransitGraph() {
         lineNumber:  lineMeta.line_number,
         lineName:    lineMeta.name,
         lineColor:   lineMeta.color_hex || '#1a73e8',
+        polyline:    lineMeta.shape_encoded || null,
         fare:        lineMeta.base_fare_lek || 40,
         edgeType:    'bus',
         isAccessible: lineMeta.is_accessible || false,
