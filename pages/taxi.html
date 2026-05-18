@@ -604,10 +604,7 @@
                 <li class="nav-item"><a href="driver.html" class="nav-link"><i class="fas fa-user-tie"></i> Shofer</a></li>
             </ul>
             
-            <div class="auth-buttons" id="auth-buttons">
-                <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
-                <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Regjistrohu</a>
-            </div>
+            <div class="auth-buttons" id="auth-buttons"></div>
             
             <div class="theme-toggle">
                 <input type="checkbox" id="theme-switch" class="theme-switch">
@@ -1004,10 +1001,18 @@
 
     <!-- JavaScript -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../config.js"></script>
+    <script src="../assets/js/auth.js"></script>
     <script src="../script.js"></script>
     <script>
         // Inicializimi i faqes së taksive
         document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication before allowing taxi booking
+            if (window.authManager && !window.authManager.isAuthenticated()) {
+                alert('Ju duhet të identifikoheni për të rezervuar taksi.');
+                window.location.href = 'login.html';
+                return;
+            }
             // Variablat globale
             let map = null;
             let pickupMarker = null;
