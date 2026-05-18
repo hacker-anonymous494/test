@@ -986,7 +986,6 @@
 
     <!-- JavaScript -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mapbox/polyline@1.1.1/dist/polyline.min.js"></script>
 <script src="../config.js"></script>
 <!-- <script src="../security-measures.js"></script> -->
 <script src="../assets/js/auth.js"></script>
@@ -1082,6 +1081,41 @@
     }).addTo(map).bindPopup(`<b>Destinacioni:</b> ${label}`);
   }
 
+  function decodePolyline(encoded) {
+    if (!encoded) return [];
+    const points = [];
+    let index = 0;
+    let lat = 0;
+    let lng = 0;
+
+    while (index < encoded.length) {
+      let b;
+      let shift = 0;
+      let result = 0;
+      do {
+        b = encoded.charCodeAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.charCodeAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+      lng += dlng;
+
+      points.push([lat * 1e-5, lng * 1e-5]);
+    }
+
+    return points;
+  }
+
   /**
    * Draw a route on the map. Each bus step gets its line colour;
    * walking steps get a green dashed line.
@@ -1102,18 +1136,8 @@
           color: '#34A853', weight: 3, dashArray: '6 6', opacity: 0.85,
         });
       } else if (step.polyline) {
-        // Try to decode polyline safely
-        let decodedPoints = [];
-        try {
-          if (typeof window.polyline !== 'undefined' && window.polyline.decode) {
-            decodedPoints = window.polyline.decode(step.polyline).map(p => [p[0], p[1]]);
-          } else {
-            console.warn('Polyline library not loaded, using straight line');
-          }
-        } catch (e) {
-          console.warn('Polyline decode error:', e);
-        }
-
+        // Decode polyline using built-in function
+        const decodedPoints = decodePolyline(step.polyline);
         if (decodedPoints.length > 0) {
           layer = L.polyline(decodedPoints, {
             color:   step.lineColor || '#1a73e8',
@@ -1122,14 +1146,12 @@
           });
           stepBounds = decodedPoints;
         } else {
-          // fallback to straight line
           layer = L.polyline([from, to], {
             color:   step.lineColor || '#1a73e8',
             weight:  highlight ? 6 : 4,
             opacity: highlight ? 1.0 : 0.75,
           });
         }
-        // Bus stop dot
         const midMarker = L.circleMarker(from, {
           radius: 5, color: step.lineColor || '#1a73e8',
           fillColor: '#fff', fillOpacity: 1, weight: 2,
@@ -1137,7 +1159,6 @@
         midMarker.addTo(map);
         routeLayers.push(midMarker);
       } else {
-        // No polyline in step – draw straight line
         layer = L.polyline([from, to], {
           color:   step.lineColor || '#1a73e8',
           weight:  highlight ? 6 : 4,
