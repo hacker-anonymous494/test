@@ -74,6 +74,17 @@
                         <i class="fas fa-flag-checkered"></i>
                         <input type="text" id="to-location" placeholder="Ku dëshironi të shkoni?" autocomplete="off">
                     </div>
+                    <div class="map-pick-buttons" style="display: flex; gap: 10px; margin: 10px 0;">
+                        <button type="button" class="btn btn-outline map-pick-btn" id="pick-origin-btn" style="flex:1; font-size:14px;">
+                            <i class="fas fa-map-marker-alt"></i> Cakto nisjen nga harta
+                        </button>
+                        <button type="button" class="btn btn-outline map-pick-btn" id="pick-dest-btn" style="flex:1; font-size:14px;">
+                            <i class="fas fa-flag-checkered"></i> Cakto destinacionin nga harta
+                        </button>
+                    </div>
+                    <div id="pick-status" style="margin-top: 10px; font-size: 13px; text-align: center; color: var(--primary-color); display: none;">
+                        <i class="fas fa-hand-pointer"></i> <span id="pick-status-text"></span>
+                    </div>
                     
                     <div class="search-options">
                         <div class="option">
@@ -384,5 +395,170 @@
     <!--script src="security-measures.js"></script-->
     <script src="assets/js/auth.js"></script>
     <script src="script.js"></script>
+    <script>
+    // ===== MAP PICKING FOR INDEX.HTML =====
+    (function() {
+        let map;
+        let pickingMode = null;
+        let pendingOriginCoords = null;
+        let pendingDestCoords = null;
+        let originMarker = null;
+        let destMarker = null;
+
+        function initMapPicking() {
+            map = window.heroMap || (window.heroMap = window.heroMap || null);
+            if (!map) {
+                setTimeout(initMapPicking, 500);
+                return;
+            }
+            map.on('click', async (e) => {
+                if (!pickingMode) return;
+                const { lat, lng } = e.latlng;
+                const statusDiv = document.getElementById('pick-status');
+                const statusSpan = document.getElementById('pick-status-text');
+                if (pickingMode === 'origin') {
+                    statusSpan.innerText = 'Duke vendosur nisjen...';
+                    await setPickedLocation(lat, lng, 'origin');
+                    pickingMode = null;
+                    document.getElementById('pick-origin-btn').classList.remove('active');
+                    statusDiv.style.display = 'none';
+                } else if (pickingMode === 'dest') {
+                    statusSpan.innerText = 'Duke vendosur destinacionin...';
+                    await setPickedLocation(lat, lng, 'dest');
+                    pickingMode = null;
+                    document.getElementById('pick-dest-btn').classList.remove('active');
+                    statusDiv.style.display = 'none';
+                }
+            });
+        }
+
+        async function reverseGeocode(lat, lng) {
+            try {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&countrycodes=al`;
+                const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
+                const data = await res.json();
+                return data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            } catch {
+                return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            }
+        }
+
+        async function setPickedLocation(lat, lng, type) {
+            const address = await reverseGeocode(lat, lng);
+            if (type === 'origin') {
+                document.getElementById('from-location').value = address;
+                pendingOriginCoords = { lat, lng };
+                if (originMarker) map.removeLayer(originMarker);
+                originMarker = L.circleMarker([lat, lng], { radius: 10, color: '#1a73e8', fillColor: '#fff', fillOpacity: 1, weight: 3 }).addTo(map).bindPopup(`<b>Nisja:</b> ${address}`);
+            } else {
+                document.getElementById('to-location').value = address;
+                pendingDestCoords = { lat, lng };
+                if (destMarker) map.removeLayer(destMarker);
+                destMarker = L.circleMarker([lat, lng], { radius: 10, color: '#ea4335', fillColor: '#fff', fillOpacity: 1, weight: 3 }).addTo(map).bindPopup(`<b>Destinacioni:</b> ${address}`);
+            }
+        }
+
+        function initPickingControls() {
+            const pickOriginBtn = document.getElementById('pick-origin-btn');
+            const pickDestBtn = document.getElementById('pick-dest-btn');
+            const pickStatus = document.getElementById('pick-status');
+            const pickStatusText = document.getElementById('pick-status-text');
+
+            if (pickOriginBtn) {
+                pickOriginBtn.addEventListener('click', () => {
+                    pickingMode = 'origin';
+                    pickOriginBtn.classList.add('active');
+                    pickDestBtn.classList.remove('active');
+                    pickStatusText.innerText = 'Klikoni në hartë për të caktuar pikën e nisjes.';
+                    pickStatus.style.display = 'block';
+                });
+            }
+            if (pickDestBtn) {
+                pickDestBtn.addEventListener('click', () => {
+                    pickingMode = 'dest';
+                    pickDestBtn.classList.add('active');
+                    pickOriginBtn.classList.remove('active');
+                    pickStatusText.innerText = 'Klikoni në hartë për të caktuar destinacionin.';
+                    pickStatus.style.display = 'block';
+                });
+            }
+        }
+
+        function initClearPending() {
+            const fromInput = document.getElementById('from-location');
+            const toInput = document.getElementById('to-location');
+            if (fromInput) {
+                fromInput.addEventListener('input', () => {
+                    pendingOriginCoords = null;
+                    if (originMarker && map) map.removeLayer(originMarker);
+                    originMarker = null;
+                });
+            }
+            if (toInput) {
+                toInput.addEventListener('input', () => {
+                    pendingDestCoords = null;
+                    if (destMarker && map) map.removeLayer(destMarker);
+                    destMarker = null;
+                });
+            }
+        }
+
+        window.modifySearchToUsePicking = function(originalSearchFunction) {
+            const originalSearch = originalSearchFunction;
+            window.originalSearch = originalSearch;
+            window.searchRouteWithPicking = async function() {
+                let fromLatLng = pendingOriginCoords;
+                let toLatLng = pendingDestCoords;
+                if (!fromLatLng) {
+                    const fromAddr = document.getElementById('from-location').value;
+                    if (fromAddr) {
+                        const geo = await window.geocode ? window.geocode(fromAddr) : null;
+                        if (geo) fromLatLng = { lat: parseFloat(geo.lat), lng: parseFloat(geo.lon) };
+                    }
+                }
+                if (!toLatLng) {
+                    const toAddr = document.getElementById('to-location').value;
+                    if (toAddr) {
+                        const geo = await window.geocode ? window.geocode(toAddr) : null;
+                        if (geo) toLatLng = { lat: parseFloat(geo.lat), lng: parseFloat(geo.lon) };
+                    }
+                }
+                if (!fromLatLng || !toLatLng) {
+                    alert('Ju lutem plotësoni ose klikoni në hartë për të dy vendndodhjet.');
+                    return;
+                }
+                if (window.performSearchWithCoords) {
+                    window.performSearchWithCoords(fromLatLng, toLatLng);
+                } else if (typeof originalSearch === 'function') {
+                    // Fallback: call original search if it accepts manual address inputs
+                    originalSearch();
+                } else {
+                    console.warn('performSearch function not found');
+                }
+            };
+            const searchBtn = document.getElementById('search-route-btn');
+            if (searchBtn) {
+                searchBtn.onclick = window.searchRouteWithPicking;
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initMapPicking();
+            initPickingControls();
+            initClearPending();
+            window.geocode = window.geocode || async function(query) {
+                try {
+                    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=al`;
+                    const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
+                    const data = await res.json();
+                    return data[0] || null;
+                } catch { return null; }
+            };
+            if (typeof window.performSearch === 'function') {
+                window.modifySearchToUsePicking(window.performSearch);
+            }
+        });
+    })();
+    </script>
 </body>
 </html>

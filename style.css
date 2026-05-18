@@ -465,6 +465,87 @@ body {
     margin-top: 30px;
 }
 
+/* ===== RESPONSIVE NAVBAR & AUTH BUTTONS (for index.html) ===== */
+@media (max-width: 768px) {
+    .navbar {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+    }
+    .logo-container {
+        flex: 1;
+    }
+    .auth-buttons {
+        order: 3;
+        margin-left: auto;
+        margin-right: 10px;
+    }
+    .theme-toggle {
+        order: 4;
+    }
+    .hamburger {
+        order: 5;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-buttons {
+        max-width: 140px;
+    }
+    .user-profile-btn {
+        padding: 6px 10px !important;
+        font-size: 13px !important;
+    }
+    .user-profile-btn span {
+        display: none;  /* hide user name on very small screens */
+    }
+    .user-profile-btn i:first-child {
+        margin-right: 0;
+    }
+    .theme-toggle {
+        margin-left: 5px;
+    }
+    .hamburger {
+        margin-left: 5px;
+    }
+}
+
+/* Ensure dropdown menu doesn't clip */
+.user-dropdown {
+    position: relative;
+}
+.dropdown-menu {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    min-width: 180px;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    transition: 0.2s;
+}
+@media (max-width: 480px) {
+    .dropdown-menu {
+        right: -10px;
+        min-width: 160px;
+    }
+}
+
+/* Map picking buttons */
+.map-pick-btn {
+    transition: all 0.2s ease;
+}
+.map-pick-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+#pick-status {
+    background: var(--bg-tertiary);
+    padding: 8px;
+    border-radius: var(--border-radius);
+}
+
 /* Seksionet e Përgjithshme */
 .section-title {
     font-size: 36px;
