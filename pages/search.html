@@ -1102,13 +1102,33 @@
           color: '#34A853', weight: 3, dashArray: '6 6', opacity: 0.85,
         });
       } else if (step.polyline) {
-        const decoded = polyline.decode(step.polyline).map(p => [p[0], p[1]]);
-        layer = L.polyline(decoded, {
-          color:   step.lineColor || '#1a73e8',
-          weight:  highlight ? 6 : 4,
-          opacity: highlight ? 1.0 : 0.75,
-        });
-        stepBounds = decoded;
+        // Try to decode polyline safely
+        let decodedPoints = [];
+        try {
+          if (typeof window.polyline !== 'undefined' && window.polyline.decode) {
+            decodedPoints = window.polyline.decode(step.polyline).map(p => [p[0], p[1]]);
+          } else {
+            console.warn('Polyline library not loaded, using straight line');
+          }
+        } catch (e) {
+          console.warn('Polyline decode error:', e);
+        }
+
+        if (decodedPoints.length > 0) {
+          layer = L.polyline(decodedPoints, {
+            color:   step.lineColor || '#1a73e8',
+            weight:  highlight ? 6 : 4,
+            opacity: highlight ? 1.0 : 0.75,
+          });
+          stepBounds = decodedPoints;
+        } else {
+          // fallback to straight line
+          layer = L.polyline([from, to], {
+            color:   step.lineColor || '#1a73e8',
+            weight:  highlight ? 6 : 4,
+            opacity: highlight ? 1.0 : 0.75,
+          });
+        }
         // Bus stop dot
         const midMarker = L.circleMarker(from, {
           radius: 5, color: step.lineColor || '#1a73e8',
@@ -1117,12 +1137,12 @@
         midMarker.addTo(map);
         routeLayers.push(midMarker);
       } else {
+        // No polyline in step – draw straight line
         layer = L.polyline([from, to], {
           color:   step.lineColor || '#1a73e8',
           weight:  highlight ? 6 : 4,
           opacity: highlight ? 1.0 : 0.75,
         });
-        // Bus stop dot
         const midMarker = L.circleMarker(from, {
           radius: 5, color: step.lineColor || '#1a73e8',
           fillColor: '#fff', fillOpacity: 1, weight: 2,
