@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profili Im - Sherbimijone</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ── Layout ─────────────────────────────────────────── */
+        .profile-page {
+            padding-top: 80px;
+            min-height: 100vh;
+            background-color: var(--bg-secondary);
+        }
+
+        .profile-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        /* ── Sidebar ────────────────────────────────────────── */
+        .sidebar {
+            width: 280px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-profile-card {
+            background-color: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        }
+
+        .sidebar-avatar-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 14px;
+            margin-top: 20px;
+            z-index: 1;
+        }
+
+        .sidebar-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border: 4px solid var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: 800;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(26,115,232,.35);
+        }
+
+        .sidebar-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .sidebar-email {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            word-break: break-all;
+        }
+
+        .sidebar-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: rgba(26,115,232,.1);
+            color: var(--primary-color);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .sidebar-stats {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 18px;
+            margin-top: 18px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .ss-item { text-align: center; }
+        .ss-val  { font-size: 22px; font-weight: 800; color: var(--primary-color); }
+        .ss-lbl  { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+        .menu {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 22px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            font-size: 15px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--bg-tertiary);
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .menu-item i {
+            width: 22px;
+            margin-right: 13px;
+            font-size: 16px;
+        }
+
+        /* ── Main ───────────────────────────────────────────── */
+        .main-content { flex: 1; min-width: 0; }
+
+        /* Page Header */
+        .page-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .page-top h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-top h1 i { color: var(--primary-color); font-size: 22px; }
+
+        /* ── Tab Navigation ─────────────────────────────────── */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-primary);
+            padding: 6px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 28px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tab-nav::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            flex: 1;
+            min-width: fit-content;
+            padding: 11px 18px;
+            border: none;
+            border-radius: var(--border-radius);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(26,115,232,.3);
+        }
+
+        /* ── Tab Panels ─────────────────────────────────────── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Card base ──────────────────────────────────────── */
+        .pcard {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .pcard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pcard-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pcard-title i { color: var(--primary-color); }
+
+        /* ── Hero Banner ────────────────────────────────────── */
+        .profile-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 60%, #0d47a1 100%);
+            border-radius: var(--border-radius-lg);
+            padding: 36px 32px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.07);
+        }
+
+        .profile-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; right: 100px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.05);
+        }
+
+        .hero-avatar-wrap { position: relative; flex-shrink: 0; }
+
+        .hero-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.2);
+            border: 4px solid rgba(255,255,255,.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        .hero-avatar-edit {
+            position: absolute;
+            bottom: 2px; right: 2px;
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: #fff;
+            color: var(--primary-color);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+            transition: var(--transition);
+        }
+
+        .hero-avatar-edit:hover { transform: scale(1.1); }
+
+        .hero-info { flex: 1; color: #fff; z-index: 1; }
+
+        .hero-name {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .hero-email { font-size: 14px; opacity: .8; margin-bottom: 12px; }
+
+        .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: rgba(255,255,255,.18);
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 0;
+            margin-left: auto;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .hero-stat {
+            text-align: center;
+            padding: 0 24px;
+            border-right: 1px solid rgba(255,255,255,.2);
+            color: #fff;
+        }
+
+        .hero-stat:last-child { border-right: none; padding-right: 0; }
+
+        .hero-stat-val {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .hero-stat-lbl {
+            font-size: 11px;
+            opacity: .75;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        /* ── Form styles ────────────────────────────────────── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-grid.one-col { grid-template-columns: 1fr; }
+        .form-grid.three-col { grid-template-columns: 1fr 1fr 1fr; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full { grid-column: 1 / -1; }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group label i { color: var(--primary-color); font-size: 12px; }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26,115,232,.12);
+        }
+
+        .form-input:disabled {
+            background: var(--bg-secondary);
+            cursor: not-allowed;
+            opacity: .7;
+        }
+
+        .form-input.input-success { border-color: var(--secondary-color); }
+        .form-input.input-error   { border-color: #e53935; }
+
+        .field-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .field-error { font-size: 12px; color: #e53935; margin-top: 2px; display: none; }
+        .field-error.show { display: block; }
+
+        .input-wrapper { position: relative; }
+        .input-wrapper .form-input { padding-right: 44px; }
+        .input-icon-right {
+            position: absolute;
+            right: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        /* ── Password strength ──────────────────────────────── */
+        .pw-strength {
+            margin-top: 8px;
+            display: none;
+        }
+
+        .pw-strength.show { display: block; }
+
+        .pw-bar-track {
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .pw-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width .4s ease, background .4s ease;
+            width: 0%;
+        }
+
+        .pw-label { font-size: 11px; font-weight: 600; }
+
+        /* ── Toggle switch ──────────────────────────────────── */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .toggle-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .toggle-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .toggle input { opacity: 0; width: 0; height: 0; }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border-color);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            left: 3px; top: 3px;
+            transition: .3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,.2);
+        }
+
+        .toggle input:checked + .toggle-slider { background: var(--primary-color); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+        /* ── Activity timeline ──────────────────────────────── */
+        .timeline { display: flex; flex-direction: column; gap: 0; }
+
+        .tl-item {
+            display: flex;
+            gap: 18px;
+            position: relative;
+            padding-bottom: 22px;
+        }
+
+        .tl-item:last-child { padding-bottom: 0; }
+
+        .tl-item:last-child .tl-line { display: none; }
+
+        .tl-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            width: 40px;
+        }
+
+        .tl-dot {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .tl-dot.bus    { background: rgba(26,115,232,.12); color: var(--primary-color); }
+        .tl-dot.search { background: rgba(0,200,83,.12);  color: var(--secondary-color); }
+        .tl-dot.taxi   { background: rgba(255,152,0,.12); color: var(--accent-color); }
+        .tl-dot.save   { background: rgba(156,39,176,.12); color: #9c27b0; }
+
+        .tl-line {
+            flex: 1;
+            width: 2px;
+            background: var(--border-color);
+            margin-top: 6px;
+        }
+
+        .tl-body { flex: 1; padding-top: 6px; }
+
+        .tl-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .tl-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+        .tl-time { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+
+        /* ── Stats grid ─────────────────────────────────────── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: 22px 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+        .stat-icon {
+            width: 46px; height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .si-blue   { background: rgba(26,115,232,.12); color: var(--primary-color); }
+        .si-green  { background: rgba(0,200,83,.12);  color: var(--secondary-color); }
+        .si-orange { background: rgba(255,152,0,.12); color: var(--accent-color); }
+        .si-purple { background: rgba(156,39,176,.12); color: #9c27b0; }
+
+        .stat-num  { font-size: 28px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+        .stat-desc { font-size: 13px; color: var(--text-secondary); }
+
+        /* ── Saved routes ───────────────────────────────────── */
+        .route-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .route-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            border: 1.5px solid transparent;
+        }
+
+        .route-row:hover { border-color: var(--primary-color); background: var(--bg-tertiary); }
+
+        .route-icon {
+            width: 42px; height: 42px;
+            background: rgba(26,115,232,.1);
+            color: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        .route-info { flex: 1; min-width: 0; }
+
+        .route-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .route-path {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .route-meta {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .route-meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .route-actions-btns { display: flex; gap: 8px; }
+
+        .icon-btn {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 13px;
+        }
+
+        .icon-btn:hover { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        .icon-btn.danger:hover { background: #e53935; border-color: #e53935; }
+
+        /* ── Achievements ───────────────────────────────────── */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .ach-card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            padding: 22px 16px;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .ach-card.earned { border-color: rgba(26,115,232,.3); background: rgba(26,115,232,.04); }
+        .ach-card.locked { opacity: .45; filter: grayscale(.6); }
+
+        .ach-card:hover:not(.locked) { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+        .ach-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .ach-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .ach-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .ach-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .ach-badge.earned { background: rgba(26,115,232,.15); color: var(--primary-color); }
+        .ach-badge.locked { background: var(--border-color); color: var(--text-secondary); }
+
+        /* ── Toast ──────────────────────────────────────────── */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 8px 32px rgba(0,0,0,.18);
+            border-left: 4px solid var(--primary-color);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            pointer-events: all;
+            animation: toastIn .35s ease;
+            max-width: 320px;
+        }
+
+        .toast.success { border-color: var(--secondary-color); }
+        .toast.error   { border-color: #e53935; }
+
+        .toast i { font-size: 18px; flex-shrink: 0; }
+        .toast.success i { color: var(--secondary-color); }
+        .toast.error   i { color: #e53935; }
+        .toast.info    i { color: var(--primary-color); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ── Danger zone ────────────────────────────────────── */
+        .danger-zone {
+            border: 1.5px solid rgba(229,57,53,.3);
+            border-radius: var(--border-radius-lg);
+            padding: 24px;
+            background: rgba(229,57,53,.03);
+        }
+
+        .danger-zone h3 {
+            color: #e53935;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .danger-zone p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* ── Buttons ────────────────────────────────────────── */
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .btn-danger {
+            padding: 11px 24px;
+            background: transparent;
+            border: 1.5px solid #e53935;
+            color: #e53935;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-danger:hover { background: #e53935; color: #fff; }
+
+        /* ── Responsive ─────────────────────────────────────── */
+        @media (max-width: 1100px) {
+            .profile-container { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .hero-stats { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .profile-hero { flex-direction: column; text-align: center; padding: 28px 22px; }
+            .hero-badges  { justify-content: center; }
+            .form-grid    { grid-template-columns: 1fr; }
+            .form-grid.three-col { grid-template-columns: 1fr; }
+            .stats-grid   { grid-template-columns: 1fr 1fr; }
+            .route-meta   { display: none; }
+            .tab-btn span { display: none; }
+            .tab-btn      { padding: 11px 14px; }
+            .achievements-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .profile-page    { padding-top: 70px; }
+            .profile-container { padding: 12px; gap: 16px; }
+            .pcard           { padding: 18px; }
+            .stats-grid      { grid-template-columns: 1fr 1fr; }
+            .achievements-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-bus"></i>
+                    <span class="logo-text">Sherbimijone</span>
+                </div>
+                <div class="tagline">Transporti Juaj në Tiranë</div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Kryefaqja</a></li>
+                <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Paneli</a></li>
+                <li class="nav-item"><a href="map.html" class="nav-link"><i class="fas fa-map"></i> Harta</a></li>
+                <li class="nav-item"><a href="taxi.html" class="nav-link"><i class="fas fa-taxi"></i> Taksi</a></li>
+                <li class="nav-item"><a href="profile.html" class="nav-link active"><i class="fas fa-user"></i> Profili</a></li>
+            </ul>
+
+            <div class="user-menu">
+                <div class="user-dropdown">
+                    <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+                    <div class="user-name" id="nav-user-name">User</div>
+                    <i class="fas fa-chevron-down"></i>
+                    <ul class="user-dropdown-menu">
+                        <li><a href="profile.html"><i class="fas fa-user"></i> Profili Im</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cog"></i> Cilësimet</a></li>
+                        <li><a href="history.html"><i class="fas fa-history"></i> Historia</a></li>
+                        <li><hr></li>
+                        <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="theme-toggle">
+                <input type="checkbox" id="theme-switch" class="theme-switch">
+                <label for="theme-switch" class="theme-label">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                    <span class="theme-ball"></span>
+                </label>
+            </div>
+
+            <div class="hamburger">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ── Page ───────────────────────────────────────────── -->
+    <main class="profile-page">
+        <div class="profile-container">
+
+            <!-- ── Sidebar ───────────────────────────────── -->
+            <aside class="sidebar">
+                <div class="sidebar-profile-card">
+                    <div class="sidebar-avatar-wrap">
+                        <div class="sidebar-avatar" id="sb-avatar">U</div>
+                    </div>
+                    <div class="sidebar-name"  id="sb-name">User</div>
+                    <div class="sidebar-email" id="sb-email">user@example.com</div>
+                    <div class="sidebar-badge"><i class="fas fa-user"></i> <span id="sb-type">Pasagjer</span></div>
+                    <div class="sidebar-stats">
+                        <div class="ss-item">
+                            <div class="ss-val" id="sb-searches">0</div>
+                            <div class="ss-lbl">Kërkime</div>
+                        </div>
+                        <div class="ss-item">
+                            <div class="ss-val" id="sb-saved">0</div>
+                            <div class="ss-lbl">Ruajtur</div>
+                        </div>
+                        <div class="ss-item">
+                            <div class="ss-val" id="sb-days">0</div>
+                            <div class="ss-lbl">Ditë</div>
+                        </div>
+                    </div>
+                </div>
+
+                <nav class="menu">
+                    <a href="dashboard.html" class="menu-item"><i class="fas fa-tachometer-alt"></i><span>Paneli</span></a>
+                    <a href="search.html"    class="menu-item"><i class="fas fa-search"></i><span>Kërko Rrugë</span></a>
+                    <a href="map.html"       class="menu-item"><i class="fas fa-map"></i><span>Harta</span></a>
+                    <a href="taxi.html"      class="menu-item"><i class="fas fa-taxi"></i><span>Rezervo Taksi</span></a>
+                    <a href="history.html"   class="menu-item"><i class="fas fa-history"></i><span>Historia</span></a>
+                    <a href="favorites.html" class="menu-item"><i class="fas fa-heart"></i><span>Rrugët e Preferuara</span></a>
+                    <a href="notifications.html" class="menu-item"><i class="fas fa-bell"></i><span>Njoftimet</span>
+                        <span class="badge" style="margin-left:auto;background:var(--primary-color);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;">3</span>
+                    </a>
+                    <a href="profile.html"   class="menu-item active"><i class="fas fa-user"></i><span>Profili Im</span></a>
+                    <a href="settings.html"  class="menu-item"><i class="fas fa-cog"></i><span>Cilësimet</span></a>
+                </nav>
+            </aside>
+
+            <!-- ── Main Content ──────────────────────────── -->
+            <div class="main-content">
+
+                <!-- Hero Banner -->
+                <div class="profile-hero">
+                    <div class="hero-avatar-wrap">
+                        <div class="hero-avatar" id="hero-avatar">U</div>
+                        <button class="hero-avatar-edit" id="avatar-edit-btn" title="Ndrysho foton">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div class="hero-info">
+                        <div class="hero-name" id="hero-name">Emri Mbiemri</div>
+                        <div class="hero-email" id="hero-email">user@example.com</div>
+                        <div class="hero-badges">
+                            <span class="hero-badge"><i class="fas fa-user-check"></i> Pasagjer</span>
+                            <span class="hero-badge" id="hero-member-since"><i class="fas fa-calendar-alt"></i> Anëtar</span>
+                        </div>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="hero-stat-val" id="hs-searches">0</div>
+                            <div class="hero-stat-lbl">Kërkime</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-val" id="hs-saved">0</div>
+                            <div class="hero-stat-lbl">Ruajtura</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-val" id="hs-days">0</div>
+                            <div class="hero-stat-lbl">Ditë</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="tab-nav" role="tablist">
+                    <button class="tab-btn active" data-tab="overview" role="tab">
+                        <i class="fas fa-chart-bar"></i><span>Përmbledhja</span>
+                    </button>
+                    <button class="tab-btn" data-tab="edit" role="tab">
+                        <i class="fas fa-user-edit"></i><span>Edito Profilin</span>
+                    </button>
+                    <button class="tab-btn" data-tab="security" role="tab">
+                        <i class="fas fa-shield-alt"></i><span>Siguria</span>
+                    </button>
+                    <button class="tab-btn" data-tab="routes" role="tab">
+                        <i class="fas fa-route"></i><span>Rrugët</span>
+                    </button>
+                    <button class="tab-btn" data-tab="achievements" role="tab">
+                        <i class="fas fa-trophy"></i><span>Arritjet</span>
+                    </button>
+                </div>
+
+                <!-- ════ TAB: OVERVIEW ═══════════════════════ -->
+                <div class="tab-panel active" id="tab-overview">
+
+                    <!-- Stats Row -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon si-blue"><i class="fas fa-search"></i></div>
+                            <div class="stat-num" id="ov-searches">0</div>
+                            <div class="stat-desc">Kërkime gjithsej</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon si-green"><i class="fas fa-bookmark"></i></div>
+                            <div class="stat-num" id="ov-saved">0</div>
+                            <div class="stat-desc">Rrugë të ruajtura</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon si-orange"><i class="fas fa-taxi"></i></div>
+                            <div class="stat-num" id="ov-taxi">0</div>
+                            <div class="stat-desc">Taksi të rezervuara</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon si-purple"><i class="fas fa-clock"></i></div>
+                            <div class="stat-num" id="ov-days">0</div>
+                            <div class="stat-desc">Ditë si anëtar</div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Timeline -->
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-history"></i> Aktiviteti i Fundit</div>
+                            <a href="history.html" class="btn btn-outline btn-sm">Shiko gjithçka</a>
+                        </div>
+                        <div class="timeline" id="activity-timeline">
+                            <!-- injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Saved routes preview -->
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-heart"></i> Rrugët e Preferuara</div>
+                            <a href="favorites.html" class="btn btn-outline btn-sm">Shiko gjithçka</a>
+                        </div>
+                        <div class="route-list" id="ov-routes-list">
+                            <!-- injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ════ TAB: EDIT PROFILE ════════════════════ -->
+                <div class="tab-panel" id="tab-edit">
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-id-card"></i> Informacioni Personal</div>
+                        </div>
+                        <form id="form-personal" novalidate>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Emri</label>
+                                    <input class="form-input" type="text" id="inp-firstname" placeholder="Emri juaj" autocomplete="given-name">
+                                    <span class="field-error" id="err-firstname">Emri është i detyrueshëm.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Mbiemri</label>
+                                    <input class="form-input" type="text" id="inp-lastname" placeholder="Mbiemri juaj" autocomplete="family-name">
+                                    <span class="field-error" id="err-lastname">Mbiemri është i detyrueshëm.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-envelope"></i> Email</label>
+                                    <div class="input-wrapper">
+                                        <input class="form-input" type="email" id="inp-email" placeholder="email@shembull.com" autocomplete="email">
+                                        <i class="input-icon-right fas fa-lock" title="Email nuk mund të ndryshohet"></i>
+                                    </div>
+                                    <span class="field-hint">Emaili nuk mund të ndryshohet.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Numri i Telefonit</label>
+                                    <input class="form-input" type="tel" id="inp-phone" placeholder="+355 6X XXX XXXX" autocomplete="tel">
+                                    <span class="field-error" id="err-phone">Numri i telefonit nuk është i vlefshëm.</span>
+                                </div>
+                                <div class="form-group full">
+                                    <label><i class="fas fa-map-marker-alt"></i> Adresa</label>
+                                    <input class="form-input" type="text" id="inp-address" placeholder="Rruga, lagjia, Tiranë" autocomplete="street-address">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-birthday-cake"></i> Data e Lindjes</label>
+                                    <input class="form-input" type="date" id="inp-dob" autocomplete="bday">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-venus-mars"></i> Gjinia</label>
+                                    <select class="form-input" id="inp-gender">
+                                        <option value="">Zgjidh...</option>
+                                        <option value="m">Mashkull</option>
+                                        <option value="f">Femër</option>
+                                        <option value="o">Tjetër</option>
+                                        <option value="n">Preferoj të mos them</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full">
+                                    <label><i class="fas fa-align-left"></i> Bio (opsionale)</label>
+                                    <textarea class="form-input" id="inp-bio" rows="3" placeholder="Diçka rreth jush..." style="resize:vertical;min-height:80px;"></textarea>
+                                    <span class="field-hint"><span id="bio-count">0</span>/200 karaktere</span>
+                                </div>
+                            </div>
+                            <div class="btn-row">
+                                <button type="submit" class="btn btn-primary" id="btn-save-personal">
+                                    <i class="fas fa-save"></i> Ruaj Ndryshimet
+                                </button>
+                                <button type="button" class="btn btn-outline" id="btn-cancel-personal">
+                                    <i class="fas fa-times"></i> Anulo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Preferences -->
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-sliders-h"></i> Preferencat e Udhëtimit</div>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label><i class="fas fa-route"></i> Mënyra e Preferuar e Kërkimit</label>
+                                <select class="form-input" id="pref-search">
+                                    <option value="fastest">Më e shpejta</option>
+                                    <option value="cheapest">Çmim i ulët</option>
+                                    <option value="comfort">Më komode</option>
+                                    <option value="walking">Pak ecje</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-walking"></i> Koha Max. e Ecjes (minuta)</label>
+                                <input class="form-input" type="number" id="pref-walk" min="1" max="30" value="12">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-language"></i> Gjuha e Ndërfaqes</label>
+                                <select class="form-input" id="pref-lang">
+                                    <option value="sq">Shqip</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-wheelchair"></i> Aksesibilitet</label>
+                                <select class="form-input" id="pref-access">
+                                    <option value="0">Jo, faleminderit</option>
+                                    <option value="1">Filtro për karrocë</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="btn-row">
+                            <button class="btn btn-primary" id="btn-save-prefs">
+                                <i class="fas fa-save"></i> Ruaj Preferencat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ════ TAB: SECURITY ════════════════════════ -->
+                <div class="tab-panel" id="tab-security">
+
+                    <!-- Change password -->
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-lock"></i> Ndrysho Fjalëkalimin</div>
+                        </div>
+                        <form id="form-password" novalidate>
+                            <div class="form-grid one-col" style="max-width:480px;">
+                                <div class="form-group">
+                                    <label><i class="fas fa-key"></i> Fjalëkalimi Aktual</label>
+                                    <div class="input-wrapper">
+                                        <input class="form-input" type="password" id="inp-cur-pw" placeholder="Fjalëkalimi aktual">
+                                        <i class="input-icon-right fas fa-eye toggle-pw" data-target="inp-cur-pw" style="pointer-events:all;cursor:pointer;"></i>
+                                    </div>
+                                    <span class="field-error" id="err-cur-pw">Fjalëkalimi aktual është i detyrueshëm.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-lock"></i> Fjalëkalimi i Ri</label>
+                                    <div class="input-wrapper">
+                                        <input class="form-input" type="password" id="inp-new-pw" placeholder="Fjalëkalimi i ri">
+                                        <i class="input-icon-right fas fa-eye toggle-pw" data-target="inp-new-pw" style="pointer-events:all;cursor:pointer;"></i>
+                                    </div>
+                                    <div class="pw-strength" id="pw-strength">
+                                        <div class="pw-bar-track"><div class="pw-bar-fill" id="pw-bar"></div></div>
+                                        <div class="pw-label" id="pw-label">—</div>
+                                    </div>
+                                    <span class="field-error" id="err-new-pw">Fjalëkalimi duhet të ketë të paktën 8 karaktere.</span>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-check-circle"></i> Konfirmo Fjalëkalimin</label>
+                                    <div class="input-wrapper">
+                                        <input class="form-input" type="password" id="inp-conf-pw" placeholder="Konfirmo fjalëkalimin">
+                                        <i class="input-icon-right fas fa-eye toggle-pw" data-target="inp-conf-pw" style="pointer-events:all;cursor:pointer;"></i>
+                                    </div>
+                                    <span class="field-error" id="err-conf-pw">Fjalëkalimet nuk përputhen.</span>
+                                </div>
+                            </div>
+                            <div class="btn-row">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-key"></i> Ndrysho Fjalëkalimin
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-bell"></i> Njoftimet & Privatësia</div>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Njoftime me Email</h4>
+                                <p>Merr njoftime rreth rrugëve dhe azhurnimeve</p>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="tog-email-notif" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Njoftime Push</h4>
+                                <p>Njoftime në kohë reale për ndryshime të linjave</p>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="tog-push-notif" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Shfaq Profilin Publikisht</h4>
+                                <p>Të tjerët mund të shohin emrin tuaj dhe arritjet</p>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="tog-public-profile">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <h4>Ndaj Të Dhënat e Lokacionit</h4>
+                                <p>Ndihmon të përmirësojmë rrugët dhe shërbimet</p>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="tog-location-share">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="btn-row">
+                            <button class="btn btn-primary" id="btn-save-privacy">
+                                <i class="fas fa-save"></i> Ruaj Cilësimet
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="pcard" style="padding:0;overflow:hidden;">
+                        <div style="padding:28px;">
+                            <div class="pcard-header" style="border:none;margin-bottom:0;padding-bottom:0;">
+                                <div class="pcard-title"><i class="fas fa-exclamation-triangle" style="color:#e53935;"></i> Zona e Rrezikshme</div>
+                            </div>
+                        </div>
+                        <div style="padding:0 28px 28px;">
+                            <div class="danger-zone">
+                                <h3><i class="fas fa-user-slash"></i> Fshi Llogarinë</h3>
+                                <p>Pasi të fshini llogarinë, të gjitha të dhënat tuaja do të fshihen përgjithmonë. Kjo veprim nuk mund të kthehët mbrapsht.</p>
+                                <button class="btn-danger" id="btn-delete-account">
+                                    <i class="fas fa-trash-alt"></i> Fshi Llogarinë Permanentisht
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ════ TAB: ROUTES ═════════════════════════ -->
+                <div class="tab-panel" id="tab-routes">
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-bookmark"></i> Rrugët e Ruajtura</div>
+                            <a href="search.html" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Shto të Re</a>
+                        </div>
+                        <div class="route-list" id="saved-routes-list">
+                            <!-- injected -->
+                        </div>
+                    </div>
+
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-history"></i> Kërkimet e Fundit</div>
+                            <button class="btn btn-outline btn-sm" id="btn-clear-history">
+                                <i class="fas fa-trash"></i> Pastro
+                            </button>
+                        </div>
+                        <div class="route-list" id="recent-routes-list">
+                            <!-- injected -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ════ TAB: ACHIEVEMENTS ════════════════════ -->
+                <div class="tab-panel" id="tab-achievements">
+                    <div class="pcard">
+                        <div class="pcard-header">
+                            <div class="pcard-title"><i class="fas fa-trophy"></i> Arritjet Tuaja</div>
+                            <span class="field-hint" id="ach-count-label">0 / 8 të fituara</span>
+                        </div>
+
+                        <!-- Progress bar -->
+                        <div style="margin-bottom:24px;">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                                <span style="font-size:13px;font-weight:600;color:var(--text-primary);">Progresi Juaj</span>
+                                <span id="ach-pct" style="font-size:13px;font-weight:700;color:var(--primary-color);">0%</span>
+                            </div>
+                            <div class="pw-bar-track" style="height:8px;border-radius:4px;">
+                                <div class="pw-bar-fill" id="ach-bar" style="background:var(--primary-color);"></div>
+                            </div>
+                        </div>
+
+                        <div class="achievements-grid" id="achievements-grid">
+                            <!-- injected -->
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /main-content -->
+        </div><!-- /profile-container -->
+    </main>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Hidden file input for avatar -->
+    <input type="file" id="avatar-file-input" accept="image/*" style="display:none;">
+
+    <script>
+    (function () {
+        'use strict';
+
+        // ── Data ──────────────────────────────────────────────
+        const DEFAULT_USER = {
+            firstName:    'Andi',
+            lastName:     'Kelmendi',
+            email:        'andi.kelmendi@shembull.al',
+            phone:        '+355 69 123 4567',
+            address:      '',
+            dob:          '',
+            gender:       '',
+            bio:          '',
+            userType:     'passenger',
+            registeredAt: new Date(Date.now() - 45 * 86400000).toISOString(),
+            preferences:  {
+                searchType:  'fastest',
+                maxWalkMin:  12,
+                language:    'sq',
+                accessible:  '0',
+            },
+            privacy: {
+                emailNotif:     true,
+                pushNotif:      true,
+                publicProfile:  false,
+                locationShare:  false,
+            },
+        };
+
+        function loadUser() {
+            return { ...DEFAULT_USER, ...JSON.parse(localStorage.getItem('userData') || '{}') };
+        }
+
+        function saveUser(data) {
+            const merged = { ...loadUser(), ...data };
+            localStorage.setItem('userData', JSON.stringify(merged));
+        }
+
+        const ACTIVITY = [
+            { type: 'search', icon: 'fa-search',        label: 'Kërkoi rrugë',   desc: 'Sheshi Skënderbej → Aeroporti', time: '2 orë më parë' },
+            { type: 'save',   icon: 'fa-bookmark',       label: 'Ruajti rrugë',   desc: 'Shtëpi - Punë',                  time: '5 orë më parë' },
+            { type: 'bus',    icon: 'fa-bus',             label: 'Udhëtoi me autobus', desc: 'Linja 5 · 22 min',           time: 'Dje, 17:40' },
+            { type: 'taxi',   icon: 'fa-taxi',            label: 'Rezervoi taksi', desc: 'Zona e Re → Pazari i Ri',         time: 'Dje, 09:15' },
+            { type: 'search', icon: 'fa-search',         label: 'Kërkoi rrugë',   desc: 'Kombinati → Universiteti',       time: '2 ditë më parë' },
+        ];
+
+        const SAVED_ROUTES = [
+            { id: 1, name: 'Shtëpi – Punë',    from: 'Zona e Re',         to: 'Qendra e Tiranës',    time: '25 min', transfers: 1 },
+            { id: 2, name: 'Pazarit të Ri',     from: 'Sheshi Skënderbej', to: 'Pazari i Ri',          time: '15 min', transfers: 0 },
+            { id: 3, name: 'Tek Universiteti',  from: 'Stacioni i Veriut', to: 'Universiteti i Tiranës', time: '30 min', transfers: 1 },
+        ];
+
+        const RECENT_ROUTES = [
+            { id: 4, name: 'Kërkesë e fundit', from: 'Sheshi Skënderbej', to: 'Aeroporti Nënë Tereza', time: '35 min', transfers: 1 },
+            { id: 5, name: 'Sot paradite',      from: 'Kombinati',         to: 'Universiteti',          time: '22 min', transfers: 0 },
+        ];
+
+        const ACHIEVEMENTS = [
+            { id: 'first_search',  icon: '🔍', name: 'Eksplorues',       desc: 'Kërko rrugën e parë',       earned: true  },
+            { id: 'saver',         icon: '📌', name: 'Organizator',      desc: 'Ruaj 3 rrugë të preferuara', earned: true  },
+            { id: 'regular',       icon: '🏅', name: 'Përdorues i Rregullt', desc: '30 ditë anëtar',          earned: true  },
+            { id: 'explorer',      icon: '🗺️', name: 'Udhëtar i Qytetit', desc: '50 kërkime rrugësh',       earned: false },
+            { id: 'eco',           icon: '🌿', name: 'Mik i Mjedisit',   desc: 'Udhëto 100 km me autobus',  earned: false },
+            { id: 'night_owl',     icon: '🦉', name: 'Bilbil i Natës',   desc: 'Kërko pas orës 22:00',      earned: false },
+            { id: 'social',        icon: '🤝', name: 'Shok i Mirë',      desc: 'Ndaj 5 rrugë me miq',        earned: false },
+            { id: 'veteran',       icon: '⭐', name: 'Veteran',           desc: '1 vit si anëtar aktiv',      earned: false },
+        ];
+
+        // ── Toast ─────────────────────────────────────────────
+        function toast(msg, type = 'success') {
+            const tc   = document.getElementById('toast-container');
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
+            const el   = document.createElement('div');
+            el.className = `toast ${type}`;
+            el.innerHTML = `<i class="fas ${icon}"></i><span>${msg}</span>`;
+            tc.appendChild(el);
+            setTimeout(() => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(30px)';
+                el.style.transition = '.3s';
+                setTimeout(() => el.remove(), 300);
+            }, 3200);
+        }
+
+        // ── Populate UI ──────────────────────────────────────
+        function populateProfile(u) {
+            const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'User';
+            const initials = ((u.firstName?.[0] || '') + (u.lastName?.[0] || '')).toUpperCase() || 'U';
+
+            // Hero
+            setText('hero-avatar', initials);
+            setText('hero-name',   fullName);
+            setText('hero-email',  u.email || '');
+            const regDate = u.registeredAt ? new Date(u.registeredAt).toLocaleDateString('sq-AL', { year:'numeric', month:'long' }) : '';
+            setText('hero-member-since', `<i class="fas fa-calendar-alt"></i> Anëtar që nga ${regDate}`);
+            document.getElementById('hero-member-since').innerHTML = `<i class="fas fa-calendar-alt"></i> Anëtar që nga ${regDate}`;
+
+            // Sidebar
+            setText('sb-avatar',   initials);
+            setText('sb-name',     fullName);
+            setText('sb-email',    u.email || '');
+            setText('nav-user-name', u.firstName || 'User');
+
+            // Stats
+            const searches = JSON.parse(localStorage.getItem('searchHistory') || '[]').length;
+            const saved    = JSON.parse(localStorage.getItem('savedRoutes')   || '[]').length;
+            const days     = u.registeredAt ? Math.max(1, Math.floor((Date.now() - new Date(u.registeredAt)) / 86400000)) : 0;
+
+            ['hs-searches','sb-searches','ov-searches'].forEach(id => setText(id, searches || 24));
+            ['hs-saved',   'sb-saved',   'ov-saved'  ].forEach(id => setText(id, saved    || SAVED_ROUTES.length));
+            ['hs-days',    'sb-days',    'ov-days'   ].forEach(id => setText(id, days));
+            setText('ov-taxi', 0);
+
+            // Form fields
+            setVal('inp-firstname', u.firstName || '');
+            setVal('inp-lastname',  u.lastName  || '');
+            setVal('inp-email',     u.email     || '');
+            document.getElementById('inp-email').disabled = true;
+            setVal('inp-phone',     u.phone   || '');
+            setVal('inp-address',   u.address || '');
+            setVal('inp-dob',       u.dob     || '');
+            setVal('inp-gender',    u.gender  || '');
+            setVal('inp-bio',       u.bio     || '');
+            updateBioCount();
+
+            // Prefs
+            setVal('pref-search', u.preferences?.searchType || 'fastest');
+            setVal('pref-walk',   u.preferences?.maxWalkMin || 12);
+            setVal('pref-lang',   u.preferences?.language   || 'sq');
+            setVal('pref-access', u.preferences?.accessible || '0');
+
+            // Privacy toggles
+            setCheck('tog-email-notif',    u.privacy?.emailNotif    ?? true);
+            setCheck('tog-push-notif',     u.privacy?.pushNotif     ?? true);
+            setCheck('tog-public-profile', u.privacy?.publicProfile ?? false);
+            setCheck('tog-location-share', u.privacy?.locationShare ?? false);
+        }
+
+        function setText(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val;
+        }
+
+        function setVal(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.value = val;
+        }
+
+        function setCheck(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.checked = val;
+        }
+
+        // ── Render activity ──────────────────────────────────
+        function renderActivity() {
+            const container = document.getElementById('activity-timeline');
+            container.innerHTML = ACTIVITY.map((a, i) => `
+                <div class="tl-item">
+                    <div class="tl-left">
+                        <div class="tl-dot ${a.type}"><i class="fas ${a.icon}"></i></div>
+                        <div class="tl-line"></div>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-title">${a.label}</div>
+                        <div class="tl-desc">${a.desc}</div>
+                        <div class="tl-time"><i class="far fa-clock"></i>${a.time}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        // ── Render routes ────────────────────────────────────
+        function renderRouteList(containerId, routes) {
+            const el = document.getElementById(containerId);
+            if (!routes.length) {
+                el.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-secondary);">
+                    <i class="fas fa-route" style="font-size:32px;opacity:.3;margin-bottom:10px;display:block;"></i>
+                    Nuk ka rrugë të ruajtura akoma.
+                </div>`;
+                return;
+            }
+            el.innerHTML = routes.map(r => `
+                <div class="route-row">
+                    <div class="route-icon"><i class="fas fa-route"></i></div>
+                    <div class="route-info">
+                        <div class="route-name">${r.name}</div>
+                        <div class="route-path">${r.from} → ${r.to}</div>
+                    </div>
+                    <div class="route-meta">
+                        <span class="route-meta-pill"><i class="fas fa-clock"></i> ${r.time}</span>
+                        <span class="route-meta-pill"><i class="fas fa-exchange-alt"></i> ${r.transfers}</span>
+                    </div>
+                    <div class="route-actions-btns">
+                        <button class="icon-btn" title="Përdor" onclick="useRoute(${r.id})"><i class="fas fa-directions"></i></button>
+                        <button class="icon-btn danger" title="Fshi" onclick="deleteRoute(${r.id}, this)"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`).join('');
+        }
+
+        window.useRoute = function (id) {
+            const r = [...SAVED_ROUTES, ...RECENT_ROUTES].find(x => x.id === id);
+            if (r) window.location.href = `search.html?from=${encodeURIComponent(r.from)}&to=${encodeURIComponent(r.to)}`;
+        };
+
+        window.deleteRoute = function (id, btn) {
+            const row = btn.closest('.route-row');
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(20px)';
+            row.style.transition = '.3s';
+            setTimeout(() => { row.remove(); toast('Rruga u fshi.', 'success'); }, 300);
+        };
+
+        // ── Achievements ─────────────────────────────────────
+        function renderAchievements() {
+            const earned = ACHIEVEMENTS.filter(a => a.earned).length;
+            const total  = ACHIEVEMENTS.length;
+            const pct    = Math.round(earned / total * 100);
+
+            setText('ach-count-label', `${earned} / ${total} të fituara`);
+            setText('ach-pct', `${pct}%`);
+            const bar = document.getElementById('ach-bar');
+            if (bar) { bar.style.width = pct + '%'; bar.style.background = 'var(--primary-color)'; }
+
+            document.getElementById('achievements-grid').innerHTML =
+                ACHIEVEMENTS.map(a => `
+                    <div class="ach-card ${a.earned ? 'earned' : 'locked'}">
+                        <span class="ach-icon">${a.icon}</span>
+                        <div class="ach-name">${a.name}</div>
+                        <div class="ach-desc">${a.desc}</div>
+                        <span class="ach-badge ${a.earned ? 'earned' : 'locked'}">
+                            ${a.earned ? '<i class="fas fa-check"></i> Fituar' : '<i class="fas fa-lock"></i> Bllokuar'}
+                        </span>
+                    </div>`).join('');
+        }
+
+        // ── Password strength ────────────────────────────────
+        function checkPasswordStrength(pw) {
+            let score = 0;
+            if (pw.length >= 8)  score++;
+            if (pw.length >= 12) score++;
+            if (/[A-Z]/.test(pw)) score++;
+            if (/[0-9]/.test(pw)) score++;
+            if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+            const levels = [
+                { label: 'Shumë e dobët', color: '#e53935', w: '20%' },
+                { label: 'E dobët',        color: '#ff5722', w: '40%' },
+                { label: 'Mesatare',       color: '#ff9800', w: '60%' },
+                { label: 'E mirë',         color: '#4caf50', w: '80%' },
+                { label: 'Shumë e fortë',  color: '#2e7d32', w: '100%'},
+            ];
+            const lvl = levels[Math.min(score, 4)];
+            document.getElementById('pw-bar').style.width       = lvl.w;
+            document.getElementById('pw-bar').style.background  = lvl.color;
+            document.getElementById('pw-label').textContent     = lvl.label;
+            document.getElementById('pw-label').style.color     = lvl.color;
+        }
+
+        // ── Bio counter ──────────────────────────────────────
+        function updateBioCount() {
+            const bio = document.getElementById('inp-bio');
+            if (bio) setText('bio-count', bio.value.length);
+        }
+
+        // ── Validation helpers ───────────────────────────────
+        function showErr(id, show = true) {
+            const el = document.getElementById(id);
+            if (el) el.classList.toggle('show', show);
+        }
+
+        function validatePersonal() {
+            const fn = document.getElementById('inp-firstname').value.trim();
+            const ln = document.getElementById('inp-lastname').value.trim();
+            let ok = true;
+            showErr('err-firstname', !fn); if (!fn) ok = false;
+            showErr('err-lastname',  !ln); if (!ln) ok = false;
+            return ok;
+        }
+
+        function validatePassword() {
+            const cur  = document.getElementById('inp-cur-pw').value;
+            const nw   = document.getElementById('inp-new-pw').value;
+            const conf = document.getElementById('inp-conf-pw').value;
+            let ok = true;
+            showErr('err-cur-pw',  !cur);            if (!cur)           ok = false;
+            showErr('err-new-pw',  nw.length < 8);   if (nw.length < 8)  ok = false;
+            showErr('err-conf-pw', nw !== conf);      if (nw !== conf)    ok = false;
+            return ok;
+        }
+
+        // ── Tabs ─────────────────────────────────────────────
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ── Form: Personal ───────────────────────────────────
+        document.getElementById('form-personal').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!validatePersonal()) return;
+
+            const u = loadUser();
+            u.firstName = document.getElementById('inp-firstname').value.trim();
+            u.lastName  = document.getElementById('inp-lastname').value.trim();
+            u.phone     = document.getElementById('inp-phone').value.trim();
+            u.address   = document.getElementById('inp-address').value.trim();
+            u.dob       = document.getElementById('inp-dob').value;
+            u.gender    = document.getElementById('inp-gender').value;
+            u.bio       = document.getElementById('inp-bio').value.trim().slice(0, 200);
+            saveUser(u);
+            populateProfile(loadUser());
+            toast('Profili u ruajt me sukses!', 'success');
+        });
+
+        document.getElementById('btn-cancel-personal').addEventListener('click', function () {
+            populateProfile(loadUser());
+            toast('Ndryshimet u anuluan.', 'info');
+        });
+
+        // ── Form: Preferences ────────────────────────────────
+        document.getElementById('btn-save-prefs').addEventListener('click', function () {
+            const u = loadUser();
+            u.preferences = {
+                searchType:  document.getElementById('pref-search').value,
+                maxWalkMin:  parseInt(document.getElementById('pref-walk').value, 10),
+                language:    document.getElementById('pref-lang').value,
+                accessible:  document.getElementById('pref-access').value,
+            };
+            saveUser(u);
+            toast('Preferencat u ruajtën!', 'success');
+        });
+
+        // ── Form: Password ───────────────────────────────────
+        document.getElementById('form-password').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!validatePassword()) return;
+            toast('Fjalëkalimi u ndryshua me sukses!', 'success');
+            ['inp-cur-pw','inp-new-pw','inp-conf-pw'].forEach(id => setVal(id, ''));
+            document.getElementById('pw-strength').classList.remove('show');
+        });
+
+        document.getElementById('inp-new-pw').addEventListener('input', function () {
+            const str = document.getElementById('pw-strength');
+            if (this.value) {
+                str.classList.add('show');
+                checkPasswordStrength(this.value);
+            } else {
+                str.classList.remove('show');
+            }
+        });
+
+        // ── Privacy toggles ──────────────────────────────────
+        document.getElementById('btn-save-privacy').addEventListener('click', function () {
+            const u = loadUser();
+            u.privacy = {
+                emailNotif:    document.getElementById('tog-email-notif').checked,
+                pushNotif:     document.getElementById('tog-push-notif').checked,
+                publicProfile: document.getElementById('tog-public-profile').checked,
+                locationShare: document.getElementById('tog-location-share').checked,
+            };
+            saveUser(u);
+            toast('Cilësimet e privatësisë u ruajtën!', 'success');
+        });
+
+        // ── Toggle password visibility ────────────────────────
+        document.querySelectorAll('.toggle-pw').forEach(el => {
+            el.addEventListener('click', function () {
+                const inp = document.getElementById(this.dataset.target);
+                if (!inp) return;
+                const isText = inp.type === 'text';
+                inp.type = isText ? 'password' : 'text';
+                this.classList.toggle('fa-eye',      isText);
+                this.classList.toggle('fa-eye-slash', !isText);
+            });
+        });
+
+        // ── Avatar edit ──────────────────────────────────────
+        document.getElementById('avatar-edit-btn').addEventListener('click', function () {
+            document.getElementById('avatar-file-input').click();
+        });
+        document.getElementById('avatar-file-input').addEventListener('change', function () {
+            toast('Foto e profilit u ndryshua! (demo)', 'success');
+            this.value = '';
+        });
+
+        // ── Bio counter ──────────────────────────────────────
+        document.getElementById('inp-bio').addEventListener('input', updateBioCount);
+
+        // ── Clear history ─────────────────────────────────────
+        document.getElementById('btn-clear-history').addEventListener('click', function () {
+            if (confirm('Jeni të sigurt? Të gjitha kërkimet e fundit do të fshihen.')) {
+                localStorage.removeItem('searchHistory');
+                renderRouteList('recent-routes-list', []);
+                toast('Historia u pastrua.', 'info');
+            }
+        });
+
+        // ── Delete account ───────────────────────────────────
+        document.getElementById('btn-delete-account').addEventListener('click', function () {
+            const confirm1 = confirm('Jeni ABSOLUTISHT të sigurt? Kjo veprim nuk mund të kthehët mbrapsht.');
+            if (!confirm1) return;
+            const word = prompt('Shkruani "FSHI" për të konfirmuar fshirjen e llogarisë:');
+            if (word !== 'FSHI') { toast('Fshirja u anulua.', 'info'); return; }
+            localStorage.clear();
+            toast('Llogaria juaj u fshi. Ridrejtimi...', 'error');
+            setTimeout(() => window.location.href = '../index.html', 2000);
+        });
+
+        // ── Logout ───────────────────────────────────────────
+        document.getElementById('logout-btn')?.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (confirm('Jeni i sigurt që dëshironi të dilni?')) {
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // ── Theme ────────────────────────────────────────────
+        const themeSwitch = document.getElementById('theme-switch');
+        const savedTheme  = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') { themeSwitch.checked = true; document.body.setAttribute('data-theme', 'dark'); }
+        themeSwitch.addEventListener('change', function () {
+            const t = this.checked ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', t);
+            localStorage.setItem('theme', t);
+        });
+
+        // ── Hamburger ────────────────────────────────────────
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu   = document.querySelector('.nav-menu');
+        hamburger?.addEventListener('click', function () {
+            this.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // ── User dropdown ─────────────────────────────────────
+        const dropdown     = document.querySelector('.user-dropdown');
+        const dropdownMenu = document.querySelector('.user-dropdown-menu');
+        dropdown?.addEventListener('click', e => { e.stopPropagation(); dropdownMenu.classList.toggle('show'); });
+        document.addEventListener('click', () => dropdownMenu?.classList.remove('show'));
+
+        // ── Auth guard ────────────────────────────────────────
+        // const isLoggedIn = localStorage.getItem('isLoggedIn');
+        // if (!isLoggedIn) { window.location.href = 'login.html'; return; }
+
+        // ── Init ─────────────────────────────────────────────
+        const userData = loadUser();
+        populateProfile(userData);
+        renderActivity();
+        renderRouteList('ov-routes-list',      SAVED_ROUTES.slice(0, 3));
+        renderRouteList('saved-routes-list',   SAVED_ROUTES);
+        renderRouteList('recent-routes-list',  RECENT_ROUTES);
+        renderAchievements();
+
+    })();
+    </script>
+</body>
+</html>
