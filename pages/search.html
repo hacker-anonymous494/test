@@ -1116,6 +1116,26 @@
     return points;
   }
 
+  function clipPolyline(points, startCoord, endCoord) {
+    if (!points || !points.length) return [];
+    let closestStart = 0;
+    let closestEnd = points.length - 1;
+    let minStartDist = Infinity;
+    let minEndDist = Infinity;
+
+    points.forEach((pt, idx) => {
+      const startDist = Math.hypot(pt[0] - startCoord.lat, pt[1] - startCoord.lng);
+      const endDist   = Math.hypot(pt[0] - endCoord.lat,   pt[1] - endCoord.lng);
+      if (startDist < minStartDist) { minStartDist = startDist; closestStart = idx; }
+      if (endDist   < minEndDist)   { minEndDist   = endDist;   closestEnd   = idx; }
+    });
+
+    if (closestStart <= closestEnd) {
+      return points.slice(closestStart, closestEnd + 1);
+    }
+    return points.slice(closestEnd, closestStart + 1).reverse();
+  }
+
   /**
    * Draw a route on the map. Each bus step gets its line colour;
    * walking steps get a green dashed line.
@@ -1136,22 +1156,15 @@
           color: '#34A853', weight: 3, dashArray: '6 6', opacity: 0.85,
         });
       } else if (step.polyline) {
-        // Decode polyline using built-in function
         const decodedPoints = decodePolyline(step.polyline);
-        if (decodedPoints.length > 0) {
-          layer = L.polyline(decodedPoints, {
-            color:   step.lineColor || '#1a73e8',
-            weight:  highlight ? 6 : 4,
-            opacity: highlight ? 1.0 : 0.75,
-          });
-          stepBounds = decodedPoints;
-        } else {
-          layer = L.polyline([from, to], {
-            color:   step.lineColor || '#1a73e8',
-            weight:  highlight ? 6 : 4,
-            opacity: highlight ? 1.0 : 0.75,
-          });
-        }
+        const clippedPoints = clipPolyline(decodedPoints, step.fromCoords, step.toCoords);
+        const polylinePoints = clippedPoints.length > 1 ? clippedPoints : [from, to];
+        layer = L.polyline(polylinePoints, {
+          color:   step.lineColor || '#1a73e8',
+          weight:  highlight ? 6 : 4,
+          opacity: highlight ? 1.0 : 0.75,
+        });
+        stepBounds = polylinePoints;
         const midMarker = L.circleMarker(from, {
           radius: 5, color: step.lineColor || '#1a73e8',
           fillColor: '#fff', fillOpacity: 1, weight: 2,
