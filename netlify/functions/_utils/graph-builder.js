@@ -43,7 +43,7 @@ async function buildTransitGraph() {
         id, line_id, stop_id, sequence, time_to_next,
         line:bus_lines(id, line_number, name, direction, is_circular, is_directional,
                        base_fare_lek, color_hex, is_accessible, schedule_start, schedule_end,
-                       headway_minutes)
+                       headway_minutes, shape_encoded)
       `)
       .order('line_id')
       .order('sequence'),
@@ -116,6 +116,7 @@ async function buildTransitGraph() {
         lineName:     lineMeta.name,
         lineColor:    lineMeta.color_hex || '#1a73e8',
         fare:         lineMeta.base_fare_lek || 40,
+        linePolyline: lineMeta.shape_encoded || null,
         edgeType:     'bus',
         isAccessible: lineMeta.is_accessible || false,
       };

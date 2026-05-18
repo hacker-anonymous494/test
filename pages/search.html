@@ -986,6 +986,7 @@
 
     <!-- JavaScript -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mapbox/polyline@1.1.1/dist/polyline.min.js"></script>
 <script src="../config.js"></script>
 <!-- <script src="../security-measures.js"></script> -->
 <script src="../assets/js/auth.js"></script>
@@ -1095,10 +1096,26 @@
       const to   = [step.toCoords.lat,   step.toCoords.lng];
 
       let layer;
+      let stepBounds = [from, to];
       if (step.type === 'walk') {
         layer = L.polyline([from, to], {
           color: '#34A853', weight: 3, dashArray: '6 6', opacity: 0.85,
         });
+      } else if (step.polyline) {
+        const decoded = polyline.decode(step.polyline).map(p => [p[0], p[1]]);
+        layer = L.polyline(decoded, {
+          color:   step.lineColor || '#1a73e8',
+          weight:  highlight ? 6 : 4,
+          opacity: highlight ? 1.0 : 0.75,
+        });
+        stepBounds = decoded;
+        // Bus stop dot
+        const midMarker = L.circleMarker(from, {
+          radius: 5, color: step.lineColor || '#1a73e8',
+          fillColor: '#fff', fillOpacity: 1, weight: 2,
+        }).bindPopup(`Linja ${step.lineNumber}: ${step.fromStation}`);
+        midMarker.addTo(map);
+        routeLayers.push(midMarker);
       } else {
         layer = L.polyline([from, to], {
           color:   step.lineColor || '#1a73e8',
@@ -1115,7 +1132,7 @@
       }
       layer.addTo(map);
       routeLayers.push(layer);
-      bounds.push(from, to);
+      bounds.push(...stepBounds);
     });
 
     if (bounds.length > 0) {

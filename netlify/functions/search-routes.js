@@ -173,6 +173,7 @@ async function enrichWithPolylines(routes, stopMap) {
         ...step,
         fromCoords: from ? { lat: from.lat, lng: from.lng } : null,
         toCoords:   to   ? { lat: to.lat,   lng: to.lng }   : null,
+        polyline:  step.linePolyline || null,
       };
     }),
   }));

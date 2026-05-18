@@ -270,6 +270,7 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
         lineName,
         lineColor,
         fare,
+        linePolyline: edge.linePolyline || null,
         fromStopId:   seg.fromStopId,
         toStopId:     segments[j-1].toStopId,
         fromStation:  fromStop?.name || '—',
