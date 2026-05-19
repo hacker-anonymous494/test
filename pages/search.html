@@ -1001,6 +1001,9 @@
   let activeBusMarker = null;
   let animationFrameId = null;
   let activeRoute = null;
+  let pickingMode = null;
+  let pendingOriginCoords = null;
+  let pendingDestCoords = null;
 
   function initMap() {
     map = L.map('search-map', { zoomControl: true }).setView([41.3275, 19.8187], 13);
@@ -1323,10 +1326,6 @@
 .step-walk .step-icon  { background: #34A853; }
 .step-bus  .step-icon  { background: currentColor; }
 .step-sub  { font-size: 12px; color: var(--text-secondary); }
-
-.bus-animated {
-  transition: transform 0.2s linear;
-}
 
 /* Meta bar */
 .route-meta-bar {
