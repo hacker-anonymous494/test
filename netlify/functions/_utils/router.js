@@ -254,16 +254,12 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
       const fromStop   = stopMap.get(seg.fromStopId);
       let   toStop     = stopMap.get(seg.toStopId);
       const stopSequence = [fromStop?.name || '—', toStop?.name || '—'];
-      const stopCoords = [
-        { lat: fromStop?.lat, lng: fromStop?.lng }
-      ];
 
       let j = i + 1;
       while (j < segments.length && segments[j].edge.edgeType === 'bus' && segments[j].edge.lineId === lineId) {
         rideTime += segments[j].edge.travelTime;
         toStop    = stopMap.get(segments[j].toStopId);
         stopSequence.push(toStop?.name || '—');
-        stopCoords.push({ lat: toStop?.lat, lng: toStop?.lng });
         j++;
       }
 
@@ -281,7 +277,6 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
         fromStation:  fromStop?.name || '—',
         toStation:    toStop?.name   || '—',
         stopSequence,
-        stopCoords,
         time:         rideTime,
       });
       i = j;
@@ -320,7 +315,7 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
 
   const totalFare = steps
     .filter(s => s.type === 'bus')
-    .reduce((sum, s) => sum + s.fare, 0);
+    .reduce((sum, s, idx) => sum + (idx === 0 ? s.fare : (endLabel.transfers > 0 ? s.fare : 0)), 0);
 
   return {
     id,
