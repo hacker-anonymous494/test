@@ -531,698 +531,335 @@
     <script src="../script.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script>
-        // Inicializimi i hartës dhe funksioneve
-        document.addEventListener('DOMContentLoaded', function() {
-            // Variablat globale
-            let map = null;
-            let stationsLayer = null;
-            let busesLayer = null;
-            let routesLayer = null;
-            let taxiStationsLayer = null;
-            let currentFilter = 'all';
-            let userLocationMarker = null;
-            
-            // Inicializo hartën
-            initMap();
-            
-            // Inicializo kontrollat
-            initControls();
-            
-            // Inicializo sidebar
-            initSidebar();
-            
-            // Ngarko të dhënat fillestare
-            loadStations();
-            loadBuses();
-            loadTaxiStations();
-            
-            // Funksioni për inicializimin e hartës
-            function initMap() {
-                // Krijo hartën me qendër në Tiranë
-                map = L.map('full-map').setView([41.3275, 19.8187], 13);
-                
-                // Shto layer-in e hartës
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    maxZoom: 19
-                }).addTo(map);
-                
-                // Krijo layer për stacionet
-                stationsLayer = L.layerGroup().addTo(map);
-                
-                // Krijo layer për autobusët
-                busesLayer = L.layerGroup().addTo(map);
-                
-                // Krijo layer për rrugët
-                routesLayer = L.layerGroup().addTo(map);
-                
-                // Krijo layer për stacionet e taksive
-                taxiStationsLayer = L.layerGroup().addTo(map);
-                
-                // Përpiquni të merrni lokacionin e përdoruesit
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        function(position) {
-                            const userLat = position.coords.latitude;
-                            const userLng = position.coords.longitude;
-                            
-                            // Shto marker për lokacionin e përdoruesit
-                            userLocationMarker = L.marker([userLat, userLng], {
-                                icon: L.divIcon({
-                                    className: 'user-location-marker',
-                                    html: '<div style="background-color: #ff0000; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);"></div>',
-                                    iconSize: [20, 20],
-                                    iconAnchor: [10, 10]
-                                })
-                            }).addTo(map);
-                            
-                            userLocationMarker.bindPopup('<b>Ju jeni këtu</b>').openPopup();
-                            
-                            // Zentro hartën në lokacionin e përdoruesit
-                            map.setView([userLat, userLng], 15);
-                        },
-                        function(error) {
-                            console.log('Gabim në marrjen e lokacionit:', error);
-                        }
-                    );
-                }
+      (function() {
+        // API base (relative)
+        const API_BASE = '/.netlify/functions';
+
+        let map;
+        let stopsLayer, busesLayer, routesLayer, taxiStationsLayer;
+        let allStops = [];
+        let allLines = [];
+        let allVehicles = [];
+        let currentFilter = 'all';
+        let userLocationMarker = null;
+        let markerClusterGroup = null;
+
+        // Initialize map
+        function initMap() {
+          map = L.map('full-map').setView([41.3275, 19.8187], 13);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19,
+          }).addTo(map);
+
+          stopsLayer = L.layerGroup();
+          busesLayer = L.layerGroup();
+          routesLayer = L.layerGroup();
+          taxiStationsLayer = L.layerGroup(); // can be extended later
+
+          markerClusterGroup = L.markerClusterGroup();
+          map.addLayer(markerClusterGroup);
+
+          // Try to get user location
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (pos) => {
+                const { latitude, longitude } = pos.coords;
+                userLocationMarker = L.marker([latitude, longitude], {
+                  icon: L.divIcon({
+                    html: '<div style="background:#ff0000; width:20px; height:20px; border-radius:50%; border:3px solid white; box-shadow:0 0 10px rgba(0,0,0,0.3);"></div>',
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 10],
+                  }),
+                })
+                  .addTo(map)
+                  .bindPopup('Ju jeni këtu')
+                  .openPopup();
+                map.setView([latitude, longitude], 15);
+              },
+              (err) => console.warn('Geolocation error:', err)
+            );
+          }
+
+          // Load data
+          loadAllData();
+        }
+
+        async function loadAllData() {
+          try {
+            const [stopsRes, linesRes, vehiclesRes] = await Promise.all([
+              fetch(`${API_BASE}/get-stops`),
+              fetch(`${API_BASE}/get-lines?include_stops=true`),
+              fetch(`${API_BASE}/get-vehicles`),
+            ]);
+            if (!stopsRes.ok) throw new Error('Failed to fetch stops');
+            if (!linesRes.ok) throw new Error('Failed to fetch lines');
+            if (!vehiclesRes.ok) throw new Error('Failed to fetch vehicles');
+
+            const stopsData = await stopsRes.json();
+            const linesData = await linesRes.json();
+            const vehiclesData = await vehiclesRes.json();
+
+            allStops = stopsData.stops || [];
+            allLines = linesData.lines || [];
+            allVehicles = vehiclesData.vehicles || [];
+
+            renderStops();
+            renderRoutes();
+            renderVehicles();
+            populateStationList();
+            populateBusList();
+          } catch (err) {
+            console.error('Error loading data:', err);
+            document.getElementById('station-list').innerHTML = '<div class="no-data">Error loading data</div>';
+          }
+        }
+
+        function renderStops() {
+          markerClusterGroup.clearLayers();
+          allStops.forEach((stop) => {
+            const marker = L.marker([stop.lat, stop.lng], {
+              icon: L.icon({
+                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+              }),
+            });
+            marker.bindPopup(`
+              <div style="min-width:200px">
+                <h3>${escapeHtml(stop.name)}</h3>
+                <p><strong>ID:</strong> ${stop.id}</p>
+                <button class="btn btn-primary" onclick="window.viewStationDetails(${stop.id})">Detaje</button>
+              </div>
+            `);
+            marker.on('click', () => highlightStationInSidebar(stop.id));
+            markerClusterGroup.addLayer(marker);
+          });
+        }
+
+        function renderRoutes() {
+          routesLayer.clearLayers();
+          allLines.forEach((line) => {
+            if (!line.stops || line.stops.length < 2) return;
+            const coordinates = line.stops
+              .map((s) => [s.lat, s.lng])
+              .filter((c) => c[0] && c[1]);
+            if (coordinates.length < 2) return;
+            const polyline = L.polyline(coordinates, {
+              color: line.color_hex || '#1a73e8',
+              weight: 4,
+              opacity: 0.7,
+            }).bindPopup(`<strong>${line.line_number} - ${escapeHtml(line.name || '')}</strong>`);
+            routesLayer.addLayer(polyline);
+          });
+        }
+
+        function renderVehicles() {
+          busesLayer.clearLayers();
+          allVehicles.forEach((vehicle) => {
+            const statusClass = 'status-on-time';
+            const iconColor = vehicle.line?.color_hex || '#4caf50';
+            const marker = L.marker([vehicle.lat, vehicle.lng], {
+              icon: L.divIcon({
+                html: `<div style="background:${iconColor}; width:24px; height:24px; border-radius:50%; border:3px solid white; box-shadow:0 0 10px rgba(0,0,0,0.3);"></div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12],
+              }),
+            });
+            marker.bindPopup(`
+              <div>
+                <strong>${escapeHtml(vehicle.line?.line_number || 'Autobus')}</strong><br>
+                ${escapeHtml(vehicle.line?.name || '')}<br>
+                <span class="bus-status ${statusClass}">Në lëvizje</span>
+              </div>
+            `);
+            marker.on('click', () => highlightBusInSidebar(vehicle.id));
+            busesLayer.addLayer(marker);
+          });
+        }
+
+        function populateStationList() {
+          const container = document.getElementById('station-list');
+          if (!allStops.length) {
+            container.innerHTML = '<div class="no-data"><i class="fas fa-map-marker-alt"></i><p>Nuk u gjetën stacione</p></div>';
+            return;
+          }
+          let html = '';
+          allStops.forEach((stop) => {
+            const linesForStop = allLines.filter((line) => line.stops?.some((s) => s.stop_id === stop.id));
+            const lineBadges = linesForStop
+              .map((l) => `<span class="line-badge" style="background:${l.color_hex || '#1a73e8'}">${escapeHtml(l.line_number || '')}</span>`)
+              .join('');
+            html += `
+              <div class="station-item" data-station-id="${stop.id}" onclick="window.focusOnStation(${stop.lat}, ${stop.lng}, ${stop.id})">
+                <div class="station-header">
+                  <div class="station-name">${escapeHtml(stop.name)}</div>
+                  <div class="station-distance"><i class="fas fa-walking"></i> ~${Math.round(stop.distanceM || 0)}m</div>
+                </div>
+                <div class="station-lines">${lineBadges}</div>
+                <div class="station-info">
+                  <div><i class="fas fa-bus"></i> ${linesForStop.length} linja</div>
+                </div>
+              </div>`;
+          });
+          container.innerHTML = html;
+        }
+
+        function populateBusList() {
+          const container = document.getElementById('bus-list');
+          if (!allVehicles.length) {
+            container.innerHTML = '<div class="no-data"><i class="fas fa-bus"></i><p>Nuk ka autobusë aktivë</p></div>';
+            return;
+          }
+          let html = '';
+          allVehicles.forEach((vehicle) => {
+            const line = vehicle.line || {};
+            html += `
+              <div class="bus-item" data-bus-id="${vehicle.id}" onclick="window.focusOnBus(${vehicle.lat}, ${vehicle.lng}, ${vehicle.id})">
+                <div class="bus-header">
+                  <div class="bus-name"><i class="fas fa-bus"></i> ${escapeHtml(line.line_number || 'Autobus')}</div>
+                  <div class="bus-status status-on-time">Në lëvizje</div>
+                </div>
+                <div class="bus-route"><i class="fas fa-route"></i> ${escapeHtml(line.name || '')}</div>
+                <div class="bus-details">
+                  <span><i class="fas fa-clock"></i> Përditësuar tani</span>
+                </div>
+              </div>`;
+          });
+          container.innerHTML = html;
+        }
+
+        // Helper functions
+        function escapeHtml(str) {
+          if (!str) return '';
+          return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+          });
+        }
+
+        // Sidebar and filtering
+        function applyFilter(filter) {
+          currentFilter = filter;
+          if (filter === 'all' || filter === 'stations') {
+            if (!map.hasLayer(markerClusterGroup)) map.addLayer(markerClusterGroup);
+            document.getElementById('station-list').style.display = 'block';
+            document.getElementById('sidebar-title').innerText = 'Stacionet';
+          } else {
+            if (map.hasLayer(markerClusterGroup)) map.removeLayer(markerClusterGroup);
+            document.getElementById('station-list').style.display = 'none';
+          }
+          if (filter === 'all' || filter === 'buses') {
+            if (!map.hasLayer(busesLayer)) busesLayer.addTo(map);
+            document.getElementById('bus-list').style.display = 'block';
+            if (filter === 'buses') document.getElementById('sidebar-title').innerText = 'Autobusët';
+          } else {
+            if (map.hasLayer(busesLayer)) map.removeLayer(busesLayer);
+            document.getElementById('bus-list').style.display = 'none';
+          }
+          if (filter === 'all' || filter === 'routes') {
+            if (!map.hasLayer(routesLayer)) routesLayer.addTo(map);
+            if (filter === 'routes') document.getElementById('sidebar-title').innerText = 'Linjat';
+          } else {
+            if (map.hasLayer(routesLayer)) map.removeLayer(routesLayer);
+          }
+        }
+
+        // Expose global functions for inline onclick
+        window.focusOnStation = (lat, lng, id) => {
+          map.setView([lat, lng], 16);
+          highlightStationInSidebar(id);
+        };
+        window.focusOnBus = (lat, lng, id) => {
+          map.setView([lat, lng], 16);
+          highlightBusInSidebar(id);
+        };
+        window.viewStationDetails = (id) => {
+          alert(`Detaje për stacionin ID ${id}\n(Funksionalitet në zhvillim)`);
+        };
+        window.trackBus = (id) => {
+          alert(`Ndjekja e autobusit ID ${id}\n(Funksionalitet në zhvillim)`);
+        };
+        window.bookTaxiFromStation = (stationName) => {
+          window.location.href = `taxi.html?station=${encodeURIComponent(stationName)}`;
+        };
+
+        function highlightStationInSidebar(id) {
+          document.querySelectorAll('.station-item').forEach((el) => el.classList.remove('active'));
+          const target = document.querySelector(`.station-item[data-station-id="${id}"]`);
+          if (target) {
+            target.classList.add('active');
+            target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+        function highlightBusInSidebar(id) {
+          document.querySelectorAll('.bus-item').forEach((el) => el.classList.remove('active'));
+          const target = document.querySelector(`.bus-item[data-bus-id="${id}"]`);
+          if (target) {
+            target.classList.add('active');
+            target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+
+        // Sidebar toggle
+        function initSidebar() {
+          const toggleBtn = document.getElementById('toggle-sidebar-btn');
+          const closeBtn = document.getElementById('close-sidebar-btn');
+          const sidebar = document.getElementById('map-sidebar');
+          toggleBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            const icon = toggleBtn.querySelector('i');
+            if (sidebar.classList.contains('active')) {
+              icon.classList.remove('fa-chevron-left');
+              icon.classList.add('fa-chevron-right');
+            } else {
+              icon.classList.remove('fa-chevron-right');
+              icon.classList.add('fa-chevron-left');
             }
-            
-            // Funksioni për inicializimin e kontrollave
-            function initControls() {
-                // Butonat e filtrimit
-                document.querySelectorAll('.map-filter-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        // Hiq klasën active nga të gjithë butonat
-                        document.querySelectorAll('.map-filter-btn').forEach(b => {
-                            b.classList.remove('active');
-                        });
-                        
-                        // Shto klasën active tek butoni i klikuar
-                        this.classList.add('active');
-                        
-                        // Merr filtrin
-                        currentFilter = this.getAttribute('data-filter');
-                        
-                        // Apliko filtrin
-                        applyFilter(currentFilter);
-                    });
-                });
+          });
+          closeBtn?.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            toggleBtn.querySelector('i').classList.remove('fa-chevron-right');
+            toggleBtn.querySelector('i').classList.add('fa-chevron-left');
+          });
+        }
+
+        // Filter buttons
+        function initControls() {
+          document.querySelectorAll('.map-filter-btn').forEach((btn) => {
+            btn.addEventListener('click', function() {
+              document.querySelectorAll('.map-filter-btn').forEach((b) => b.classList.remove('active'));
+              this.classList.add('active');
+              applyFilter(this.getAttribute('data-filter'));
+            });
+          });
+        }
+
+        // Refresh vehicles every 10 seconds (optional)
+        function startLiveRefresh() {
+          setInterval(async () => {
+            try {
+              const res = await fetch(`${API_BASE}/get-vehicles`);
+              const data = await res.json();
+              allVehicles = data.vehicles || [];
+              renderVehicles();
+              populateBusList();
+            } catch (err) {
+              console.warn('Live refresh failed', err);
             }
-            
-            // Funksioni për inicializimin e sidebar
-            function initSidebar() {
-                const toggleBtn = document.getElementById('toggle-sidebar-btn');
-                const closeBtn = document.getElementById('close-sidebar-btn');
-                const sidebar = document.getElementById('map-sidebar');
-                
-                if (toggleBtn) {
-                    toggleBtn.addEventListener('click', function() {
-                        sidebar.classList.toggle('active');
-                        this.querySelector('i').classList.toggle('fa-chevron-left');
-                        this.querySelector('i').classList.toggle('fa-chevron-right');
-                    });
-                }
-                
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', function() {
-                        sidebar.classList.remove('active');
-                        toggleBtn.querySelector('i').classList.remove('fa-chevron-right');
-                        toggleBtn.querySelector('i').classList.add('fa-chevron-left');
-                    });
-                }
-                
-                // Mbyll sidebar kur klikohet jashtë (në mobile)
-                document.addEventListener('click', function(e) {
-                    if (window.innerWidth <= 992) {
-                        if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains('active')) {
-                            sidebar.classList.remove('active');
-                            toggleBtn.querySelector('i').classList.remove('fa-chevron-right');
-                            toggleBtn.querySelector('i').classList.add('fa-chevron-left');
-                        }
-                    }
-                });
-            }
-            
-            // Funksioni për aplikimin e filtrit
-            function applyFilter(filter) {
-                // Fshi të gjitha layer-at
-                stationsLayer.clearLayers();
-                busesLayer.clearLayers();
-                routesLayer.clearLayers();
-                taxiStationsLayer.clearLayers();
-                
-                // Ndrysho titullin e sidebar
-                const sidebarTitle = document.getElementById('sidebar-title');
-                const stationList = document.getElementById('station-list');
-                const busList = document.getElementById('bus-list');
-                
-                // Shfaq/fsheh listat në sidebar
-                if (filter === 'all' || filter === 'stations') {
-                    stationList.style.display = 'block';
-                    sidebarTitle.textContent = 'Stacionet';
-                    loadStations();
-                } else {
-                    stationList.style.display = 'none';
-                }
-                
-                if (filter === 'all' || filter === 'buses') {
-                    busList.style.display = 'block';
-                    if (filter === 'buses') sidebarTitle.textContent = 'Autobusët';
-                    loadBuses();
-                } else {
-                    busList.style.display = 'none';
-                }
-                
-                // Ngarko të dhënat sipas filtrit
-                switch(filter) {
-                    case 'all':
-                        loadStations();
-                        loadBuses();
-                        loadTaxiStations();
-                        break;
-                    case 'stations':
-                        loadStations();
-                        break;
-                    case 'buses':
-                        loadBuses();
-                        break;
-                    case 'routes':
-                        loadRoutes();
-                        sidebarTitle.textContent = 'Rrugët';
-                        break;
-                }
-                
-                // Nëse sidebar është e mbyllur, hape
-                if (window.innerWidth <= 992 && !document.getElementById('map-sidebar').classList.contains('active')) {
-                    document.getElementById('map-sidebar').classList.add('active');
-                    document.getElementById('toggle-sidebar-btn').querySelector('i').classList.remove('fa-chevron-left');
-                    document.getElementById('toggle-sidebar-btn').querySelector('i').classList.add('fa-chevron-right');
-                }
-            }
-            
-            // Funksioni për ngarkimin e stacioneve
-            function loadStations() {
-                // Të dhëna të simuluar për stacionet
-                const stations = [
-                    {
-                        id: 1,
-                        name: 'Stacioni i Autobusëve të Jugut',
-                        lat: 41.3186,
-                        lng: 19.8184,
-                        lines: ['L1', 'L2', 'L5', 'L8', 'L11'],
-                        nextBus: '10 min',
-                        distance: '1.2 km'
-                    },
-                    {
-                        id: 2,
-                        name: 'Stacioni i Autobusëve të Veriut',
-                        lat: 41.3382,
-                        lng: 19.8201,
-                        lines: ['L3', 'L4', 'L7', 'L9', 'L12'],
-                        nextBus: '5 min',
-                        distance: '2.5 km'
-                    },
-                    {
-                        id: 3,
-                        name: 'Qendra e Tiranës',
-                        lat: 41.3275,
-                        lng: 19.8187,
-                        lines: ['L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7'],
-                        nextBus: '2 min',
-                        distance: '0.5 km'
-                    },
-                    {
-                        id: 4,
-                        name: 'Stacioni i Trenit',
-                        lat: 41.3222,
-                        lng: 19.7986,
-                        lines: ['L2', 'L6', 'L9', 'L10'],
-                        nextBus: '8 min',
-                        distance: '3.1 km'
-                    },
-                    {
-                        id: 5,
-                        name: 'Sheshi Shqiponja',
-                        lat: 41.3201,
-                        lng: 19.8302,
-                        lines: ['L1', 'L3', 'L8', 'L11'],
-                        nextBus: '15 min',
-                        distance: '1.8 km'
-                    },
-                    {
-                        id: 6,
-                        name: '21 Dhjetori',
-                        lat: 41.3328,
-                        lng: 19.8134,
-                        lines: ['L4', 'L5', 'L7', 'L12'],
-                        nextBus: '7 min',
-                        distance: '2.2 km'
-                    },
-                    {
-                        id: 7,
-                        name: 'Zogu i Zi',
-                        lat: 41.3405,
-                        lng: 19.8057,
-                        lines: ['L2', 'L6', 'L10'],
-                        nextBus: '12 min',
-                        distance: '3.5 km'
-                    },
-                    {
-                        id: 8,
-                        name: 'Komuna e Parisit',
-                        lat: 41.3158,
-                        lng: 19.8089,
-                        lines: ['L1', 'L9', 'L11'],
-                        nextBus: '4 min',
-                        distance: '1.1 km'
-                    }
-                ];
-                
-                // Shto marker-at në hartë
-                stations.forEach(station => {
-                    const marker = L.marker([station.lat, station.lng], {
-                        icon: L.icon({
-                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                            iconSize: [30, 45],
-                            iconAnchor: [15, 45],
-                            popupAnchor: [0, -45]
-                        })
-                    }).addTo(stationsLayer);
-                    
-                    marker.bindPopup(`
-                        <div style="min-width: 200px;">
-                            <h3 style="margin: 0 0 10px; color: #1a73e8;">${station.name}</h3>
-                            <p><strong>Linjat:</strong> ${station.lines.join(', ')}</p>
-                            <p><strong>Autobusi i radhës:</strong> ${station.nextBus}</p>
-                            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="viewStationDetails(${station.id})">
-                                <i class="fas fa-info-circle"></i> Shiko Detaje
-                            </button>
-                        </div>
-                    `);
-                    
-                    // Shto event listener për klikim
-                    marker.on('click', function() {
-                        highlightStationInSidebar(station.id);
-                    });
-                });
-                
-                // Plotëso listën në sidebar
-                populateStationList(stations);
-            }
-            
-            // Funksioni për plotësimin e listës së stacioneve në sidebar
-            function populateStationList(stations) {
-                const stationList = document.getElementById('station-list');
-                
-                if (stations.length === 0) {
-                    stationList.innerHTML = `
-                        <div class="no-data">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <p>Nuk u gjetën stacione</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                let html = '';
-                stations.forEach(station => {
-                    html += `
-                        <div class="station-item" data-station-id="${station.id}" onclick="focusOnStation(${station.lat}, ${station.lng}, ${station.id})">
-                            <div class="station-header">
-                                <div class="station-name">${station.name}</div>
-                                <div class="station-distance">
-                                    <i class="fas fa-walking"></i> ${station.distance}
-                                </div>
-                            </div>
-                            <div class="station-lines">
-                                ${station.lines.map(line => `<span class="line-badge">${line}</span>`).join('')}
-                            </div>
-                            <div class="station-info">
-                                <div class="next-bus">
-                                    <i class="fas fa-bus"></i> Autobusi i radhës: ${station.nextBus}
-                                </div>
-                                <div class="station-id">
-                                    ID: ${station.id}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                stationList.innerHTML = html;
-            }
-            
-            // Funksioni për ngarkimin e autobusëve
-            function loadBuses() {
-                // Të dhëna të simuluar për autobusët
-                const buses = [
-                    {
-                        id: 101,
-                        name: 'Autobusi L2',
-                        lat: 41.325,
-                        lng: 19.815,
-                        route: 'Stacioni i Jugut - Qendra - 21 Dhjetori',
-                        status: 'on-time', // on-time, delayed, arriving
-                        nextStop: 'Sheshi Shqiponja',
-                        arrival: '3 min',
-                        speed: '25 km/h'
-                    },
-                    {
-                        id: 102,
-                        name: 'Autobusi L5',
-                        lat: 41.330,
-                        lng: 19.825,
-                        route: 'Komuna e Parisit - Qendra - Zogu i Zi',
-                        status: 'delayed',
-                        nextStop: 'Qendra',
-                        arrival: '8 min',
-                        speed: '18 km/h'
-                    },
-                    {
-                        id: 103,
-                        name: 'Autobusi L1',
-                        lat: 41.315,
-                        lng: 19.810,
-                        route: 'Stacioni i Veriut - Qendra - Stacioni i Trenit',
-                        status: 'arriving',
-                        nextStop: 'Stacioni i Trenit',
-                        arrival: '1 min',
-                        speed: '30 km/h'
-                    },
-                    {
-                        id: 104,
-                        name: 'Autobusi L8',
-                        lat: 41.335,
-                        lng: 19.805,
-                        route: '21 Dhjetori - Zogu i Zi - Komuna e Parisit',
-                        status: 'on-time',
-                        nextStop: 'Zogu i Zi',
-                        arrival: '5 min',
-                        speed: '22 km/h'
-                    },
-                    {
-                        id: 105,
-                        name: 'Autobusi L3',
-                        lat: 41.322,
-                        lng: 19.830,
-                        route: 'Stacioni i Jugut - Sheshi Shqiponja - Stacioni i Veriut',
-                        status: 'on-time',
-                        nextStop: 'Sheshi Shqiponja',
-                        arrival: '2 min',
-                        speed: '20 km/h'
-                    }
-                ];
-                
-                // Shto marker-at në hartë
-                buses.forEach(bus => {
-                    let iconColor;
-                    let statusText;
-                    
-                    switch(bus.status) {
-                        case 'on-time':
-                            iconColor = '#4caf50';
-                            statusText = 'Në kohë';
-                            break;
-                        case 'delayed':
-                            iconColor = '#ff9800';
-                            statusText = 'I vonuar';
-                            break;
-                        case 'arriving':
-                            iconColor = '#2196f3';
-                            statusText = 'Duke ardhur';
-                            break;
-                        default:
-                            iconColor = '#4caf50';
-                            statusText = 'Në kohë';
-                    }
-                    
-                    const marker = L.marker([bus.lat, bus.lng], {
-                        icon: L.divIcon({
-                            className: 'bus-marker',
-                            html: `<div style="background-color: ${iconColor}; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);"></div>`,
-                            iconSize: [24, 24],
-                            iconAnchor: [12, 12]
-                        })
-                    }).addTo(busesLayer);
-                    
-                    marker.bindPopup(`
-                        <div style="min-width: 200px;">
-                            <h3 style="margin: 0 0 10px; color: ${iconColor};">${bus.name}</h3>
-                            <p><strong>Rruga:</strong> ${bus.route}</p>
-                            <p><strong>Statusi:</strong> ${statusText}</p>
-                            <p><strong>Stacioni i radhës:</strong> ${bus.nextStop}</p>
-                            <p><strong>Arritja:</strong> ${bus.arrival}</p>
-                            <p><strong>Shpejtësia:</strong> ${bus.speed}</p>
-                            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="trackBus(${bus.id})">
-                                <i class="fas fa-satellite"></i> Ndjek këtë autobus
-                            </button>
-                        </div>
-                    `);
-                    
-                    // Shto event listener për klikim
-                    marker.on('click', function() {
-                        highlightBusInSidebar(bus.id);
-                    });
-                });
-                
-                // Plotëso listën në sidebar
-                populateBusList(buses);
-            }
-            
-            // Funksioni për plotësimin e listës së autobusëve në sidebar
-            function populateBusList(buses) {
-                const busList = document.getElementById('bus-list');
-                
-                if (buses.length === 0) {
-                    busList.innerHTML = `
-                        <div class="no-data">
-                            <i class="fas fa-bus"></i>
-                            <p>Nuk u gjetën autobusë aktivë</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                let html = '';
-                buses.forEach(bus => {
-                    let statusClass, statusText;
-                    
-                    switch(bus.status) {
-                        case 'on-time':
-                            statusClass = 'status-on-time';
-                            statusText = 'Në kohë';
-                            break;
-                        case 'delayed':
-                            statusClass = 'status-delayed';
-                            statusText = 'I vonuar';
-                            break;
-                        case 'arriving':
-                            statusClass = 'status-arriving';
-                            statusText = 'Duke ardhur';
-                            break;
-                    }
-                    
-                    html += `
-                        <div class="bus-item" data-bus-id="${bus.id}" onclick="focusOnBus(${bus.lat}, ${bus.lng}, ${bus.id})">
-                            <div class="bus-header">
-                                <div class="bus-name">
-                                    <i class="fas fa-bus"></i> ${bus.name}
-                                </div>
-                                <div class="bus-status ${statusClass}">${statusText}</div>
-                            </div>
-                            <div class="bus-route">
-                                <i class="fas fa-route"></i> ${bus.route}
-                            </div>
-                            <div class="bus-details">
-                                <div class="next-stop">
-                                    <i class="fas fa-map-pin"></i> Stacioni i radhës: ${bus.nextStop}
-                                </div>
-                                <div class="arrival-time">
-                                    <i class="fas fa-clock"></i> ${bus.arrival}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                busList.innerHTML = html;
-            }
-            
-            // Funksioni për ngarkimin e stacioneve të taksive
-            function loadTaxiStations() {
-                // Të dhëna të simuluar për stacionet e taksive
-                const taxiStations = [
-                    { name: 'Stacioni i Taksive - Qendra', lat: 41.3275, lng: 19.8200 },
-                    { name: 'Stacioni i Taksive - Stacioni i Jugut', lat: 41.3186, lng: 19.8190 },
-                    { name: 'Stacioni i Taksive - Stacioni i Veriut', lat: 41.3382, lng: 19.8210 },
-                    { name: 'Stacioni i Taksive - Aeroporti', lat: 41.4147, lng: 19.7206 }
-                ];
-                
-                // Shto marker-at në hartë
-                taxiStations.forEach(station => {
-                    const marker = L.marker([station.lat, station.lng], {
-                        icon: L.icon({
-                            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                            iconSize: [25, 41],
-                            iconAnchor: [12, 41],
-                            popupAnchor: [0, -41],
-                            className: 'taxi-marker'
-                        })
-                    }).addTo(taxiStationsLayer);
-                    
-                    // Ndrysho ngjyrën e marker-it për taksit
-                    marker._icon.style.filter = 'hue-rotate(270deg)';
-                    
-                    marker.bindPopup(`
-                        <div style="min-width: 200px;">
-                            <h3 style="margin: 0 0 10px; color: #9c27b0;">${station.name}</h3>
-                            <p><strong>Lloji:</strong> Stacion Taksi</p>
-                            <p><strong>Statusi:</strong> Aktiv</p>
-                            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="bookTaxiFromStation('${station.name}')">
-                                <i class="fas fa-taxi"></i> Rezervo Taksi
-                            </button>
-                        </div>
-                    `);
-                });
-            }
-            
-            // Funksioni për ngarkimin e rrugëve
-            function loadRoutes() {
-                // Të dhëna të simuluar për rrugët (linjat e autobusëve)
-                const routes = [
-                    {
-                        name: 'Linja L1',
-                        color: '#FF0000',
-                        coordinates: [
-                            [41.3382, 19.8201], // Stacioni i Veriut
-                            [41.3328, 19.8134], // 21 Dhjetori
-                            [41.3275, 19.8187], // Qendra
-                            [41.3222, 19.7986], // Stacioni i Trenit
-                            [41.3186, 19.8184]  // Stacioni i Jugut
-                        ]
-                    },
-                    {
-                        name: 'Linja L2',
-                        color: '#00FF00',
-                        coordinates: [
-                            [41.3186, 19.8184], // Stacioni i Jugut
-                            [41.3201, 19.8302], // Sheshi Shqiponja
-                            [41.3275, 19.8187], // Qendra
-                            [41.3328, 19.8134], // 21 Dhjetori
-                            [41.3405, 19.8057]  // Zogu i Zi
-                        ]
-                    },
-                    {
-                        name: 'Linja L5',
-                        color: '#0000FF',
-                        coordinates: [
-                            [41.3158, 19.8089], // Komuna e Parisit
-                            [41.3275, 19.8187], // Qendra
-                            [41.3328, 19.8134], // 21 Dhjetori
-                            [41.3405, 19.8057]  // Zogu i Zi
-                        ]
-                    }
-                ];
-                
-                // Vizato rrugët në hartë
-                routes.forEach(route => {
-                    const polyline = L.polyline(route.coordinates, {
-                        color: route.color,
-                        weight: 4,
-                        opacity: 0.7,
-                        dashArray: '10, 10'
-                    }).addTo(routesLayer);
-                    
-                    polyline.bindPopup(`<strong>${route.name}</strong><br>Linja e autobusit`);
-                });
-            }
-            
-            // Funksioni për fokusimin në një stacion
-            window.focusOnStation = function(lat, lng, stationId) {
-                // Zentro hartën në stacion
-                map.setView([lat, lng], 16);
-                
-                // Thekso stacionin në sidebar
-                highlightStationInSidebar(stationId);
-                
-                // Hap popup për marker
-                stationsLayer.eachLayer(function(layer) {
-                    if (layer.getLatLng().lat === lat && layer.getLatLng().lng === lng) {
-                        layer.openPopup();
-                    }
-                });
-            };
-            
-            // Funksioni për fokusimin në një autobus
-            window.focusOnBus = function(lat, lng, busId) {
-                // Zentro hartën në autobus
-                map.setView([lat, lng], 16);
-                
-                // Thekso autobusin në sidebar
-                highlightBusInSidebar(busId);
-                
-                // Hap popup për marker
-                busesLayer.eachLayer(function(layer) {
-                    if (layer.getLatLng().lat === lat && layer.getLatLng().lng === lng) {
-                        layer.openPopup();
-                    }
-                });
-            };
-            
-            // Funksioni për theksimin e një stacioni në sidebar
-            function highlightStationInSidebar(stationId) {
-                // Hiq theksin nga të gjitha stacionet
-                document.querySelectorAll('.station-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Shto theksin tek stacioni i zgjedhur
-                const stationItem = document.querySelector(`.station-item[data-station-id="${stationId}"]`);
-                if (stationItem) {
-                    stationItem.classList.add('active');
-                    
-                    // Scroll në stacionin e zgjedhur
-                    stationItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            }
-            
-            // Funksioni për theksimin e një autobusi në sidebar
-            function highlightBusInSidebar(busId) {
-                // Hiq theksin nga të gjithë autobusët
-                document.querySelectorAll('.bus-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                // Shto theksin tek autobusi i zgjedhur
-                const busItem = document.querySelector(`.bus-item[data-bus-id="${busId}"]`);
-                if (busItem) {
-                    busItem.classList.add('active');
-                    
-                    // Scroll në autobusin e zgjedhur
-                    busItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            }
-            
-            // Funksioni për shfaqjen e detajeve të stacionit
-            window.viewStationDetails = function(stationId) {
-                alert(`Detajet për stacionin ID: ${stationId}\n\nKjo faqe do të zhvillohet më tej në versionet e ardhshme.`);
-                // Në një implementim real, kjo do të hapte një modal me detaje të plota
-            };
-            
-            // Funksioni për ndjekjen e një autobusi
-            window.trackBus = function(busId) {
-                alert(`Duke ndjekur autobusin ID: ${busId}\n\nKjo veçori do të implementohet në versionet e ardhshme.`);
-                // Në një implementim real, kjo do të hapte një faqe të veçantë për ndjekje
-            };
-            
-            // Funksioni për rezervimin e një taksi nga një stacion
-            window.bookTaxiFromStation = function(stationName) {
-                alert(`Rezervim taksi nga: ${stationName}\n\nDo të ridrejtoheni tek faqja e rezervimit të taksive.`);
-                // Ridrejto tek faqja e taksive
-                window.location.href = 'taxi.html?station=' + encodeURIComponent(stationName);
-            };
+          }, 10000);
+        }
+
+        // Start everything
+        document.addEventListener('DOMContentLoaded', () => {
+          initMap();
+          initSidebar();
+          initControls();
+          startLiveRefresh();
         });
+      })();
     </script>
 </body>
 </html>
