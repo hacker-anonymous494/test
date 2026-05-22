@@ -9,67 +9,99 @@
     <link rel="stylesheet" href="../style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-dark: #1557b0;
+            --accent-color: #f9a825;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e8f0fe;
+            --text-primary: #202124;
+            --text-secondary: #5f6368;
+            --text-light: #ffffff;
+            --border-color: #dadce0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 50px rgba(0, 0, 0, 0.18);
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+        }
+
         .search-page {
             padding: 120px 0 50px;
             min-height: 100vh;
-            background-color: var(--bg-secondary);
+            background: linear-gradient(180deg, #f0f4ff 0%, #f8f9fa 100%);
         }
-        
+
         .page-header {
             text-align: center;
             margin-bottom: 40px;
             padding: 0 20px;
         }
-        
+
         .page-header h1 {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 14px;
+            letter-spacing: -0.5px;
         }
-        
+
         .page-header h1 i {
             color: var(--primary-color);
+            font-size: 36px;
+            background: linear-gradient(135deg, #1a73e8, #4285f4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
+
         .page-header p {
-            font-size: 18px;
+            font-size: 17px;
             color: var(--text-secondary);
-            max-width: 700px;
+            max-width: 650px;
             margin: 0 auto;
+            line-height: 1.5;
         }
-        
+
         .search-container {
             display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 30px;
-            max-width: 1400px;
+            grid-template-columns: 370px 1fr;
+            gap: 28px;
+            max-width: 1440px;
             margin: 0 auto;
             padding: 0 20px;
+            align-items: start;
         }
-        
+
         .search-sidebar {
             background-color: var(--bg-primary);
             border-radius: var(--border-radius-lg);
-            padding: 30px;
+            padding: 28px;
             box-shadow: var(--shadow-lg);
             height: fit-content;
+            position: sticky;
+            top: 100px;
+            border: 1px solid var(--border-color);
         }
-        
+
         .search-form {
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 22px;
         }
-        
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 4px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 10px;
@@ -78,610 +110,1029 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 14px;
+            letter-spacing: 0.2px;
         }
-        
+
         .form-group label i {
             color: var(--primary-color);
+            font-size: 15px;
         }
-        
+
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 14px;
-            border: 1px solid var(--border-color);
+            padding: 13px 14px;
+            border: 1.5px solid var(--border-color);
             border-radius: var(--border-radius);
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-family: var(--font-family);
             transition: var(--transition);
+            box-sizing: border-box;
         }
-        
+
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.08);
+            background-color: #fafbff;
         }
-        
+
         .location-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .input-with-icon {
-            position: relative;
-        }
-        
-        .input-with-icon i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-color);
-        }
-        
-        .input-with-icon input {
-            padding-left: 45px;
-        }
-        
-        .swap-locations {
-            display: flex;
-            justify-content: center;
-            margin: 5px 0;
-        }
-        
-        .swap-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .swap-btn:hover {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-        }
-        
-        .date-time-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .option-card {
-            background-color: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .option-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-3px);
-        }
-        
-        .option-card.selected {
-            border-color: var(--primary-color);
-            background-color: var(--bg-tertiary);
-        }
-        
-        .option-icon {
-            font-size: 24px;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-        
-        .option-name {
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-        }
-        
-        .option-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        
-        .filter-section {
-            background-color: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 10px;
-        }
-        
-        .filter-section h4 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .filter-section h4 i {
-            color: var(--accent-color);
-        }
-        
-        .checkbox-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 14px;
+            z-index: 1;
+        }
+
+        .input-with-icon input {
+            padding-left: 42px;
+        }
+
+        .swap-locations {
+            display: flex;
+            justify-content: center;
+            margin: 2px 0;
+        }
+
+        .swap-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--bg-secondary);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .swap-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border-color: var(--primary-color);
+            transform: rotate(180deg);
+        }
+
+        .date-time-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-card {
+            background-color: var(--bg-secondary);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            background-color: #fff;
+        }
+
+        .option-card.selected {
+            border-color: var(--primary-color);
+            background-color: #e8f0fe;
+            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.06);
+        }
+
+        .option-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .option-icon {
+            font-size: 26px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .option-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+
+        .option-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .filter-section {
+            background-color: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 18px;
+            margin-top: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-section h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-section h4 i {
+            color: var(--accent-color);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
         .checkbox-item {
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
-        
+
         .checkbox-item input {
             display: none;
         }
-        
+
         .checkbox-custom {
             width: 20px;
             height: 20px;
             border: 2px solid var(--border-color);
-            border-radius: 4px;
+            border-radius: 5px;
             position: relative;
             transition: var(--transition);
+            flex-shrink: 0;
         }
-        
-        .checkbox-item input:checked + .checkbox-custom {
+
+        .checkbox-item input:checked+.checkbox-custom {
             border-color: var(--primary-color);
             background-color: var(--primary-color);
         }
-        
-        .checkbox-item input:checked + .checkbox-custom::after {
+
+        .checkbox-item input:checked+.checkbox-custom::after {
             content: '✓';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: var(--text-light);
+            color: #fff;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
         }
-        
+
         .checkbox-label {
             flex: 1;
             color: var(--text-primary);
             font-weight: 500;
+            font-size: 13px;
         }
-        
+
         .search-btn {
             width: 100%;
-            padding: 16px;
-            font-size: 18px;
+            padding: 15px;
+            font-size: 16px;
             font-weight: 700;
-            margin-top: 10px;
+            margin-top: 6px;
+            border-radius: var(--border-radius);
+            background: linear-gradient(135deg, #1a73e8, #4285f4);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.35);
         }
-        
+
+        .search-btn:hover {
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .map-pick-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .map-pick-btn {
+            flex: 1;
+            font-size: 13px !important;
+            padding: 10px 8px !important;
+            border-radius: var(--border-radius) !important;
+            transition: var(--transition);
+            font-weight: 600 !important;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border-color);
+            cursor: pointer;
+            color: var(--text-primary);
+            font-family: var(--font-family);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .map-pick-btn:hover {
+            border-color: var(--primary-color);
+            background: #e8f0fe;
+        }
+        .map-pick-btn.active {
+            background-color: var(--primary-color) !important;
+            color: #fff !important;
+            border-color: var(--primary-color) !important;
+            animation: pulse-btn 1.5s infinite;
+        }
+
+        @keyframes pulse-btn {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(26, 115, 232, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 0 12px rgba(26, 115, 232, 0);
+            }
+        }
+
+        #pick-status {
+            margin-top: 12px;
+            font-size: 13px;
+            text-align: center;
+            color: var(--primary-color);
+            display: none;
+            background: #e8f0fe;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .search-main {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 24px;
         }
-        
+
         .results-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        
+
         .results-header h2 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        
+
         .results-header h2 i {
             color: var(--primary-color);
         }
-        
+
         .results-count {
             color: var(--text-secondary);
-            font-size: 16px;
+            font-size: 14px;
+            background: var(--bg-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
         }
-        
+
         .sort-options {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
         }
-        
+
         .sort-btn {
-            padding: 8px 16px;
+            padding: 8px 15px;
             background-color: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
+            border: 1.5px solid var(--border-color);
+            border-radius: 20px;
             color: var(--text-primary);
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            font-size: 13px;
+            font-family: var(--font-family);
         }
-        
-        .sort-btn:hover, .sort-btn.active {
+
+        .sort-btn:hover,
+        .sort-btn.active {
             background-color: var(--primary-color);
-            color: var(--text-light);
+            color: #fff;
             border-color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
         }
-        
+
         .results-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
-        
+
         .route-card {
             background-color: var(--bg-primary);
             border-radius: var(--border-radius-lg);
-            padding: 25px;
+            padding: 22px;
             box-shadow: var(--shadow);
             transition: var(--transition);
             cursor: pointer;
             border: 2px solid transparent;
+            position: relative;
         }
-        
+
         .route-card:hover {
             border-color: var(--primary-color);
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
         }
-        
+
         .route-card.selected {
             border-color: var(--primary-color);
-            background-color: var(--bg-tertiary);
+            background-color: #fafcff;
+            box-shadow: 0 0 0 6px rgba(26, 115, 232, 0.04);
         }
-        
+
         .route-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 12px;
         }
-        
+
         .route-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text-primary);
-        }
-        
-        .route-time {
             font-size: 20px;
             font-weight: 800;
-            color: var(--primary-color);
+            color: var(--text-primary);
+            line-height: 1.3;
         }
-        
+
+        .route-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .line-badge {
+            display: inline-block;
+            padding: 3px 11px;
+            border-radius: 999px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .route-time {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary-color);
+            white-space: nowrap;
+            background: #e8f0fe;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
         .route-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
         }
-        
+
         .detail-item {
             display: flex;
             align-items: center;
             gap: 10px;
+            background: var(--bg-secondary);
+            padding: 10px 12px;
+            border-radius: var(--border-radius);
         }
-        
+
         .detail-icon {
-            width: 40px;
-            height: 40px;
-            background-color: var(--bg-secondary);
+            width: 36px;
+            height: 36px;
+            background-color: #e8f0fe;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary-color);
+            flex-shrink: 0;
         }
-        
+
         .detail-content {
             display: flex;
             flex-direction: column;
         }
-        
+
         .detail-label {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--text-secondary);
         }
-        
+
         .detail-value {
             font-weight: 700;
             color: var(--text-primary);
+            font-size: 14px;
         }
-        
+
         .route-steps {
             background-color: var(--bg-secondary);
             border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 20px;
+            padding: 18px;
+            margin-top: 4px;
         }
-        
+
         .steps-header {
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 15px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            font-size: 15px;
         }
-        
+
         .steps-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
-        
+
         .step-item {
             display: flex;
             align-items: flex-start;
-            gap: 15px;
+            gap: 12px;
+            padding: 8px 0;
         }
-        
-        .step-number {
-            width: 28px;
-            height: 28px;
-            background-color: var(--primary-color);
-            color: var(--text-light);
+
+        .step-icon {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
+            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
             flex-shrink: 0;
+            font-size: 13px;
         }
-        
+        .step-walk .step-icon {
+            background: #34A853;
+        }
+        .step-bus .step-icon {
+            background: #1a73e8;
+        }
         .step-content {
             flex: 1;
             color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.4;
         }
-        
+        .step-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
         .step-time {
             font-weight: 700;
             color: var(--text-secondary);
-            font-size: 14px;
-            min-width: 80px;
+            font-size: 13px;
+            min-width: 70px;
             text-align: right;
         }
-        
+
         .route-actions {
             display: flex;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
         }
-        
+
         .action-btn {
             flex: 1;
-            padding: 12px;
+            min-width: 80px;
+            padding: 11px 8px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
+            font-size: 13px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-family);
+            border: 1.5px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
         }
-        
+        .action-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        .action-btn.btn-primary-action {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        .action-btn.btn-primary-action:hover {
+            background: var(--primary-dark);
+        }
+
         .map-container {
-            height: 400px;
+            height: 420px;
             border-radius: var(--border-radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-color);
         }
-        
+
         #search-map {
             width: 100%;
             height: 100%;
         }
-        
+
+        .route-meta-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            background: #e8f0fe;
+            border-radius: var(--border-radius);
+            padding: 10px 16px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .route-meta-bar i {
+            color: var(--primary-color);
+            margin-right: 4px;
+        }
+        .route-meta-bar strong {
+            color: var(--text-primary);
+        }
+
         .no-results {
             text-align: center;
-            padding: 60px 20px;
+            padding: 50px 20px;
             background-color: var(--bg-primary);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--shadow);
         }
-        
+
         .no-results i {
-            font-size: 64px;
-            color: var(--border-color);
-            margin-bottom: 20px;
+            font-size: 56px;
+            color: #dadce0;
+            margin-bottom: 18px;
         }
-        
+
         .no-results h3 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--text-primary);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
-        
+
         .no-results p {
             color: var(--text-secondary);
-            max-width: 500px;
-            margin: 0 auto 25px;
+            max-width: 450px;
+            margin: 0 auto 22px;
+            line-height: 1.5;
         }
-        
+
         .saved-routes {
             background-color: var(--bg-primary);
             border-radius: var(--border-radius-lg);
-            padding: 30px;
-            box-shadow: var(--shadow-lg);
+            padding: 26px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
         }
-        
+
         .saved-routes-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        
+
         .saved-routes-header h3 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-        
+
         .saved-routes-header h3 i {
             color: var(--accent-color);
         }
-        
+
         .saved-routes-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
         }
-        
+
         .saved-route {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
+            padding: 14px;
             background-color: var(--bg-secondary);
             border-radius: var(--border-radius);
             transition: var(--transition);
             cursor: pointer;
+            gap: 10px;
         }
-        
+
         .saved-route:hover {
-            background-color: var(--bg-tertiary);
+            background-color: #e8f0fe;
         }
-        
+
         .saved-route-info {
             flex: 1;
         }
-        
+
         .saved-route-name {
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
-        
+
         .saved-route-path {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-secondary);
         }
-        
+
         .saved-route-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
-        
+
         .saved-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            border: none;
+            border: 1.5px solid var(--border-color);
             cursor: pointer;
             transition: var(--transition);
         }
-        
+
         .saved-btn:hover {
             background-color: var(--primary-color);
-            color: var(--text-light);
+            color: #fff;
+            border-color: var(--primary-color);
         }
-        
+
+        /* ===== MODAL ===== */
+        .driver-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.65);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .driver-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            width: 90%;
+            max-width: 650px;
+            max-height: 82vh;
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.94);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: 0.2s;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .modal-close:hover {
+            color: var(--primary-color);
+            background: #e8f0fe;
+        }
+
+        .modal-body {
+            padding: 22px;
+            overflow-y: auto;
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        .modal-body .route-steps {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 0;
+        }
+
+        .modal-body .step-item {
+            margin-bottom: 12px;
+        }
+
+        /* ===== USER LOCATION MARKER STYLES ===== */
+        .user-location-marker {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+        .user-location-dot {
+            width: 16px;
+            height: 16px;
+            background: #1a73e8;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+        }
+        .user-location-pulse {
+            width: 32px;
+            height: 32px;
+            background: rgba(26, 115, 232, 0.3);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2.2);
+                opacity: 0;
+            }
+        }
+        .user-direction-arrow {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 14px solid #1a73e8;
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+            transition: transform 0.4s ease;
+        }
+
+        /* Station markers */
+        .station-marker-start,
+        .station-marker-stop {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            font-size: 13px;
+            color: #fff;
+            position: relative;
+        }
+        .station-marker-start {
+            background: #34A853;
+            border: 3px solid #fff;
+        }
+        .station-marker-stop {
+            background: #ea4335;
+            border: 3px solid #fff;
+        }
+        .station-label {
+            position: absolute;
+            bottom: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 11px;
+            font-weight: 700;
+            color: #202124;
+            background: #fff;
+            padding: 2px 8px;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+        }
+
+        /* Destination marker */
+        .dest-marker-final {
+            width: 30px;
+            height: 30px;
+            background: #ea4335;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(234, 67, 53, 0.4);
+            border: 3px solid #fff;
+        }
+        .dest-marker-final i {
+            transform: rotate(45deg);
+            color: #fff;
+            font-size: 12px;
+        }
+
         @media (max-width: 1200px) {
             .search-container {
                 grid-template-columns: 1fr;
-                max-width: 800px;
+                max-width: 750px;
             }
-            
             .search-sidebar {
+                position: static;
                 order: 2;
             }
-            
             .search-main {
                 order: 1;
             }
         }
-        
+
         @media (max-width: 768px) {
             .page-header h1 {
-                font-size: 30px;
+                font-size: 28px;
             }
-            
             .date-time-group,
             .options-grid {
                 grid-template-columns: 1fr;
             }
-            
             .route-details {
                 grid-template-columns: 1fr;
             }
-            
             .route-actions {
                 flex-direction: column;
             }
-            
             .sort-options {
                 flex-wrap: wrap;
             }
+            .map-container {
+                height: 300px;
+            }
         }
-        
+
         @media (max-width: 480px) {
             .search-container {
-                padding: 0 15px;
+                padding: 0 10px;
             }
-            
             .search-sidebar {
-                padding: 20px;
+                padding: 18px;
             }
-            
             .route-card {
-                padding: 20px;
+                padding: 16px;
             }
-            
             .route-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 15px;
+                gap: 10px;
             }
-            
             .saved-routes {
-                padding: 20px;
+                padding: 16px;
             }
-            
             .saved-routes-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 15px;
+                gap: 10px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
         <nav class="navbar">
             <div class="logo-container">
@@ -691,7 +1142,6 @@
                 </div>
                 <div class="tagline">Transporti Juaj në Tiranë</div>
             </div>
-            
             <ul class="nav-menu">
                 <li class="nav-item"><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Kryefaqja</a></li>
                 <li class="nav-item"><a href="map.html" class="nav-link"><i class="fas fa-map"></i> Harta</a></li>
@@ -699,12 +1149,10 @@
                 <li class="nav-item"><a href="search.html" class="nav-link active"><i class="fas fa-search"></i> Kërko</a></li>
                 <li class="nav-item"><a href="driver.html" class="nav-link"><i class="fas fa-user-tie"></i> Shofer</a></li>
             </ul>
-            
             <div class="auth-buttons" id="auth-buttons">
                 <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
                 <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Regjistrohu</a>
             </div>
-            
             <div class="theme-toggle">
                 <input type="checkbox" id="theme-switch" class="theme-switch">
                 <label for="theme-switch" class="theme-label">
@@ -713,7 +1161,6 @@
                     <span class="theme-ball"></span>
                 </label>
             </div>
-            
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -722,56 +1169,47 @@
         </nav>
     </header>
 
-    <!-- Faqja e Kërkimit të Rrugëve -->
     <main class="search-page">
         <div class="page-header">
             <h1><i class="fas fa-search"></i> Kërko Rrugën Më të Mirë</h1>
             <p>Gjeni rrugën më të shpejtë, më të lirë ose më komode duke përdorur filtra të avancuar</p>
         </div>
-        
+
         <div class="search-container">
-            <!-- Sidebar me Formën e Kërkimit -->
             <div class="search-sidebar">
                 <form class="search-form" id="advanced-search-form">
-                    <!-- Lokacioni -->
                     <div class="form-group">
                         <label><i class="fas fa-map-marker-alt"></i> Lokacioni</label>
                         <div class="location-inputs">
                             <div class="input-with-icon">
-                                <i class="fas fa-circle"></i>
+                                <i class="fas fa-circle" style="color:#34A853;"></i>
                                 <input type="text" id="from-location" placeholder="Nga po niseni?" required>
                             </div>
-                            
                             <div class="swap-locations">
                                 <button type="button" class="swap-btn" id="swap-locations-btn">
-                                    <i class="fas fa-exchange-alt"></i>
+                                    <i class="fas fa-arrow-down-up-across-line"></i>
                                 </button>
                             </div>
-                            
                             <div class="input-with-icon">
-                                <i class="fas fa-flag-checkered"></i>
+                                <i class="fas fa-flag-checkered" style="color:#ea4335;"></i>
                                 <input type="text" id="to-location" placeholder="Ku dëshironi të shkoni?" required>
                             </div>
-                            
                             <div class="checkbox-item">
                                 <input type="checkbox" id="use-current-location">
                                 <div class="checkbox-custom"></div>
                                 <label for="use-current-location" class="checkbox-label">Përdor lokacionin aktual për nisje</label>
                             </div>
-
-                            <!-- NEW BUTTONS: pick from map -->
-                            <div class="map-pick-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
-                                <button type="button" class="btn btn-outline map-pick-btn" id="pick-origin-btn" style="flex:1; font-size:14px;">
+                            <div class="map-pick-buttons">
+                                <button type="button" class="map-pick-btn" id="pick-origin-btn">
                                     <i class="fas fa-map-marker-alt"></i> Cakto nisjen nga harta
                                 </button>
-                                <button type="button" class="btn btn-outline map-pick-btn" id="pick-dest-btn" style="flex:1; font-size:14px;">
-                                    <i class="fas fa-flag-checkered"></i> Cakto destinacionin nga harta
+                                <button type="button" class="map-pick-btn" id="pick-dest-btn">
+                                    <i class="fas fa-flag-checkered"></i> Cakto destinacionin
                                 </button>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Data dhe Koha -->
+
                     <div class="form-group">
                         <label><i class="fas fa-calendar-alt"></i> Data dhe Koha</label>
                         <div class="date-time-group">
@@ -782,52 +1220,38 @@
                                 <option value="arrival">Arritje në kohë specifike</option>
                             </select>
                         </div>
-                        
-                        <div class="input-with-icon" id="specific-time-container" style="display: none; margin-top: 15px;">
+                        <div class="input-with-icon" id="specific-time-container" style="display: none; margin-top: 12px;">
                             <i class="fas fa-clock"></i>
                             <input type="time" id="specific-time" value="08:00">
                         </div>
                     </div>
-                    
-                    <!-- Opsioni i Kërkimit -->
+
                     <div class="form-group">
                         <label><i class="fas fa-sliders-h"></i> Çfarë po kërkoni?</label>
                         <div class="options-grid" id="search-options">
                             <div class="option-card" data-option="fastest">
-                                <div class="option-icon">
-                                    <i class="fas fa-bolt"></i>
-                                </div>
+                                <div class="option-icon"><i class="fas fa-bolt"></i></div>
                                 <div class="option-name">Më e shpejta</div>
                                 <div class="option-desc">Koha më e shkurtër</div>
                             </div>
-                            
                             <div class="option-card" data-option="cheapest">
-                                <div class="option-icon">
-                                    <i class="fas fa-coins"></i>
-                                </div>
+                                <div class="option-icon"><i class="fas fa-coins"></i></div>
                                 <div class="option-name">Më e lira</div>
                                 <div class="option-desc">Çmimi më i ulët</div>
                             </div>
-                            
                             <div class="option-card" data-option="comfort">
-                                <div class="option-icon">
-                                    <i class="fas fa-couch"></i>
-                                </div>
+                                <div class="option-icon"><i class="fas fa-couch"></i></div>
                                 <div class="option-name">Më komode</div>
                                 <div class="option-desc">Më pak ndërrime</div>
                             </div>
-                            
                             <div class="option-card" data-option="accessible">
-                                <div class="option-icon">
-                                    <i class="fas fa-wheelchair"></i>
-                                </div>
+                                <div class="option-icon"><i class="fas fa-wheelchair"></i></div>
                                 <div class="option-name">Aksesuese</div>
                                 <div class="option-desc">Për persona me aftësi të kufizuara</div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Filtra Shtesë -->
+
                     <div class="filter-section">
                         <h4><i class="fas fa-filter"></i> Filtra Shtesë</h4>
                         <div class="checkbox-group">
@@ -836,19 +1260,16 @@
                                 <div class="checkbox-custom"></div>
                                 <label for="filter-direct" class="checkbox-label">Vetëm udhëtime direkte (pa ndërrime)</label>
                             </div>
-                            
                             <div class="checkbox-item">
                                 <input type="checkbox" id="filter-walking">
                                 <div class="checkbox-custom"></div>
                                 <label for="filter-walking" class="checkbox-label">Lejo ecjen midis stacioneve</label>
                             </div>
-                            
                             <div class="checkbox-item">
                                 <input type="checkbox" id="filter-taxi">
                                 <div class="checkbox-custom"></div>
                                 <label for="filter-taxi" class="checkbox-label">Përfshij taksi në opsione</label>
                             </div>
-                            
                             <div class="checkbox-item">
                                 <input type="checkbox" id="filter-real-time">
                                 <div class="checkbox-custom"></div>
@@ -856,47 +1277,35 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Butoni i Kërkimit -->
-                    <button type="submit" id="search-btn" class="btn btn-primary search-btn">
+
+                    <button type="submit" id="search-btn" class="search-btn">
                         <i class="fas fa-search"></i> Kërko Rrugë
                     </button>
                 </form>
-
-                <!-- Status message for map picking -->
-                <div id="pick-status" style="margin-top: 15px; font-size: 13px; text-align: center; color: var(--primary-color); display: none;">
+                <div id="pick-status">
                     <i class="fas fa-hand-pointer"></i> <span id="pick-status-text"></span>
                 </div>
             </div>
-            
-            <!-- Rezultatet dhe Harta -->
+
             <div class="search-main">
-                <!-- Harta -->
                 <div class="map-container">
                     <div id="search-map"></div>
                 </div>
-                
-                <!-- Rezultatet e Kërkimit -->
+
                 <div class="results-container" id="results-container">
                     <div class="results-header">
                         <h2><i class="fas fa-route"></i> Rezultatet e Kërkimit</h2>
                         <div class="results-count" id="results-count">3 rrugë u gjetën</div>
                     </div>
-                    
                     <div class="sort-options">
-                        <button class="sort-btn active" data-sort="time">Koha</button>
-                        <button class="sort-btn" data-sort="price">Çmimi</button>
-                        <button class="sort-btn" data-sort="transfers">Ndërrime</button>
-                        <button class="sort-btn" data-sort="comfort">Komoditeti</button>
+                        <button class="sort-btn active" data-sort="time">⏱ Koha</button>
+                        <button class="sort-btn" data-sort="price">💰 Çmimi</button>
+                        <button class="sort-btn" data-sort="transfers">🔄 Ndërrime</button>
+                        <button class="sort-btn" data-sort="comfort">🛋 Komoditeti</button>
                     </div>
-                    
-                    <!-- Rezultatet do të shtohen këtu nga JavaScript -->
-                    <div id="route-results">
-                        <!-- Rezultatet do të shtohen këtu -->
-                    </div>
+                    <div id="route-results"></div>
                 </div>
-                
-                <!-- Rrugët e Ruajtura -->
+
                 <div class="saved-routes">
                     <div class="saved-routes-header">
                         <h3><i class="fas fa-bookmark"></i> Rrugët e Mia të Ruajtura</h3>
@@ -904,15 +1313,11 @@
                             <i class="fas fa-eye"></i> Shiko të Gjitha
                         </button>
                     </div>
-                    
-                    <div class="saved-routes-list" id="saved-routes-list">
-                        <!-- Rrugët e ruajtura do të shtohen këtu nga JavaScript -->
-                    </div>
+                    <div class="saved-routes-list" id="saved-routes-list"></div>
                 </div>
             </div>
         </div>
-        
-        <!-- Modal për Detaje të Rrugës -->
+
         <div class="driver-modal" id="route-details-modal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -920,26 +1325,19 @@
                     <button class="modal-close" id="close-route-modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div id="route-details-content">
-                        <!-- Detajet e rrugës do të shtohen këtu -->
-                    </div>
+                    <div id="route-details-content"></div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <div class="logo">
-                        <i class="fas fa-bus"></i>
-                        <span class="logo-text">Sherbimijone</span>
-                    </div>
-                    <p class="footer-description">Platforma kryesore për transportin publik dhe taksi në Tiranë. Ne bëjmë udhëtimin tuaj më të lehtë, më të shpejtë dhe më të sigurt.</p>
+                    <div class="logo"><i class="fas fa-bus"></i><span class="logo-text">Sherbimijone</span></div>
+                    <p class="footer-description">Platforma kryesore për transportin publik dhe taksi në Tiranë.</p>
                 </div>
-                
                 <div class="footer-section">
                     <h3 class="footer-title">Lidhje të Shpejta</h3>
                     <ul class="footer-links">
@@ -950,946 +1348,978 @@
                         <li><a href="driver.html">Shofer</a></li>
                     </ul>
                 </div>
-                
-                <div class="footer-section">
-                    <h3 class="footer-title">Informacion</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Si të gjeni rrugën më të mirë</a></li>
-                        <li><a href="#">Tarifat e transportit publik</a></li>
-                        <li><a href="#">Orari i autobusëve</a></li>
-                        <li><a href="#">FAQ për Kërkimin</a></li>
-                        <li><a href="#contact">Kontakt</a></li>
-                    </ul>
-                </div>
-                
                 <div class="footer-section">
                     <h3 class="footer-title">Ndihmë</h3>
                     <div class="contact-info">
                         <p><i class="fas fa-phone"></i> +355 4X XXX XXXX</p>
                         <p><i class="fas fa-envelope"></i> support@sherbimijone.com</p>
-                        <p><i class="fas fa-clock"></i> Support: 06:00 - 22:00</p>
                     </div>
                 </div>
             </div>
-            
             <div class="footer-bottom">
                 <p>&copy; 2023 Sherbimijone. Të gjitha të drejtat e rezervuara.</p>
-                <div class="payment-methods">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                    <i class="fab fa-cc-paypal"></i>
-                    <i class="fas fa-money-bill-wave"></i>
-                </div>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="../config.js"></script>
-<!-- <script src="../security-measures.js"></script> -->
-<script src="../assets/js/auth.js"></script>
-<script src="../script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+    <script src="../config.js">
+    </script>
+    <script src="../assets/js/auth.js">
+    </script>
+    <script src="../script.js">
+    </script>
 
-<script>
-(function () {
-  'use strict';
+    <script>
+        (function() {
+            'use strict';
 
-  // ── State ──────────────────────────────────────────────────────────────────
-  let map, routeLayers = [], markerOrigin = null, markerDest = null;
-  let currentResults = [];
-  let savedRoutes    = [];
-  let selectedRouteId = null;
-  let pickingMode = null;            // 'origin' or 'dest'
-  let pendingOriginCoords = null;    // exact lat/lng from map pick
-  let pendingDestCoords   = null;
+            // ── State ──────────────────────────────────────────────────────────────
+            let map;
+            let routeLayers = [];
+            let walkingRouteLayers = [];
+            let markerUserLocation = null;
+            let markerStartStation = null;
+            let markerStopStation = null;
+            let markerOrigin = null;
+            let markerDest = null;
+            let userHeading = null;
+            let geolocationWatchId = null;
+            let currentResults = [];
+            let savedRoutes = [];
+            let selectedRouteId = null;
+            let pickingMode = null;
+            let pendingOriginCoords = null;
+            let pendingDestCoords = null;
+            let userCurrentPosition = null;
 
-  // ── Map init ───────────────────────────────────────────────────────────────
-  function initMap() {
-    map = L.map('search-map', { zoomControl: true }).setView([41.3275, 19.8187], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 19,
-    }).addTo(map);
+            // ── Map init ───────────────────────────────────────────────────────────
+            function initMap() {
+                map = L.map('search-map', {
+                    zoomControl: true,
+                    zoomControlOptions: { position: 'topright' }
+                }).setView([41.3275, 19.8187], 13);
 
-    // Add click listener for picking
-    map.on('click', async (e) => {
-      if (!pickingMode) return;
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 19,
+                }).addTo(map);
 
-      const { lat, lng } = e.latlng;
-      const statusDiv = document.getElementById('pick-status');
-      const statusSpan = document.getElementById('pick-status-text');
+                // Click for picking mode
+                map.on('click', async (e) => {
+                    if (!pickingMode) return;
+                    const { lat, lng } = e.latlng;
+                    const statusDiv = document.getElementById('pick-status');
+                    const statusSpan = document.getElementById('pick-status-text');
 
-      if (pickingMode === 'origin') {
-        statusSpan.innerText = 'Duke vendosur nisjen...';
-        await setPickedLocation(lat, lng, 'origin');
-        pickingMode = null;
-        document.getElementById('pick-origin-btn').classList.remove('active');
-        statusDiv.style.display = 'none';
-      } else if (pickingMode === 'dest') {
-        statusSpan.innerText = 'Duke vendosur destinacionin...';
-        await setPickedLocation(lat, lng, 'dest');
-        pickingMode = null;
-        document.getElementById('pick-dest-btn').classList.remove('active');
-        statusDiv.style.display = 'none';
-      }
-    });
-  }
+                    if (pickingMode === 'origin') {
+                        statusSpan.innerText = 'Duke vendosur nisjen...';
+                        await setPickedLocation(lat, lng, 'origin');
+                    } else if (pickingMode === 'dest') {
+                        statusSpan.innerText = 'Duke vendosur destinacionin...';
+                        await setPickedLocation(lat, lng, 'dest');
+                    }
+                    pickingMode = null;
+                    document.getElementById('pick-origin-btn').classList.remove('active');
+                    document.getElementById('pick-dest-btn').classList.remove('active');
+                    statusDiv.style.display = 'none';
+                });
 
-  async function reverseGeocode(lat, lng) {
-    try {
-      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&countrycodes=al`;
-      const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
-      const data = await res.json();
-      return data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-    } catch {
-      return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-    }
-  }
+                // Start geolocation watch
+                startGeolocationWatch();
+            }
 
-  async function setPickedLocation(lat, lng, type) {
-    const address = await reverseGeocode(lat, lng);
-    if (type === 'origin') {
-      document.getElementById('from-location').value = address;
-      pendingOriginCoords = { lat, lng };
-      if (markerOrigin) map.removeLayer(markerOrigin);
-      addOriginMarker(lat, lng, address);
-    } else {
-      document.getElementById('to-location').value = address;
-      pendingDestCoords = { lat, lng };
-      if (markerDest) map.removeLayer(markerDest);
-      addDestMarker(lat, lng, address);
-    }
-  }
+            // ── Geolocation ────────────────────────────────────────────────────────
+            function startGeolocationWatch() {
+                if (!navigator.geolocation) return;
+                geolocationWatchId = navigator.geolocation.watchPosition(
+                    (position) => {
+                        userCurrentPosition = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                            heading: position.coords.heading,
+                            speed: position.coords.speed,
+                        };
+                        userHeading = position.coords.heading;
+                        updateUserLocationMarker();
+                    },
+                    (err) => {
+                        console.warn('Geolocation error:', err.message);
+                    }, {
+                        enableHighAccuracy: true,
+                        maximumAge: 5000,
+                        timeout: 15000,
+                    }
+                );
+            }
 
-  function clearMap() {
-    routeLayers.forEach(l => map.removeLayer(l));
-    routeLayers = [];
-    if (markerOrigin) { map.removeLayer(markerOrigin); markerOrigin = null; }
-    if (markerDest)   { map.removeLayer(markerDest);   markerDest   = null; }
-  }
+            function updateUserLocationMarker() {
+                if (!userCurrentPosition || !map) return;
+                const { lat, lng, heading } = userCurrentPosition;
+                if (markerUserLocation) {
+                    markerUserLocation.setLatLng([lat, lng]);
+                    // Update direction arrow
+                    updateDirectionArrow(heading);
+                } else {
+                    markerUserLocation = createUserLocationMarker(lat, lng, heading);
+                    markerUserLocation.addTo(map);
+                }
+            }
 
-  function addOriginMarker(lat, lng, label) {
-    markerOrigin = L.marker([lat, lng], {
-      icon: L.divIcon({
-        html: '<i class="fas fa-walking" style="font-size: 24px; color: #34A853; background: white; border-radius: 50%; padding: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></i>',
-        iconSize: [32, 32],
-        className: 'origin-marker-icon'
-      })
-    }).addTo(map).bindPopup(`<b>Nisja:</b> ${label}`);
-  }
+            function createUserLocationMarker(lat, lng, heading) {
+                const headingDeg = (heading !== null && heading !== undefined && !isNaN(heading)) ?
+                    heading : 0;
+                const hasHeading = (heading !== null && heading !== undefined && !isNaN(heading));
 
-  function addDestMarker(lat, lng, label) {
-    markerDest = L.marker([lat, lng], {
-      icon: L.divIcon({
-        html: '<i class="fas fa-flag-checkered" style="font-size: 28px; color: #ea4335; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));"></i>',
-        iconSize: [28, 28],
-        className: 'dest-marker-icon'
-      })
-    }).addTo(map).bindPopup(`<b>Destinacioni:</b> ${label}`);
-  }
+                const html = `
+              <div class="user-location-marker">
+                <div class="user-location-pulse"></div>
+                <div class="user-location-dot"></div>
+                ${hasHeading ? `<div class="user-direction-arrow" style="transform: translateX(-50%) rotate(${headingDeg}deg); transform-origin: center bottom;"></div>` : ''}
+              </div>`;
 
-  function decodePolyline(encoded) {
-    if (!encoded) return [];
-    const points = [];
-    let index = 0;
-    let lat = 0;
-    let lng = 0;
+                return L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        html: html,
+                        iconSize: [36, 44],
+                        iconAnchor: [18, 22],
+                        className: 'user-location-icon-container',
+                    }),
+                    zIndexOffset: 1000,
+                    interactive: false,
+                }).bindPopup('<b>📍 Lokacioni juaj aktual</b>');
+            }
 
-    while (index < encoded.length) {
-      let b;
-      let shift = 0;
-      let result = 0;
-      do {
-        b = encoded.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
-      lat += dlat;
+            function updateDirectionArrow(heading) {
+                if (!markerUserLocation) return;
+                const iconEl = markerUserLocation.getElement();
+                if (!iconEl) return;
+                const arrow = iconEl.querySelector('.user-direction-arrow');
+                if (!arrow) {
+                    // Recreate marker with heading if it wasn't there before
+                    if (heading !== null && heading !== undefined && !isNaN(heading) && userCurrentPosition) {
+                        const { lat, lng } = userCurrentPosition;
+                        map.removeLayer(markerUserLocation);
+                        markerUserLocation = createUserLocationMarker(lat, lng, heading);
+                        markerUserLocation.addTo(map);
+                    }
+                    return;
+                }
+                if (heading !== null && heading !== undefined && !isNaN(heading)) {
+                    arrow.style.display = '';
+                    arrow.style.transform = `translateX(-50%) rotate(${heading}deg)`;
+                } else {
+                    arrow.style.display = 'none';
+                }
+            }
 
-      shift = 0;
-      result = 0;
-      do {
-        b = encoded.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
-      lng += dlng;
+            // ── Reverse geocode ────────────────────────────────────────────────────
+            async function reverseGeocode(lat, lng) {
+                try {
+                    const url =
+                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&countrycodes=al`;
+                    const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
+                    const data = await res.json();
+                    return data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                } catch {
+                    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+                }
+            }
 
-      points.push([lat * 1e-5, lng * 1e-5]);
-    }
+            async function setPickedLocation(lat, lng, type) {
+                const address = await reverseGeocode(lat, lng);
+                if (type === 'origin') {
+                    document.getElementById('from-location').value = address;
+                    pendingOriginCoords = { lat, lng };
+                    clearSingleMarker('origin');
+                    markerOrigin = createOriginMarker(lat, lng, address);
+                    markerOrigin.addTo(map);
+                    if (markerStartStation) { map.removeLayer(markerStartStation);
+                        markerStartStation = null; }
+                    clearWalkingRoutes();
+                } else {
+                    document.getElementById('to-location').value = address;
+                    pendingDestCoords = { lat, lng };
+                    clearSingleMarker('dest');
+                    markerDest = createDestinationMarker(lat, lng, address);
+                    markerDest.addTo(map);
+                    if (markerStopStation) { map.removeLayer(markerStopStation);
+                        markerStopStation = null; }
+                    clearWalkingRoutes();
+                }
+            }
 
-    return points;
-  }
+            // ── Marker creation ────────────────────────────────────────────────────
+            function createOriginMarker(lat, lng, label) {
+                return L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        html: `<div style="width:16px;height:16px;background:#1a73e8;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(26,115,232,0.5);"></div>`,
+                        iconSize: [22, 22],
+                        iconAnchor: [11, 11],
+                        className: 'origin-dot-marker',
+                    }),
+                    zIndexOffset: 900,
+                }).bindPopup(`<b>📍 Nisja:</b> ${label}`);
+            }
 
-  function clipPolyline(points, startCoord, endCoord) {
-    if (!points || !points.length) return [];
-    let closestStart = 0;
-    let closestEnd = points.length - 1;
-    let minStartDist = Infinity;
-    let minEndDist = Infinity;
+            function createDestinationMarker(lat, lng, label) {
+                return L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        html: `<div class="dest-marker-final"><i class="fas fa-flag-checkered"></i></div>`,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 32],
+                        className: 'dest-final-icon',
+                    }),
+                    zIndexOffset: 900,
+                }).bindPopup(`<b>🏁 Destinacioni:</b> ${label}`);
+            }
 
-    points.forEach((pt, idx) => {
-      const startDist = Math.hypot(pt[0] - startCoord.lat, pt[1] - startCoord.lng);
-      const endDist   = Math.hypot(pt[0] - endCoord.lat,   pt[1] - endCoord.lng);
-      if (startDist < minStartDist) { minStartDist = startDist; closestStart = idx; }
-      if (endDist   < minEndDist)   { minEndDist   = endDist;   closestEnd   = idx; }
-    });
+            function createStartStationMarker(lat, lng, name) {
+                return L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        html: `<div class="station-marker-start">
+                  <i class="fas fa-bus" style="font-size:11px;"></i>
+                  <span class="station-label">${escapeHTML(name)}</span>
+                </div>`,
+                        iconSize: [34, 50],
+                        iconAnchor: [17, 17],
+                        className: 'station-start-icon',
+                    }),
+                    zIndexOffset: 800,
+                }).bindPopup(`<b>🚏 Stacioni i nisjes:</b> ${name}`);
+            }
 
-    if (closestStart <= closestEnd) {
-      return points.slice(closestStart, closestEnd + 1);
-    }
-    return points.slice(closestEnd, closestStart + 1).reverse();
-  }
+            function createStopStationMarker(lat, lng, name) {
+                return L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        html: `<div class="station-marker-stop">
+                  <i class="fas fa-bus" style="font-size:11px;"></i>
+                  <span class="station-label">${escapeHTML(name)}</span>
+                </div>`,
+                        iconSize: [34, 50],
+                        iconAnchor: [17, 17],
+                        className: 'station-stop-icon',
+                    }),
+                    zIndexOffset: 800,
+                }).bindPopup(`<b>🚏 Stacioni i mbërritjes:</b> ${name}`);
+            }
 
-  /**
-   * Draw a route on the map. Each bus step gets its line colour;
-   * walking steps get a green dashed line.
-   */
-  function drawRoute(route, highlight = false) {
-    clearMapRoutes();
-    const bounds = [];
+            function escapeHTML(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
 
-    route.steps.forEach(step => {
-      if (!step.fromCoords || !step.toCoords) return;
-      const from = [step.fromCoords.lat, step.fromCoords.lng];
-      const to   = [step.toCoords.lat,   step.toCoords.lng];
+            // ── Clear helpers ──────────────────────────────────────────────────────
+            function clearAllMarkers() {
+                [markerUserLocation, markerStartStation, markerStopStation, markerOrigin, markerDest].forEach(m => {
+                    if (m && map) map.removeLayer(m);
+                });
+                markerStartStation = null;
+                markerStopStation = null;
+                markerOrigin = null;
+                markerDest = null;
+                // Keep user location marker if we have position
+                if (userCurrentPosition && markerUserLocation) {
+                    map.removeLayer(markerUserLocation);
+                    markerUserLocation = null;
+                    updateUserLocationMarker();
+                }
+            }
 
-      let layer;
-      let stepBounds = [from, to];
+            function clearSingleMarker(type) {
+                if (type === 'origin' && markerOrigin) { map.removeLayer(markerOrigin);
+                    markerOrigin = null; }
+                if (type === 'dest' && markerDest) { map.removeLayer(markerDest);
+                    markerDest = null; }
+                if (type === 'startStation' && markerStartStation) { map.removeLayer(markerStartStation);
+                    markerStartStation = null; }
+                if (type === 'stopStation' && markerStopStation) { map.removeLayer(markerStopStation);
+                    markerStopStation = null; }
+            }
 
-      if (step.type === 'walk') {
-        layer = L.polyline([from, to], {
-          color: '#34A853', weight: 3, dashArray: '6 6', opacity: 0.85,
-        });
-      } else if (step.polyline) {
-        // Decode and use the full polyline for this bus step
-        const decodedPoints = decodePolyline(step.polyline);
-        if (decodedPoints.length > 1) {
-          layer = L.polyline(decodedPoints, {
-            color:   step.lineColor || '#1a73e8',
-            weight:  highlight ? 6 : 4,
-            opacity: highlight ? 1.0 : 0.75,
-          });
-          stepBounds = decodedPoints;
-        } else {
-          layer = L.polyline([from, to], {
-            color:   step.lineColor || '#1a73e8',
-            weight:  highlight ? 6 : 4,
-            opacity: highlight ? 1.0 : 0.75,
-          });
-        }
+            function clearBusRoutes() {
+                routeLayers.forEach(l => map.removeLayer(l));
+                routeLayers = [];
+            }
 
-        const stopMarker = L.circleMarker(from, {
-          radius: 5, color: step.lineColor || '#1a73e8',
-          fillColor: '#fff', fillOpacity: 1, weight: 2,
-        }).bindPopup(`<b>${step.fromStation}</b><br>Linja ${step.lineNumber}`);
-        stopMarker.addTo(map);
-        routeLayers.push(stopMarker);
-      } else {
-        // No polyline – straight line
-        layer = L.polyline([from, to], {
-          color:   step.lineColor || '#1a73e8',
-          weight:  highlight ? 6 : 4,
-          opacity: highlight ? 1.0 : 0.75,
-        });
+            function clearWalkingRoutes() {
+                walkingRouteLayers.forEach(l => map.removeLayer(l));
+                walkingRouteLayers = [];
+            }
 
-        const stopMarker = L.circleMarker(from, {
-          radius: 5, color: step.lineColor || '#1a73e8',
-          fillColor: '#fff', fillOpacity: 1, weight: 2,
-        }).bindPopup(`<b>${step.fromStation}</b><br>Linja ${step.lineNumber}`);
-        stopMarker.addTo(map);
-        routeLayers.push(stopMarker);
-      }
+            function clearAllMapLayers() {
+                clearBusRoutes();
+                clearWalkingRoutes();
+                clearAllMarkers();
+            }
 
-      layer.addTo(map);
-      routeLayers.push(layer);
-      bounds.push(...stepBounds);
-    });
+            // ── Walking route (OSRM foot) ──────────────────────────────────────────
+            async function fetchWalkingRoute(fromLat, fromLng, toLat, toLng) {
+                try {
+                    const url =
+                        `https://routing.openstreetmap.de/routed-foot/route/v1/foot/${fromLng},${fromLat};${toLng},${toLat}?overview=full&geometries=geojson`;
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 8000);
+                    const res = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    if (!res.ok) throw new Error('OSRM not ok');
+                    const data = await res.json();
+                    if (data.routes && data.routes.length > 0) {
+                        return data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                    }
+                    return null;
+                } catch (err) {
+                    console.warn('Walking route fetch failed, using straight line:', err.message);
+                    return null;
+                }
+            }
 
-    if (bounds.length > 0) {
-      map.fitBounds(bounds, { padding: [40, 40] });
-    }
-  }
+            async function drawWalkingRouteOnMap(fromLat, fromLng, toLat, toLng, color = '#34A853') {
+                const coords = await fetchWalkingRoute(fromLat, fromLng, toLat, toLng);
+                let layer;
+                if (coords && coords.length > 1) {
+                    layer = L.polyline(coords, {
+                        color: color,
+                        weight: 3.5,
+                        dashArray: '8 6',
+                        opacity: 0.8,
+                        lineCap: 'round',
+                    });
+                } else {
+                    // Fallback: straight dashed line
+                    layer = L.polyline([
+                        [fromLat, fromLng],
+                        [toLat, toLng]
+                    ], {
+                        color: color,
+                        weight: 3,
+                        dashArray: '8 6',
+                        opacity: 0.7,
+                        lineCap: 'round',
+                    });
+                }
+                layer.addTo(map);
+                walkingRouteLayers.push(layer);
+                return layer;
+            }
 
-  function clearMapRoutes() {
-    routeLayers.forEach(l => map.removeLayer(l));
-    routeLayers = [];
-  }
+            // ── Bus route drawing ──────────────────────────────────────────────────
+            function decodePolyline(encoded) {
+                if (!encoded) return [];
+                const points = [];
+                let index = 0,
+                    lat = 0,
+                    lng = 0;
+                while (index < encoded.length) {
+                    let b,
+                        shift = 0,
+                        result = 0;
+                    do {
+                        b = encoded.charCodeAt(index++) - 63;
+                        result |= (b & 0x1f) << shift;
+                        shift += 5;
+                    } while (b >= 0x20);
+                    const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+                    lat += dlat;
+                    shift = 0;
+                    result = 0;
+                    do {
+                        b = encoded.charCodeAt(index++) - 63;
+                        result |= (b & 0x1f) << shift;
+                        shift += 5;
+                    } while (b >= 0x20);
+                    const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+                    lng += dlng;
+                    points.push([lat * 1e-5, lng * 1e-5]);
+                }
+                return points;
+            }
 
-  // ── Geocoding ──────────────────────────────────────────────────────────────
-  async function geocode(query) {
-    try {
-      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=al`;
-      const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
-      const data = await res.json();
-      return data[0] || null;
-    } catch { return null; }
-  }
+            function drawBusRoute(route, highlight = false) {
+                clearBusRoutes();
+                const bounds = [];
 
-  // ── Search ─────────────────────────────────────────────────────────────────
-  async function performSearch() {
-    const fromVal = document.getElementById('from-location').value.trim();
-    const toVal   = document.getElementById('to-location').value.trim();
-    if (!fromVal || !toVal) { alert('Ju lutem plotësoni të dyja fushat e lokacionit.'); return; }
+                route.steps.forEach(step => {
+                    if (!step.fromCoords || !step.toCoords) return;
+                    const from = [step.fromCoords.lat, step.fromCoords.lng];
+                    const to = [step.toCoords.lat, step.toCoords.lng];
+                    let layer;
+                    let stepBounds = [from, to];
 
-    const searchBtn = document.getElementById('search-btn');
-    const origText  = searchBtn.innerHTML;
-    searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke kërkuar...';
-    searchBtn.disabled  = true;
+                    if (step.type === 'walk') {
+                        layer = L.polyline([from, to], {
+                            color: '#34A853',
+                            weight: 3,
+                            dashArray: '6 6',
+                            opacity: 0.85,
+                            lineCap: 'round',
+                        });
+                    } else if (step.polyline) {
+                        const decodedPoints = decodePolyline(step.polyline);
+                        if (decodedPoints.length > 1) {
+                            layer = L.polyline(decodedPoints, {
+                                color: step.lineColor || '#1a73e8',
+                                weight: highlight ? 6 : 4,
+                                opacity: highlight ? 1.0 : 0.75,
+                                lineCap: 'round',
+                            });
+                            stepBounds = decodedPoints;
+                        } else {
+                            layer = L.polyline([from, to], {
+                                color: step.lineColor || '#1a73e8',
+                                weight: highlight ? 6 : 4,
+                                opacity: highlight ? 1.0 : 0.75,
+                                lineCap: 'round',
+                            });
+                        }
+                        // Station circle marker
+                        const stopMrkr = L.circleMarker(from, {
+                            radius: 5,
+                            color: step.lineColor || '#1a73e8',
+                            fillColor: '#fff',
+                            fillOpacity: 1,
+                            weight: 2.5,
+                        }).bindPopup(`<b>${step.fromStation}</b><br>Linja ${step.lineNumber}`);
+                        stopMrkr.addTo(map);
+                        routeLayers.push(stopMrkr);
+                    } else {
+                        layer = L.polyline([from, to], {
+                            color: step.lineColor || '#1a73e8',
+                            weight: highlight ? 6 : 4,
+                            opacity: highlight ? 1.0 : 0.75,
+                            lineCap: 'round',
+                        });
+                        const stopMrkr = L.circleMarker(from, {
+                            radius: 5,
+                            color: step.lineColor || '#1a73e8',
+                            fillColor: '#fff',
+                            fillOpacity: 1,
+                            weight: 2.5,
+                        }).bindPopup(`<b>${step.fromStation}</b><br>Linja ${step.lineNumber}`);
+                        stopMrkr.addTo(map);
+                        routeLayers.push(stopMrkr);
+                    }
+                    layer.addTo(map);
+                    routeLayers.push(layer);
+                    bounds.push(...stepBounds);
+                });
 
-    try {
-      clearMap();
+                if (bounds.length > 0) {
+                    map.fitBounds(bounds, { padding: [50, 50] });
+                }
+            }
 
-      let fromGeo, toGeo;
+            // ── Geocoding ──────────────────────────────────────────────────────────
+            async function geocode(query) {
+                try {
+                    const url =
+                        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=al`;
+                    const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
+                    const data = await res.json();
+                    return data[0] || null;
+                } catch { return null; }
+            }
 
-      if (pendingOriginCoords) {
-        fromGeo = { lat: pendingOriginCoords.lat, lon: pendingOriginCoords.lng, display_name: document.getElementById('from-location').value };
-        pendingOriginCoords = null;
-      } else {
-        fromGeo = await geocode(fromVal);
-      }
+            // ── Search ─────────────────────────────────────────────────────────────
+            async function performSearch() {
+                const fromVal = document.getElementById('from-location').value.trim();
+                const toVal = document.getElementById('to-location').value.trim();
+                if (!fromVal || !toVal) {
+                    alert('Ju lutem plotësoni të dyja fushat e lokacionit.');
+                    return;
+                }
 
-      if (pendingDestCoords) {
-        toGeo = { lat: pendingDestCoords.lat, lon: pendingDestCoords.lng, display_name: document.getElementById('to-location').value };
-        pendingDestCoords = null;
-      } else {
-        toGeo = await geocode(toVal);
-      }
+                const searchBtn = document.getElementById('search-btn');
+                const origText = searchBtn.innerHTML;
+                searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke kërkuar...';
+                searchBtn.disabled = true;
 
-      if (!fromGeo) { alert('Nuk u gjet lokacioni i nisjes. Provoni emër tjetër.'); return; }
-      if (!toGeo)   { alert('Nuk u gjet destinacioni. Provoni emër tjetër.'); return; }
+                try {
+                    clearAllMapLayers();
 
-      addOriginMarker(parseFloat(fromGeo.lat), parseFloat(fromGeo.lon), fromGeo.display_name);
-      addDestMarker(parseFloat(toGeo.lat),   parseFloat(toGeo.lon),   toGeo.display_name);
+                    let fromGeo, toGeo;
 
-      // Departure time
-      const dateVal   = document.getElementById('travel-date').value;
-      const timeMode  = document.getElementById('travel-time').value;
-      let   deptTime  = new Date();
-      if (timeMode !== 'now' && dateVal) {
-        const specificTime = document.getElementById('specific-time')?.value || '08:00';
-        deptTime = new Date(`${dateVal}T${specificTime}:00`);
-      }
+                    if (pendingOriginCoords) {
+                        fromGeo = {
+                            lat: pendingOriginCoords.lat,
+                            lon: pendingOriginCoords.lng,
+                            display_name: document.getElementById('from-location').value
+                        };
+                        pendingOriginCoords = null;
+                    } else {
+                        fromGeo = await geocode(fromVal);
+                    }
 
-      // Search type
-      const selectedCard = document.querySelector('.option-card.selected');
-      const searchType   = selectedCard?.getAttribute('data-option') || 'fastest';
-      const accessibleOnly = document.getElementById('filter-accessible')?.checked || false;
-      const maxWalkingMin  = parseInt(document.getElementById('max-walk-slider')?.value || '12', 10);
+                    if (pendingDestCoords) {
+                        toGeo = {
+                            lat: pendingDestCoords.lat,
+                            lon: pendingDestCoords.lng,
+                            display_name: document.getElementById('to-location').value
+                        };
+                        pendingDestCoords = null;
+                    } else {
+                        toGeo = await geocode(toVal);
+                    }
 
-      const res  = await fetch('/.netlify/functions/search-routes', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-          fromLat:       parseFloat(fromGeo.lat),
-          fromLng:       parseFloat(fromGeo.lon),
-          toLat:         parseFloat(toGeo.lat),
-          toLng:         parseFloat(toGeo.lon),
-          searchType,
-          departureTime: deptTime.toISOString(),
-          maxWalkingMin,
-          accessibleOnly,
-        }),
-      });
+                    if (!fromGeo) { alert('Nuk u gjet lokacioni i nisjes. Provoni emër tjetër.');
+                        searchBtn.innerHTML = origText;
+                        searchBtn.disabled = false; return; }
+                    if (!toGeo) { alert('Nuk u gjet destinacioni. Provoni emër tjetër.');
+                        searchBtn.innerHTML = origText;
+                        searchBtn.disabled = false; return; }
 
-      const data = await res.json();
-      if (!res.ok) { alert(data.error || 'Gabim gjatë kërkimit.'); displayNoResults(); return; }
+                    // Place origin & destination markers
+                    markerOrigin = createOriginMarker(parseFloat(fromGeo.lat), parseFloat(fromGeo.lon), fromGeo
+                        .display_name);
+                    markerOrigin.addTo(map);
+                    markerDest = createDestinationMarker(parseFloat(toGeo.lat), parseFloat(toGeo.lon), toGeo.display_name);
+                    markerDest.addTo(map);
 
-      currentResults = data.results || [];
-      if (currentResults.length > 0) {
-        displayResults(currentResults, data.meta);
-        drawRoute(currentResults[0], true);
-      } else {
-        displayNoResults();
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Gabim në lidhje: ' + err.message);
-      displayNoResults();
-    } finally {
-      searchBtn.innerHTML = origText;
-      searchBtn.disabled  = false;
-    }
-  }
+                    const dateVal = document.getElementById('travel-date').value;
+                    const timeMode = document.getElementById('travel-time').value;
+                    let deptTime = new Date();
+                    if (timeMode !== 'now' && dateVal) {
+                        const specificTime = document.getElementById('specific-time')?.value || '08:00';
+                        deptTime = new Date(`${dateVal}T${specificTime}:00`);
+                    }
 
-  // ── Render routes ──────────────────────────────────────────────────────────
-  function displayResults(routes, meta) {
-    document.getElementById('results-count').textContent = `${routes.length} rrugë u gjetën`;
-    const container = document.getElementById('route-results');
+                    const selectedCard = document.querySelector('.option-card.selected');
+                    const searchType = selectedCard?.getAttribute('data-option') || 'fastest';
 
-    // Meta bar: origin/dest stop names
-    let metaBar = '';
-    if (meta?.originStops?.[0]) {
-      metaBar = `<div class="route-meta-bar">
-        <span><i class="fas fa-walking"></i> Nisja pranë: <strong>${meta.originStops[0].name}</strong> (~${meta.originStops[0].distanceM}m)</span>
-        <span><i class="fas fa-flag-checkered"></i> Mbërritja pranë: <strong>${meta.destStops[0].name}</strong> (~${meta.destStops[0].distanceM}m)</span>
-      </div>`;
-    }
+                    const res = await fetch('/.netlify/functions/search-routes', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fromLat: parseFloat(fromGeo.lat),
+                            fromLng: parseFloat(fromGeo.lon),
+                            toLat: parseFloat(toGeo.lat),
+                            toLng: parseFloat(toGeo.lon),
+                            searchType,
+                            departureTime: deptTime.toISOString(),
+                            maxWalkingMin: 15,
+                            accessibleOnly: false,
+                        }),
+                    });
 
-    container.innerHTML = metaBar + routes.map(route => renderRouteCard(route)).join('');
-  }
+                    const data = await res.json();
+                    if (!res.ok) { alert(data.error || 'Gabim gjatë kërkimit.');
+                        displayNoResults();
+                        searchBtn.innerHTML = origText;
+                        searchBtn.disabled = false; return; }
 
-  function renderRouteCard(route) {
-    const lineBadges = (route.busLines || []).map(l =>
-      `<span class="line-badge" style="background:${l.color || '#1a73e8'}">${l.number}</span>`
-    ).join('');
+                    currentResults = data.results || [];
+                    if (currentResults.length > 0) {
+                        displayResults(currentResults, data.meta);
+                        // Draw the best route
+                        drawBusRoute(currentResults[0], true);
 
-    const stepsHtml = route.steps.map((step, i) => {
-      if (step.type === 'walk') {
-        return `
-          <div class="step-item step-walk">
-            <div class="step-icon"><i class="fas fa-walking"></i></div>
-            <div class="step-content">
-              Ec <strong>${step.distanceM || Math.round(step.time * 66)}m</strong>
-              drejt <strong>${step.toStation}</strong>
-            </div>
-            <div class="step-time">${step.time} min</div>
-          </div>`;
-      } else {
-        const stops = step.stopSequence?.length > 2
-          ? ` (${step.stopSequence.length - 1} stacione)`
-          : '';
-        return `
-          <div class="step-item step-bus">
-            <div class="step-icon" style="background:${step.lineColor || '#1a73e8'}">
-              <i class="fas fa-bus"></i>
-            </div>
-            <div class="step-content">
-              Linja <strong>${step.lineNumber}</strong>${stops}<br>
-              <span class="step-sub">${step.fromStation} → ${step.toStation}</span>
-            </div>
-            <div class="step-time">${step.time} min</div>
-          </div>`;
-      }
-    }).join('');
+                        // Draw walking routes: origin → start station, stop station → destination
+                        await drawWalkingConnections(data.meta, fromGeo, toGeo);
+                    } else {
+                        displayNoResults();
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Gabim në lidhje: ' + err.message);
+                    displayNoResults();
+                } finally {
+                    searchBtn.innerHTML = origText;
+                    searchBtn.disabled = false;
+                }
+            }
 
-    const transfersLabel = route.transfers === 0 ? 'Direkte' :
-      `${route.transfers} ndërrim${route.transfers > 1 ? 'e' : ''}`;
+            async function drawWalkingConnections(meta, fromGeo, toGeo) {
+                clearWalkingRoutes();
 
-    const walkLabel = route.walkMin > 0 ? `${route.walkMin} min ecje` : 'Pa ecje';
+                // Origin → Start Station
+                if (meta?.originStops?.[0]?.coords) {
+                    const startCoords = meta.originStops[0].coords;
+                    const startName = meta.originStops[0].name || 'Stacioni i nisjes';
+                    markerStartStation = createStartStationMarker(startCoords.lat, startCoords.lng, startName);
+                    markerStartStation.addTo(map);
+                    await drawWalkingRouteOnMap(
+                        parseFloat(fromGeo.lat), parseFloat(fromGeo.lon),
+                        startCoords.lat, startCoords.lng,
+                        '#34A853'
+                    );
+                }
 
-    return `
-      <div class="route-card" data-route-id="${route.id}"
-           data-time="${route.totalTime}" data-transfers="${route.transfers}"
-           data-fare="${route.fare}" data-walk="${route.walkMin}">
-        <div class="route-header">
-          <div>
-            <div class="route-title">${route.title}</div>
-            <div class="route-badges">${lineBadges}</div>
-          </div>
-          <div class="route-time">${route.totalTime} min</div>
-        </div>
+                // Stop Station → Destination
+                if (meta?.destStops?.[0]?.coords) {
+                    const stopCoords = meta.destStops[0].coords;
+                    const stopName = meta.destStops[0].name || 'Stacioni i mbërritjes';
+                    markerStopStation = createStopStationMarker(stopCoords.lat, stopCoords.lng, stopName);
+                    markerStopStation.addTo(map);
+                    await drawWalkingRouteOnMap(
+                        stopCoords.lat, stopCoords.lng,
+                        parseFloat(toGeo.lat), parseFloat(toGeo.lon),
+                        '#ea4335'
+                    );
+                }
 
-        <div class="route-details">
-          <div class="detail-item">
-            <div class="detail-icon"><i class="fas fa-exchange-alt"></i></div>
-            <div class="detail-content">
-              <div class="detail-label">Ndërrime</div>
-              <div class="detail-value">${transfersLabel}</div>
-            </div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-icon"><i class="fas fa-walking"></i></div>
-            <div class="detail-content">
-              <div class="detail-label">Ecje</div>
-              <div class="detail-value">${walkLabel}</div>
-            </div>
-          </div>
-          <div class="detail-item">
-            <div class="detail-icon"><i class="fas fa-coins"></i></div>
-            <div class="detail-content">
-              <div class="detail-label">Çmimi</div>
-              <div class="detail-value">${route.fare} L</div>
-            </div>
-          </div>
-        </div>
+                // Fit bounds to include everything
+                const allPoints = [];
+                if (markerOrigin) allPoints.push(markerOrigin.getLatLng());
+                if (markerDest) allPoints.push(markerDest.getLatLng());
+                if (markerStartStation) allPoints.push(markerStartStation.getLatLng());
+                if (markerStopStation) allPoints.push(markerStopStation.getLatLng());
+                if (allPoints.length > 0) {
+                    const group = L.featureGroup(allPoints.map(p => L.marker(p)));
+                    map.fitBounds(group.getBounds(), { padding: [50, 50] });
+                }
+            }
 
-        <div class="route-steps">
-          <div class="steps-header"><i class="fas fa-list-ol"></i> Udhëzimet</div>
-          <div class="steps-list">${stepsHtml}</div>
-        </div>
+            // ── Render routes ──────────────────────────────────────────────────────
+            function displayResults(routes, meta) {
+                document.getElementById('results-count').textContent = `${routes.length} rrugë u gjetën`;
+                const container = document.getElementById('route-results');
+                let metaBar = '';
+                if (meta?.originStops?.[0]) {
+                    metaBar = `<div class="route-meta-bar">
+                <span><i class="fas fa-walking"></i> Nisja pranë: <strong>${meta.originStops[0].name}</strong> (~${meta.originStops[0].distanceM || '?'}m)</span>
+                <span><i class="fas fa-flag-checkered"></i> Mbërritja pranë: <strong>${meta.destStops?.[0]?.name || '?'}</strong> (~${meta.destStops?.[0]?.distanceM || '?'}m)</span>
+              </div>`;
+                }
+                container.innerHTML = metaBar + routes.map(route => renderRouteCard(route)).join('');
+            }
 
-        <div class="route-actions">
-          <button class="btn btn-outline action-btn" onclick="window.showOnMap(${route.id})">
-            <i class="fas fa-map-marked-alt"></i> Harta
-          </button>
-          <button class="btn btn-outline action-btn" onclick="window.openRouteModal(${route.id})">
-            <i class="fas fa-info-circle"></i> Detaje
-          </button>
-          <button class="btn btn-primary action-btn" onclick="window.selectRoute(${route.id})">
-            <i class="fas fa-check-circle"></i> Zgjidh
-          </button>
-          <button class="btn btn-outline action-btn" onclick="window.saveRoute(${route.id})">
-            <i class="fas fa-bookmark"></i> Ruaj
-          </button>
-        </div>
-      </div>`;
-  }
+            function renderRouteCard(route) {
+                const lineBadges = (route.busLines || []).map(l =>
+                    `<span class="line-badge" style="background:${l.color || '#1a73e8'}">${l.number}</span>`
+                ).join('');
 
-  function displayNoResults() {
-    document.getElementById('results-count').textContent = '0 rrugë u gjetën';
-    document.getElementById('route-results').innerHTML = `
-      <div class="no-results">
-        <i class="fas fa-route"></i>
-        <h3>Nuk u gjetën rrugë</h3>
-        <p>Nuk u gjet asnjë rrugë. Provoni të rrisni kohën e ecjes ose lejoni ndërrime.</p>
-        <button class="btn btn-primary" onclick="document.getElementById('advanced-search-form').scrollIntoView()">
-          <i class="fas fa-sliders-h"></i> Modifiko Filtra
-        </button>
-      </div>`;
-  }
+                const stepsHtml = route.steps.map((step, i) => {
+                    if (step.type === 'walk') {
+                        return `
+                  <div class="step-item step-walk">
+                    <div class="step-icon"><i class="fas fa-walking"></i></div>
+                    <div class="step-content">Ec <strong>${step.distanceM || Math.round(step.time * 66)}m</strong> drejt <strong>${step.toStation}</strong></div>
+                    <div class="step-time">${step.time} min</div>
+                  </div>`;
+                    } else {
+                        const stops = step.stopSequence?.length > 2 ?
+                            ` (${step.stopSequence.length - 1} stacione)` : '';
+                        return `
+                  <div class="step-item step-bus">
+                    <div class="step-icon" style="background:${step.lineColor || '#1a73e8'}"><i class="fas fa-bus"></i></div>
+                    <div class="step-content">Linja <strong>${step.lineNumber}</strong>${stops}<br><span class="step-sub">${step.fromStation} → ${step.toStation}</span></div>
+                    <div class="step-time">${step.time} min</div>
+                  </div>`;
+                    }
+                }).join('');
 
-  // ── Sort ───────────────────────────────────────────────────────────────────
-  function sortResults(sortType) {
-    const cards = Array.from(document.querySelectorAll('.route-card'));
-    const key   = { time: 'time', price: 'fare', transfers: 'transfers', comfort: 'walk' }[sortType] || 'time';
-    cards.sort((a, b) => parseFloat(a.dataset[key]) - parseFloat(b.dataset[key]));
-    const container = document.getElementById('route-results');
-    cards.forEach(c => container.appendChild(c));
-  }
+                const transfersLabel = route.transfers === 0 ? 'Direkte' :
+                    `${route.transfers} ndërrim${route.transfers > 1 ? 'e' : ''}`;
+                const walkLabel = route.walkMin > 0 ? `${route.walkMin} min ecje` : 'Pa ecje';
 
-  // ── Global button handlers ─────────────────────────────────────────────────
-  window.showOnMap = function (routeId) {
-    const route = currentResults.find(r => r.id === routeId);
-    if (route) {
-      drawRoute(route, true);
-      document.getElementById('search-map').scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+                return `
+              <div class="route-card" data-route-id="${route.id}"
+                   data-time="${route.totalTime}" data-transfers="${route.transfers}"
+                   data-fare="${route.fare}" data-walk="${route.walkMin}">
+                <div class="route-header">
+                  <div>
+                    <div class="route-title">${route.title}</div>
+                    <div class="route-badges">${lineBadges}</div>
+                  </div>
+                  <div class="route-time">${route.totalTime} min</div>
+                </div>
+                <div class="route-details">
+                  <div class="detail-item">
+                    <div class="detail-icon"><i class="fas fa-exchange-alt"></i></div>
+                    <div class="detail-content"><div class="detail-label">Ndërrime</div><div class="detail-value">${transfersLabel}</div></div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-icon"><i class="fas fa-walking"></i></div>
+                    <div class="detail-content"><div class="detail-label">Ecje</div><div class="detail-value">${walkLabel}</div></div>
+                  </div>
+                  <div class="detail-item">
+                    <div class="detail-icon"><i class="fas fa-coins"></i></div>
+                    <div class="detail-content"><div class="detail-label">Çmimi</div><div class="detail-value">${route.fare} L</div></div>
+                  </div>
+                </div>
+                <div class="route-steps">
+                  <div class="steps-header"><i class="fas fa-list-ol"></i> Udhëzimet</div>
+                  <div class="steps-list">${stepsHtml}</div>
+                </div>
+                <div class="route-actions">
+                  <button class="action-btn" onclick="window.showOnMap(${route.id})"><i class="fas fa-map-marked-alt"></i> Harta</button>
+                  <button class="action-btn" onclick="window.openRouteModal(${route.id})"><i class="fas fa-info-circle"></i> Detaje</button>
+                  <button class="action-btn btn-primary-action" onclick="window.selectRoute(${route.id})"><i class="fas fa-check-circle"></i> Zgjidh</button>
+                  <button class="action-btn" onclick="window.saveRoute(${route.id})"><i class="fas fa-bookmark"></i> Ruaj</button>
+                </div>
+              </div>`;
+            }
 
-  window.showRouteDetails = function (routeId) {
-    window.showOnMap(routeId);
-  };
+            function displayNoResults() {
+                document.getElementById('results-count').textContent = '0 rrugë u gjetën';
+                document.getElementById('route-results').innerHTML = `
+              <div class="no-results">
+                <i class="fas fa-route"></i>
+                <h3>Nuk u gjetën rrugë</h3>
+                <p>Nuk u gjet asnjë rrugë. Provoni të rrisni kohën e ecjes ose lejoni ndërrime.</p>
+                <button class="btn btn-primary" onclick="document.getElementById('advanced-search-form').scrollIntoView()">
+                  <i class="fas fa-sliders-h"></i> Modifiko Filtra
+                </button>
+              </div>`;
+            }
 
-  window.openRouteModal = function(routeId) {
-    const route = currentResults.find(r => r.id === routeId);
-    if (!route) return;
-    const modal = document.getElementById('route-details-modal');
-    const contentDiv = document.getElementById('route-details-content');
-    contentDiv.innerHTML = renderRouteDetails(route);
-    modal.classList.add('active');
-  };
+            // ── Sort ───────────────────────────────────────────────────────────────
+            function sortResults(sortType) {
+                const container = document.getElementById('route-results');
+                const cards = Array.from(container.querySelectorAll('.route-card'));
+                const keyMap = { time: 'time', price: 'fare', transfers: 'transfers', comfort: 'walk' };
+                const key = keyMap[sortType] || 'time';
+                cards.sort((a, b) => parseFloat(a.dataset[key]) - parseFloat(b.dataset[key]));
+                cards.forEach(c => container.appendChild(c));
+            }
 
-  function renderRouteDetails(route) {
-    const stepsHtml = route.steps.map((step, idx) => {
-      if (step.type === 'walk') {
-        return `<div class="step-item"><strong>Hapi ${idx + 1}:</strong> Ecni ${step.distanceM || Math.round(step.time * 66)} metra drejt ${step.toStation} (${step.time} min)</div>`;
-      } else {
-        return `<div class="step-item"><strong>Hapi ${idx + 1}:</strong> Linja ${step.lineNumber} nga ${step.fromStation} në ${step.toStation} (${step.time} min)</div>`;
-      }
-    }).join('');
-    return `<h4>${route.title}</h4>
+            // ── Global button handlers ─────────────────────────────────────────────
+            window.showOnMap = function(routeId) {
+                const route = currentResults.find(r => r.id === routeId);
+                if (route) {
+                    drawBusRoute(route, true);
+                    document.getElementById('search-map').scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            window.openRouteModal = function(routeId) {
+                const route = currentResults.find(r => r.id === routeId);
+                if (!route) return;
+                const modal = document.getElementById('route-details-modal');
+                const contentDiv = document.getElementById('route-details-content');
+                contentDiv.innerHTML = renderRouteDetails(route);
+                modal.classList.add('active');
+            };
+
+            function renderRouteDetails(route) {
+                const stepsHtml = route.steps.map((step, idx) => {
+                    if (step.type === 'walk') {
+                        return `<div class="step-item"><strong>Hapi ${idx + 1}:</strong> Ecni ${step.distanceM || Math.round(step.time * 66)} metra drejt ${step.toStation} (${step.time} min)</div>`;
+                    } else {
+                        return `<div class="step-item"><strong>Hapi ${idx + 1}:</strong> Linja ${step.lineNumber} nga ${step.fromStation} në ${step.toStation} (${step.time} min)</div>`;
+                    }
+                }).join('');
+                return `<h4>${route.title}</h4>
             <p><i class="fas fa-clock"></i> Koha totale: ${route.totalTime} min</p>
             <p><i class="fas fa-exchange-alt"></i> Ndërrime: ${route.transfers}</p>
             <p><i class="fas fa-coins"></i> Çmimi: ${route.fare} L</p>
             <div class="route-steps"><div class="steps-list">${stepsHtml}</div></div>`;
-  }
+            }
 
-  window.selectRoute = function (routeId) {
-    selectedRouteId = routeId;
-    document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
-    const card = document.querySelector(`.route-card[data-route-id="${routeId}"]`);
-    if (card) { card.classList.add('selected'); window.showOnMap(routeId); }
-  };
+            window.selectRoute = function(routeId) {
+                selectedRouteId = routeId;
+                document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
+                const card = document.querySelector(`.route-card[data-route-id="${routeId}"]`);
+                if (card) { card.classList.add('selected');
+                    window.showOnMap(routeId); }
+            };
 
-  window.saveRoute = function (routeId) {
-    const routeName = prompt('Emri i rrugës:', `Rruga ${routeId}`);
-    if (!routeName) return;
-    savedRoutes.unshift({
-      id: Date.now(), name: routeName,
-      from: document.getElementById('from-location').value,
-      to:   document.getElementById('to-location').value,
-      routeId,
-    });
-    localStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
-    displaySavedRoutes();
-    alert(`Rruga "${routeName}" u ruajt!`);
-  };
+            window.saveRoute = function(routeId) {
+                const routeName = prompt('Emri i rrugës:', `Rruga ${routeId}`);
+                if (!routeName) return;
+                savedRoutes.unshift({
+                    id: Date.now(),
+                    name: routeName,
+                    from: document.getElementById('from-location').value,
+                    to: document.getElementById('to-location').value,
+                    routeId,
+                });
+                localStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
+                displaySavedRoutes();
+                alert(`Rruga "${routeName}" u ruajt!`);
+            };
 
-  window.closeModal = function () {
-    document.getElementById('route-details-modal')?.classList.remove('active');
-  };
+            window.closeModal = function() {
+                document.getElementById('route-details-modal')?.classList.remove('active');
+            };
 
-  window.useSavedRoute = function (savedId) {
-    const r = savedRoutes.find(x => x.id === savedId);
-    if (!r) return;
-    document.getElementById('from-location').value = r.from;
-    document.getElementById('to-location').value   = r.to;
-  };
+            window.useSavedRoute = function(savedId) {
+                const r = savedRoutes.find(x => x.id === savedId);
+                if (!r) return;
+                document.getElementById('from-location').value = r.from;
+                document.getElementById('to-location').value = r.to;
+            };
 
-  window.deleteSavedRoute = function (savedId) {
-    if (!confirm('Fshi këtë rrugë të ruajtur?')) return;
-    savedRoutes = savedRoutes.filter(r => r.id !== savedId);
-    localStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
-    displaySavedRoutes();
-  };
+            window.deleteSavedRoute = function(savedId) {
+                if (!confirm('Fshi këtë rrugë të ruajtur?')) return;
+                savedRoutes = savedRoutes.filter(r => r.id !== savedId);
+                localStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
+                displaySavedRoutes();
+            };
 
-  // ── Saved routes ───────────────────────────────────────────────────────────
-  function loadSavedRoutes() {
-    savedRoutes = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
-    if (savedRoutes.length === 0) {
-      savedRoutes = [
-        { id: 1, name: 'Punë - Shtëpi', from: 'Zona Industriale', to: 'Qendra e Tiranës' },
-        { id: 2, name: 'Aeroporti', from: 'Sheshi Skënderbej', to: 'Aeroporti Nënë Tereza' },
-      ];
-    }
-    displaySavedRoutes();
-  }
+            // ── Saved routes ───────────────────────────────────────────────────────
+            function loadSavedRoutes() {
+                savedRoutes = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+                if (savedRoutes.length === 0) {
+                    savedRoutes = [
+                        { id: 1, name: 'Punë - Shtëpi', from: 'Zona Industriale', to: 'Qendra e Tiranës' },
+                        { id: 2, name: 'Aeroporti', from: 'Sheshi Skënderbej', to: 'Aeroporti Nënë Tereza' },
+                    ];
+                }
+                displaySavedRoutes();
+            }
 
-  function displaySavedRoutes() {
-    const list = document.getElementById('saved-routes-list');
-    list.innerHTML = savedRoutes.slice(0, 3).map(r => `
-      <div class="saved-route" data-saved-id="${r.id}">
-        <div class="saved-route-info">
-          <div class="saved-route-name">${r.name}</div>
-          <div class="saved-route-path">${r.from} → ${r.to}</div>
-        </div>
-        <div class="saved-route-actions">
-          <button class="saved-btn" title="Përdor" onclick="window.useSavedRoute(${r.id})">
-            <i class="fas fa-directions"></i>
-          </button>
-          <button class="saved-btn" title="Fshi" onclick="window.deleteSavedRoute(${r.id})">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </div>`).join('');
-  }
+            function displaySavedRoutes() {
+                const list = document.getElementById('saved-routes-list');
+                list.innerHTML = savedRoutes.slice(0, 3).map(r => `
+              <div class="saved-route" data-saved-id="${r.id}">
+                <div class="saved-route-info">
+                  <div class="saved-route-name">${r.name}</div>
+                  <div class="saved-route-path">${r.from} → ${r.to}</div>
+                </div>
+                <div class="saved-route-actions">
+                  <button class="saved-btn" title="Përdor" onclick="window.useSavedRoute(${r.id})"><i class="fas fa-directions"></i></button>
+                  <button class="saved-btn" title="Fshi" onclick="window.deleteSavedRoute(${r.id})"><i class="fas fa-trash"></i></button>
+                </div>
+              </div>`).join('');
+            }
 
-  // ── Form & controls init ───────────────────────────────────────────────────
-  function initForm() {
-    // Option cards
-    document.querySelectorAll('.option-card').forEach(c => {
-      c.addEventListener('click', function () {
-        document.querySelectorAll('.option-card').forEach(x => x.classList.remove('selected'));
-        this.classList.add('selected');
-      });
-    });
-    document.querySelector('.option-card')?.click();
+            // ── Form & controls init ───────────────────────────────────────────────
+            function initForm() {
+                document.querySelectorAll('.option-card').forEach(c => {
+                    c.addEventListener('click', function() {
+                        document.querySelectorAll('.option-card').forEach(x => x.classList
+                            .remove('selected'));
+                        this.classList.add('selected');
+                    });
+                });
+                document.querySelector('.option-card')?.click();
 
-    // Travel time select
-    const travelTimeSelect        = document.getElementById('travel-time');
-    const specificTimeContainer   = document.getElementById('specific-time-container');
-    travelTimeSelect?.addEventListener('change', function () {
-      specificTimeContainer.style.display =
-        (this.value === 'departure' || this.value === 'arrival') ? 'block' : 'none';
-    });
+                const travelTimeSelect = document.getElementById('travel-time');
+                const specificTimeContainer = document.getElementById('specific-time-container');
+                travelTimeSelect?.addEventListener('change', function() {
+                    specificTimeContainer.style.display =
+                        (this.value === 'departure' || this.value === 'arrival') ? 'block' : 'none';
+                });
 
-    // Swap
-    document.getElementById('swap-locations-btn')?.addEventListener('click', function () {
-      const f = document.getElementById('from-location');
-      const t = document.getElementById('to-location');
-      [f.value, t.value] = [t.value, f.value];
-      // also swap pending coords and markers
-      [pendingOriginCoords, pendingDestCoords] = [pendingDestCoords, pendingOriginCoords];
-      if (markerOrigin) map.removeLayer(markerOrigin);
-      if (markerDest) map.removeLayer(markerDest);
-      if (pendingOriginCoords) addOriginMarker(pendingOriginCoords.lat, pendingOriginCoords.lng, f.value);
-      if (pendingDestCoords) addDestMarker(pendingDestCoords.lat, pendingDestCoords.lng, t.value);
-    });
+                document.getElementById('swap-locations-btn')?.addEventListener('click', function() {
+                    const f = document.getElementById('from-location');
+                    const t = document.getElementById('to-location');
+                    [f.value, t.value] = [t.value, f.value];
+                    [pendingOriginCoords, pendingDestCoords] = [pendingDestCoords,
+                        pendingOriginCoords
+                    ];
+                    clearAllMapLayers();
+                    if (pendingOriginCoords) {
+                        markerOrigin = createOriginMarker(pendingOriginCoords.lat,
+                            pendingOriginCoords.lng, f.value);
+                        markerOrigin.addTo(map);
+                    }
+                    if (pendingDestCoords) {
+                        markerDest = createDestinationMarker(pendingDestCoords.lat, pendingDestCoords
+                            .lng, t.value);
+                        markerDest.addTo(map);
+                    }
+                });
 
-    document.getElementById('from-location').addEventListener('input', () => {
-      pendingOriginCoords = null;
-    });
-    document.getElementById('to-location').addEventListener('input', () => {
-      pendingDestCoords = null;
-    });
+                document.getElementById('from-location').addEventListener('input', () => { pendingOriginCoords =
+                        null; });
+                document.getElementById('to-location').addEventListener('input', () => { pendingDestCoords =
+                    null; });
 
-    // Map picking buttons
-    const pickOriginBtn = document.getElementById('pick-origin-btn');
-    const pickDestBtn   = document.getElementById('pick-dest-btn');
-    const pickStatus    = document.getElementById('pick-status');
-    const pickStatusText = document.getElementById('pick-status-text');
+                // Map picking buttons
+                const pickOriginBtn = document.getElementById('pick-origin-btn');
+                const pickDestBtn = document.getElementById('pick-dest-btn');
+                const pickStatus = document.getElementById('pick-status');
+                const pickStatusText = document.getElementById('pick-status-text');
 
-    pickOriginBtn?.addEventListener('click', () => {
-      pickingMode = 'origin';
-      pickOriginBtn.classList.add('active');
-      pickDestBtn.classList.remove('active');
-      pickStatusText.innerText = 'Klikoni në hartë për të caktuar pikën e nisjes.';
-      pickStatus.style.display = 'block';
-    });
+                pickOriginBtn?.addEventListener('click', () => {
+                    pickingMode = 'origin';
+                    pickOriginBtn.classList.add('active');
+                    pickDestBtn.classList.remove('active');
+                    pickStatusText.innerText = 'Klikoni në hartë për të caktuar pikën e nisjes.';
+                    pickStatus.style.display = 'block';
+                });
 
-    pickDestBtn?.addEventListener('click', () => {
-      pickingMode = 'dest';
-      pickDestBtn.classList.add('active');
-      pickOriginBtn.classList.remove('active');
-      pickStatusText.innerText = 'Klikoni në hartë për të caktuar destinacionin.';
-      pickStatus.style.display = 'block';
-    });
+                pickDestBtn?.addEventListener('click', () => {
+                    pickingMode = 'dest';
+                    pickDestBtn.classList.add('active');
+                    pickOriginBtn.classList.remove('active');
+                    pickStatusText.innerText = 'Klikoni në hartë për të caktuar destinacionin.';
+                    pickStatus.style.display = 'block';
+                });
 
-    // Current location
-    document.getElementById('use-current-location')?.addEventListener('change', function () {
-      if (this.checked && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async pos => {
-          const { latitude: lat, longitude: lon } = pos.coords;
-          addOriginMarker(lat, lon, 'Lokacioni juaj');
-          const geo = await geocode(`${lat},${lon}`);
-          document.getElementById('from-location').value =
-            geo ? geo.display_name : `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
-        }, () => {
-          alert('Nuk mundi të merret lokacioni juaj.');
-          this.checked = false;
-        });
-      }
-    });
+                // Current location
+                document.getElementById('use-current-location')?.addEventListener('change', function() {
+                    if (this.checked && navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(async pos => {
+                            const { latitude: lat, longitude: lon } = pos.coords;
+                            userCurrentPosition = { lat, lng: lon, heading: pos.coords
+                                    .heading, speed: pos.coords.speed };
+                            userHeading = pos.coords.heading;
+                            updateUserLocationMarker();
+                            const geo = await geocode(`${lat},${lon}`);
+                            document.getElementById('from-location').value =
+                                geo ? geo.display_name :
+                                `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+                            pendingOriginCoords = { lat, lng: lon };
+                            if (markerOrigin) map.removeLayer(markerOrigin);
+                            markerOrigin = createOriginMarker(lat, lon, document
+                                .getElementById('from-location').value);
+                            markerOrigin.addTo(map);
+                        }, () => {
+                            alert('Nuk mundi të merret lokacioni juaj.');
+                            this.checked = false;
+                        });
+                    } else {
+                        pendingOriginCoords = null;
+                        if (markerOrigin) { map.removeLayer(markerOrigin);
+                            markerOrigin = null; }
+                    }
+                });
 
-    // Submit
-    document.getElementById('advanced-search-form')?.addEventListener('submit', e => {
-      e.preventDefault(); performSearch();
-    });
-  }
+                document.getElementById('advanced-search-form')?.addEventListener('submit', e => {
+                    e.preventDefault();
+                    performSearch();
+                });
+            }
 
-  function initControls() {
-    document.querySelectorAll('.sort-btn').forEach(btn => {
-      btn.addEventListener('click', function () {
-        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        sortResults(this.getAttribute('data-sort'));
-      });
-    });
+            function initControls() {
+                document.querySelectorAll('.sort-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove(
+                            'active'));
+                        this.classList.add('active');
+                        sortResults(this.getAttribute('data-sort'));
+                    });
+                });
 
-    const modal      = document.getElementById('route-details-modal');
-    const closeBtn   = document.getElementById('close-route-modal');
-    closeBtn?.addEventListener('click', () => modal?.classList.remove('active'));
-    modal?.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
-  }
+                const modal = document.getElementById('route-details-modal');
+                const closeBtn = document.getElementById('close-route-modal');
+                closeBtn?.addEventListener('click', () => modal?.classList.remove('active'));
+                modal?.addEventListener('click', e => { if (e.target === modal) modal.classList.remove(
+                        'active'); });
+            }
 
-  // ── Boot ───────────────────────────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => {
-    initMap();
-    initForm();
-    initControls();
-    loadSavedRoutes();
-    document.getElementById('travel-date').valueAsDate = new Date();
+            // ── Boot ───────────────────────────────────────────────────────────────
+            document.addEventListener('DOMContentLoaded', () => {
+                initMap();
+                initForm();
+                initControls();
+                loadSavedRoutes();
+                document.getElementById('travel-date').valueAsDate = new Date();
 
-    // URL param auto-search
-    const p    = new URLSearchParams(window.location.search);
-    const from = p.get('from'), to = p.get('to'), type = p.get('type');
-    if (from && to) {
-      document.getElementById('from-location').value = from;
-      document.getElementById('to-location').value   = to;
-      if (type) document.querySelector(`.option-card[data-option="${type}"]`)?.click();
-      document.getElementById('advanced-search-form').dispatchEvent(new Event('submit'));
-    }
-  });
-})();
-</script>
+                const p = new URLSearchParams(window.location.search);
+                const from = p.get('from'),
+                    to = p.get('to'),
+                    type = p.get('type');
+                if (from && to) {
+                    document.getElementById('from-location').value = from;
+                    document.getElementById('to-location').value = to;
+                    if (type) document.querySelector(`.option-card[data-option="${type}"]`)?.click();
+                    document.getElementById('advanced-search-form').dispatchEvent(new Event('submit'));
+                }
+            });
 
-<!-- ── Additional CSS to splice into <style> ── -->
-<style>
-/* Line badge pills */
-.route-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-.line-badge {
-  display: inline-block; padding: 2px 10px; border-radius: 999px;
-  color: #fff; font-weight: 700; font-size: 13px; letter-spacing: 0.5px;
-}
-
-/* Step icons */
-.step-icon {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: var(--bg-secondary); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; font-size: 14px;
-}
-.step-walk .step-icon  { background: #34A853; }
-.step-bus  .step-icon  { /* colour set inline */ }
-.step-sub  { font-size: 12px; color: var(--text-secondary); }
-
-/* Meta bar */
-.route-meta-bar {
-  display: flex; gap: 20px; flex-wrap: wrap;
-  background: var(--bg-tertiary); border-radius: var(--border-radius);
-  padding: 10px 16px; margin-bottom: 16px;
-  font-size: 13px; color: var(--text-secondary);
-}
-.route-meta-bar i { color: var(--primary-color); margin-right: 4px; }
-
-/* Map picking buttons */
-.map-pick-btn {
-    transition: all 0.2s ease;
-}
-.map-pick-btn.active {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-#pick-status {
-    background: var(--bg-tertiary);
-    padding: 8px;
-    border-radius: var(--border-radius);
-}
-
-/* ===== MODAL ===== */
-.driver-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(3px);
-}
-
-.driver-modal.active {
-    display: flex;
-}
-
-.modal-content {
-    background: var(--bg-primary);
-    width: 90%;
-    max-width: 700px;
-    max-height: 85vh;
-    border-radius: 20px;
-    box-shadow: var(--shadow-xl);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: modalFadeIn 0.25s ease;
-}
-
-@keyframes modalFadeIn {
-    from { opacity: 0; transform: scale(0.96); }
-    to   { opacity: 1; transform: scale(1); }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 25px;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--bg-secondary);
-}
-
-.modal-header h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0;
-    color: var(--text-primary);
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 32px;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--text-secondary);
-    transition: 0.2s;
-}
-
-.modal-close:hover {
-    color: var(--primary-color);
-    transform: scale(1.1);
-}
-
-.modal-body {
-    padding: 25px;
-    overflow-y: auto;
-    flex: 1;
-    color: var(--text-primary);
-}
-
-.modal-body .route-steps {
-    background: var(--bg-secondary);
-    border-radius: var(--border-radius);
-    padding: 15px;
-    margin-top: 0;
-}
-
-.modal-body .step-item {
-    margin-bottom: 15px;
-}
-
-@media (max-width: 600px) {
-    .modal-content {
-        width: 95%;
-        max-height: 90vh;
-    }
-    .modal-header h3 {
-        font-size: 1.2rem;
-    }
-    .modal-body {
-        padding: 18px;
-    }
-}
-
-/* ===== RESPONSIVE NAVBAR & AUTH BUTTONS ===== */
-@media (max-width: 768px) {
-    .navbar {
-        flex-wrap: wrap;
-        padding: 12px 16px;
-    }
-    .logo-container {
-        flex: 1;
-    }
-    .auth-buttons {
-        order: 3;
-        margin-left: auto;
-        margin-right: 10px;
-    }
-    .theme-toggle {
-        order: 4;
-    }
-    .hamburger {
-        order: 5;
-    }
-}
-
-@media (max-width: 480px) {
-    .auth-buttons {
-        max-width: 140px;
-    }
-    .user-profile-btn {
-        padding: 6px 10px !important;
-        font-size: 13px !important;
-    }
-    .user-profile-btn span {
-        display: none;
-    }
-    .user-profile-btn i:first-child {
-        margin-right: 0;
-    }
-    .theme-toggle {
-        margin-left: 5px;
-    }
-}
-
-.user-dropdown {
-    position: relative;
-}
-.dropdown-menu {
-    position: absolute;
-    top: 45px;
-    right: 0;
-    min-width: 180px;
-    background: var(--bg-primary);
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-    z-index: 1000;
-    transition: 0.2s;
-}
-@media (max-width: 480px) {
-    .dropdown-menu {
-        right: -10px;
-        min-width: 160px;
-    }
-}
-
-@media (max-width: 480px) {
-    .hamburger {
-        margin-left: 5px;
-    }
-    .theme-toggle {
-        margin-right: 5px;
-    }
-}
-</style>
+            // Clean up geolocation watch on page unload
+            window.addEventListener('beforeunload', () => {
+                if (geolocationWatchId !== null) {
+                    navigator.geolocation.clearWatch(geolocationWatchId);
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
