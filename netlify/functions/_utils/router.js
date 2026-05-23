@@ -102,11 +102,13 @@ function findRoutes(opts) {
   const store = []; // flat array of all settled/queued labels
 
   // Dominance map: bestScore[key] = score
+  // Include 15-minute time buckets to prevent keeping many labels at the same stop
+  // that differ only in arrival time within a 15-minute window.
   const bestScore = new Map();
-  const bKey = (stopId, transfers, lineId) =>
-    `${stopId}:${transfers}:${lineId ?? 'w'}`;
-  const getBest = (s, t, l)    => bestScore.get(bKey(s,t,l)) ?? Infinity;
-  const setBest = (s, t, l, v) => bestScore.set(bKey(s,t,l), v);
+  const bKey = (stopId, transfers, lineId, bucket) =>
+    `${stopId}:${transfers}:${lineId ?? 'w'}:${bucket}`;
+  const getBest = (s, t, l, b)    => bestScore.get(bKey(s,t,l,b)) ?? Infinity;
+  const setBest = (s, t, l, b, v) => bestScore.set(bKey(s,t,l,b), v);
 
   const heap = new MinHeap();
 
@@ -114,8 +116,9 @@ function findRoutes(opts) {
   for (const sid of originStopIds) {
     const wm    = walkingOriginMinutes;
     const score = W.walk * wm;
-    if (score >= getBest(sid, 0, null)) continue;
-    setBest(sid, 0, null, score);
+    const bucket = Math.floor(wm / 15);
+    if (score >= getBest(sid, 0, null, bucket)) continue;
+    setBest(sid, 0, null, bucket, score);
     const idx = store.length;
     store.push({
       stopId: sid, score, totalTime: wm, transfers: 0,
@@ -133,7 +136,8 @@ function findRoutes(opts) {
     const curr = store[idx];
 
     // Stale check
-    if (heapScore > getBest(curr.stopId, curr.transfers, curr.boardedLineId) * 1.001) continue;
+    const currBucket = Math.floor(curr.totalTime / 15);
+    if (heapScore > getBest(curr.stopId, curr.transfers, curr.boardedLineId, currBucket) * 1.001) continue;
 
     // ── Destination reached ──────────────────────────────────────────────
     if (destSet.has(curr.stopId)) {
@@ -186,9 +190,10 @@ function findRoutes(opts) {
         W.fare      * (isBoarding ? (fare ?? 0) : 0);
       const newScore = curr.score + addedScore;
 
-      const existing = getBest(toStopId, newTransfers, newBoardedLine);
+      const newBucket = Math.floor(newTotal / 15);
+      const existing = getBest(toStopId, newTransfers, newBoardedLine, newBucket);
       if (newScore >= existing * 1.5) continue;
-      if (newScore < existing) setBest(toStopId, newTransfers, newBoardedLine, newScore);
+      if (newScore < existing) setBest(toStopId, newTransfers, newBoardedLine, newBucket, newScore);
 
       const newIdx = store.length;
       store.push({
