@@ -2146,64 +2146,154 @@
                     window.showOnMap(routeId); }
             };
 
-            window.saveRoute = function(routeId) {
-                const routeName = prompt('Emri i rrugës:', `Rruga ${routeId}`);
-                if (!routeName) return;
-                savedRoutes.unshift({
-                    id: Date.now(),
-                    name: routeName,
-                    from: document.getElementById('from-location').value,
-                    to: document.getElementById('to-location').value,
-                    routeId,
-                });
-                localStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
-                displaySavedRoutes();
-                alert(`Rruga "${routeName}" u ruajt!`);
-            };
-
             window.closeModal = function() {
                 document.getElementById('route-details-modal')?.classList.remove('active');
             };
 
-            window.useSavedRoute = function(savedId) {
-                const r = savedRoutes.find(x => x.id === savedId);
-                if (!r) return;
-                document.getElementById('from-location').value = r.from;
-                document.getElementById('to-location').value = r.to;
+            window.saveRoute = async function (routeId) {
+              const route = currentResults.find(r => r.id === routeId);
+              if (!route) return;
+              const routeName = prompt('Emri i rrugës:', `Rruga ${route.title || routeId}`);
+              if (!routeName) return;
+              const from = document.getElementById('from-location').value;
+              const to = document.getElementById('to-location').value;
+              const routeData = {
+                id: Date.now(),
+                name: routeName,
+                from: from,
+                to: to,
+                route: route,
+                createdAt: new Date().toISOString()
+              };
+              try {
+                await saveRouteToBackend(routeData);
+                alert(`Rruga "${routeName}" u ruajt!`);
+                await displaySavedRoutes();
+              } catch (err) {
+                alert('Gabim gjatë ruajtjes: ' + err.message);
+              }
             };
 
-            window.deleteSavedRoute = function(savedId) {
-                if (!confirm('Fshi këtë rrugë të ruajtur?')) return;
-                savedRoutes = savedRoutes.filter(r => r.id !== savedId);
-                localStorage.setItem('savedRoutes', JSON.stringify(savedRoutes));
-                displaySavedRoutes();
+            window.deleteSavedRoute = async function (savedId) {
+              if (!confirm('Fshi këtë rrugë të ruajtur?')) return;
+              try {
+                await deleteSavedRouteFromBackend(savedId);
+                await displaySavedRoutes();
+              } catch (err) {
+                alert('Gabim gjatë fshirjes: ' + err.message);
+              }
             };
 
-            // ── Saved routes ───────────────────────────────────────────────────────
-            function loadSavedRoutes() {
-                savedRoutes = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
-                if (savedRoutes.length === 0) {
-                    savedRoutes = [
-                        { id: 1, name: 'Punë - Shtëpi', from: 'Zona Industriale', to: 'Qendra e Tiranës' },
-                        { id: 2, name: 'Aeroporti', from: 'Sheshi Skënderbej', to: 'Aeroporti Nënë Tereza' },
-                    ];
+            window.useSavedRoute = async function (savedId) {
+              const savedRoutes = await fetchSavedRoutes();
+              const r = savedRoutes.find(x => x.id === savedId);
+              if (!r) return;
+              document.getElementById('from-location').value = r.from;
+              document.getElementById('to-location').value = r.to;
+              // Auto search
+              document.getElementById('advanced-search-form').dispatchEvent(new Event('submit'));
+            };
+
+            // ── Saved routes with backend support ─────────────────────────────────────
+            async function fetchSavedRoutes() {
+              // Try to get current user from global auth
+              let user = null;
+              if (window.auth && typeof window.auth.getCurrentUser === 'function') {
+                user = await window.auth.getCurrentUser();
+              } else if (window.currentUser) {
+                user = window.currentUser;
+              }
+              if (user && user.token) {
+                try {
+                  const res = await fetch('/.netlify/functions/get-saved-routes', {
+                    headers: { 'Authorization': `Bearer ${user.token}` }
+                  });
+                  if (res.ok) {
+                    const data = await res.json();
+                    return data.savedRoutes || [];
+                  }
+                } catch (err) {
+                  console.warn('Failed to fetch saved routes from backend', err);
                 }
-                displaySavedRoutes();
+              }
+              // Fallback to localStorage
+              const local = localStorage.getItem('savedRoutes');
+              return local ? JSON.parse(local) : [];
             }
 
-            function displaySavedRoutes() {
-                const list = document.getElementById('saved-routes-list');
-                list.innerHTML = savedRoutes.slice(0, 3).map(r => `
-              <div class="saved-route" data-saved-id="${r.id}">
-                <div class="saved-route-info">
-                  <div class="saved-route-name">${r.name}</div>
-                  <div class="saved-route-path">${r.from} → ${r.to}</div>
-                </div>
-                <div class="saved-route-actions">
-                  <button class="saved-btn" title="Përdor" onclick="window.useSavedRoute(${r.id})"><i class="fas fa-directions"></i></button>
-                  <button class="saved-btn" title="Fshi" onclick="window.deleteSavedRoute(${r.id})"><i class="fas fa-trash"></i></button>
-                </div>
-              </div>`).join('');
+            async function saveRouteToBackend(routeData) {
+              let user = null;
+              if (window.auth && typeof window.auth.getCurrentUser === 'function') {
+                user = await window.auth.getCurrentUser();
+              } else if (window.currentUser) {
+                user = window.currentUser;
+              }
+              if (!user || !user.token) {
+                // Save to localStorage
+                let saved = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+                saved.unshift(routeData);
+                localStorage.setItem('savedRoutes', JSON.stringify(saved));
+                return { success: true, local: true };
+              }
+              const res = await fetch('/.netlify/functions/save-route', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify({
+                  from_location: routeData.from,
+                  to_location: routeData.to,
+                  route_data: routeData.route
+                })
+              });
+              if (!res.ok) throw new Error('Save failed');
+              return await res.json();
+            }
+
+            async function deleteSavedRouteFromBackend(routeId) {
+              let user = null;
+              if (window.auth && typeof window.auth.getCurrentUser === 'function') {
+                user = await window.auth.getCurrentUser();
+              } else if (window.currentUser) {
+                user = window.currentUser;
+              }
+              if (!user || !user.token) {
+                let saved = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+                saved = saved.filter(r => r.id != routeId);
+                localStorage.setItem('savedRoutes', JSON.stringify(saved));
+                return { success: true };
+              }
+              const res = await fetch(`/.netlify/functions/delete-saved-route?id=${routeId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${user.token}` }
+              });
+              if (!res.ok) throw new Error('Delete failed');
+              return await res.json();
+            }
+
+            async function displaySavedRoutes() {
+              const savedRoutes = await fetchSavedRoutes();
+              const list = document.getElementById('saved-routes-list');
+              if (!savedRoutes.length) {
+                list.innerHTML = '<div class="no-data"><i class="fas fa-bookmark"></i><p>Nuk ka rrugë të ruajtura</p></div>';
+                return;
+              }
+              list.innerHTML = savedRoutes.slice(0, 3).map(r => `
+                <div class="saved-route" data-saved-id="${r.id}">
+                  <div class="saved-route-info">
+                    <div class="saved-route-name">${escapeHtml(r.name)}</div>
+                    <div class="saved-route-path">${escapeHtml(r.from)} → ${escapeHtml(r.to)}</div>
+                  </div>
+                  <div class="saved-route-actions">
+                    <button class="saved-btn" title="Përdor" onclick="window.useSavedRoute(${r.id})">
+                      <i class="fas fa-directions"></i>
+                    </button>
+                    <button class="saved-btn" title="Fshi" onclick="window.deleteSavedRoute(${r.id})">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>`).join('');
             }
 
             // ── Form & controls init ───────────────────────────────────────────────
@@ -2328,7 +2418,7 @@
                 initMap();
                 initForm();
                 initControls();
-                loadSavedRoutes();
+                displaySavedRoutes().catch(console.warn);
                 document.getElementById('travel-date').valueAsDate = new Date();
 
                 const p = new URLSearchParams(window.location.search);
