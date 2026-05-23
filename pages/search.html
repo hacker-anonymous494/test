@@ -1578,30 +1578,38 @@
             function createStartStationMarker(lat, lng, name) {
                 return L.marker([lat, lng], {
                     icon: L.divIcon({
-                        html: `<div class="station-marker-start">
-                  <i class="fas fa-bus" style="font-size:11px;"></i>
-                  <span class="station-label">${escapeHTML(name)}</span>
-                </div>`,
-                        iconSize: [34, 50],
-                        iconAnchor: [17, 17],
-                        className: 'station-start-icon',
+                        html: `
+                            <div style="position: relative; width: 40px; height: 46px;">
+                                <svg width="40" height="46" viewBox="0 0 40 46">
+                                    <path d="M20 0C10 8 0 16 0 28c0 10 8 18 20 18s20-8 20-18C40 16 30 8 20 0z" fill="#34A853" stroke="#fff" stroke-width="2"/>
+                                    <text x="20" y="26" text-anchor="middle" fill="#fff" font-size="18">🚌</text>
+                                </svg>
+                                <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 11px; font-weight: 700; color: #202124; background: rgba(255,255,255,0.95); padding: 2px 8px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.2);">${escapeHTML(name)}</div>
+                            </div>`,
+                        iconSize: [40, 60],
+                        iconAnchor: [20, 30],
+                        className: '',
                     }),
-                    zIndexOffset: 800,
+                    zIndexOffset: 850,
                 }).bindPopup(`<b>🚏 Stacioni i nisjes:</b> ${name}`);
             }
 
             function createStopStationMarker(lat, lng, name) {
                 return L.marker([lat, lng], {
                     icon: L.divIcon({
-                        html: `<div class="station-marker-stop">
-                  <i class="fas fa-bus" style="font-size:11px;"></i>
-                  <span class="station-label">${escapeHTML(name)}</span>
-                </div>`,
-                        iconSize: [34, 50],
-                        iconAnchor: [17, 17],
-                        className: 'station-stop-icon',
+                        html: `
+                            <div style="position: relative; width: 40px; height: 46px;">
+                                <svg width="40" height="46" viewBox="0 0 40 46">
+                                    <path d="M20 0C10 8 0 16 0 28c0 10 8 18 20 18s20-8 20-18C40 16 30 8 20 0z" fill="#ea4335" stroke="#fff" stroke-width="2"/>
+                                    <text x="20" y="26" text-anchor="middle" fill="#fff" font-size="18">🏁</text>
+                                </svg>
+                                <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 11px; font-weight: 700; color: #202124; background: rgba(255,255,255,0.95); padding: 2px 8px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.2);">${escapeHTML(name)}</div>
+                            </div>`,
+                        iconSize: [40, 60],
+                        iconAnchor: [20, 30],
+                        className: '',
                     }),
-                    zIndexOffset: 800,
+                    zIndexOffset: 850,
                 }).bindPopup(`<b>🚏 Stacioni i mbërritjes:</b> ${name}`);
             }
 
@@ -1774,16 +1782,6 @@
                                 lineCap: 'round',
                             });
                         }
-                        // Station circle marker
-                        const stopMrkr = L.circleMarker(from, {
-                            radius: 5,
-                            color: step.lineColor || '#1a73e8',
-                            fillColor: '#fff',
-                            fillOpacity: 1,
-                            weight: 2.5,
-                        }).bindPopup(`<b>${step.fromStation}</b><br>Linja ${step.lineNumber}`);
-                        stopMrkr.addTo(map);
-                        routeLayers.push(stopMrkr);
                     } else {
                         layer = L.polyline([from, to], {
                             color: step.lineColor || '#1a73e8',
@@ -1791,15 +1789,6 @@
                             opacity: highlight ? 1.0 : 0.75,
                             lineCap: 'round',
                         });
-                        const stopMrkr = L.circleMarker(from, {
-                            radius: 5,
-                            color: step.lineColor || '#1a73e8',
-                            fillColor: '#fff',
-                            fillOpacity: 1,
-                            weight: 2.5,
-                        }).bindPopup(`<b>${step.fromStation}</b><br>Linja ${step.lineNumber}`);
-                        stopMrkr.addTo(map);
-                        routeLayers.push(stopMrkr);
                     }
                     layer.addTo(map);
                     routeLayers.push(layer);
@@ -1916,7 +1905,7 @@
                         drawBusRoute(currentResults[0], true);
 
                         // Draw walking routes: origin → start station, stop station → destination
-                        await drawWalkingConnections(data.meta, fromGeo, toGeo);
+                        await drawWalkingConnections(data.meta, fromGeo, toGeo, currentResults[0]);
                     } else {
                         displayNoResults();
                     }
@@ -1930,36 +1919,77 @@
                 }
             }
 
-            async function drawWalkingConnections(meta, fromGeo, toGeo) {
+            async function drawWalkingConnections(meta, fromGeo, toGeo, bestRoute) {
                 clearWalkingRoutes();
+                // Remove old station markers if any
+                if (markerStartStation) { map.removeLayer(markerStartStation); markerStartStation = null; }
+                if (markerStopStation) { map.removeLayer(markerStopStation); markerStopStation = null; }
 
-                // Origin → Start Station
+                // Determine boarding station coordinates (first bus step)
+                let boardingCoords = null;
+                let boardingName = null;
                 if (meta?.originStops?.[0]?.coords) {
-                    const startCoords = meta.originStops[0].coords;
-                    const startName = meta.originStops[0].name || 'Stacioni i nisjes';
-                    markerStartStation = createStartStationMarker(startCoords.lat, startCoords.lng, startName);
+                    boardingCoords = meta.originStops[0].coords;
+                    boardingName = meta.originStops[0].name;
+                } else if (bestRoute?.steps) {
+                    const firstBus = bestRoute.steps.find(s => s.type !== 'walk');
+                    if (firstBus?.fromCoords) {
+                        boardingCoords = firstBus.fromCoords;
+                        boardingName = firstBus.fromStation;
+                    }
+                }
+                if (!boardingCoords && fromGeo) {
+                    // fallback: use the origin itself, but that's not ideal; we'll skip
+                }
+
+                // Determine alighting station coordinates (last bus step)
+                let alightingCoords = null;
+                let alightingName = null;
+                if (meta?.destStops?.[0]?.coords) {
+                    alightingCoords = meta.destStops[0].coords;
+                    alightingName = meta.destStops[0].name;
+                } else if (bestRoute?.steps) {
+                    const lastBus = [...bestRoute.steps].reverse().find(s => s.type !== 'walk');
+                    if (lastBus?.toCoords) {
+                        alightingCoords = lastBus.toCoords;
+                        alightingName = lastBus.toStation;
+                    }
+                }
+                if (!alightingCoords && toGeo) {
+                    // fallback
+                }
+
+                // Place start station marker
+                if (boardingCoords) {
+                    markerStartStation = createStartStationMarker(
+                        boardingCoords.lat, boardingCoords.lng,
+                        boardingName || 'Stacioni i nisjes'
+                    );
                     markerStartStation.addTo(map);
+                    // Draw walking route from origin to boarding station
                     await drawWalkingRouteOnMap(
                         parseFloat(fromGeo.lat), parseFloat(fromGeo.lon),
-                        startCoords.lat, startCoords.lng,
+                        boardingCoords.lat, boardingCoords.lng,
                         '#34A853'
                     );
                 }
 
-                // Stop Station → Destination
-                if (meta?.destStops?.[0]?.coords) {
-                    const stopCoords = meta.destStops[0].coords;
-                    const stopName = meta.destStops[0].name || 'Stacioni i mbërritjes';
-                    markerStopStation = createStopStationMarker(stopCoords.lat, stopCoords.lng, stopName);
+                // Place stop station marker
+                if (alightingCoords) {
+                    markerStopStation = createStopStationMarker(
+                        alightingCoords.lat, alightingCoords.lng,
+                        alightingName || 'Stacioni i mbërritjes'
+                    );
                     markerStopStation.addTo(map);
+                    // Draw walking route from alighting station to destination
                     await drawWalkingRouteOnMap(
-                        stopCoords.lat, stopCoords.lng,
+                        alightingCoords.lat, alightingCoords.lng,
                         parseFloat(toGeo.lat), parseFloat(toGeo.lon),
                         '#ea4335'
                     );
                 }
 
-                // Fit bounds to include everything
+                // Fit bounds to include all markers
                 const allPoints = [];
                 if (markerOrigin) allPoints.push(markerOrigin.getLatLng());
                 if (markerDest) allPoints.push(markerDest.getLatLng());
@@ -1967,7 +1997,7 @@
                 if (markerStopStation) allPoints.push(markerStopStation.getLatLng());
                 if (allPoints.length > 0) {
                     const group = L.featureGroup(allPoints.map(p => L.marker(p)));
-                    map.fitBounds(group.getBounds(), { padding: [50, 50] });
+                    map.fitBounds(group.getBounds(), { padding: [60, 60] });
                 }
             }
 
