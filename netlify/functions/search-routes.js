@@ -68,9 +68,11 @@ exports.handler = async (event) => {
     const { graph, stopMap, lineMap, scheduleMap } = await getTransitGraph();
 
     // ── 2. Find nearby stops for origin & destination ────────────────────────
-    const nearOrigin = findNearbyStops(fromLat, fromLng, stopMap, maxWalkingMin * 60 * 1.1)
+    // Convert maxWalkingMin → metres: walking speed 1.1 m/s × 60 s/min = 66 m/min
+    const maxWalkM   = maxWalkingMin * 66;
+    const nearOrigin = findNearbyStops(fromLat, fromLng, stopMap, maxWalkM)
       .slice(0, MAX_ORIGIN_STOPS);
-    const nearDest   = findNearbyStops(toLat, toLng, stopMap, maxWalkingMin * 60 * 1.1)
+    const nearDest   = findNearbyStops(toLat, toLng, stopMap, maxWalkM)
       .slice(0, MAX_DEST_STOPS);
 
     if (nearOrigin.length === 0) {
@@ -136,8 +138,8 @@ exports.handler = async (event) => {
     const result = {
       results:     enriched,
       meta: {
-        originStops:  nearOrigin.slice(0, 2).map(n => ({ id: n.stop.id, name: n.stop.name, distanceM: n.distanceM })),
-        destStops:    nearDest.slice(0, 2).map(n => ({ id: n.stop.id, name: n.stop.name, distanceM: n.distanceM })),
+        originStops:  nearOrigin.slice(0, 2).map(n => ({ id: n.stop.id, name: n.stop.name, distanceM: n.distanceM, coords: { lat: n.stop.lat, lng: n.stop.lng } })),
+        destStops:    nearDest.slice(0, 2).map(n => ({ id: n.stop.id, name: n.stop.name, distanceM: n.distanceM, coords: { lat: n.stop.lat, lng: n.stop.lng } })),
         departureTime: departureTime.toISOString(),
         searchType,
       },

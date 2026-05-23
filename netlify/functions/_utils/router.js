@@ -7,9 +7,9 @@
 //   cheapest  – minimise fare (+ reasonable time)
 //   walking   – minimise walking distance
 //
-// Algorithm: label-correcting multi-criteria Dijkstra
-// Handles: directional lines, walking transfers, transfer
-//          penalties, wait times, cycle avoidance.
+// Algorithm: label-correcting multi-criteria Dijkstra with a
+//            binary min-heap priority queue (O(E log V) instead
+//            of the previous O(E·V) caused by Array.sort()).
 // ============================================================
 
 'use strict';
@@ -25,10 +25,56 @@ const WEIGHTS = {
   accessible:{ time: 0.8, walk: 1.0,  fare: 0.0,  transfers: 8  },
 };
 
-const MAX_TRANSFERS  = 4;
-const MAX_WALK_MIN   = 20;   // hard cap on a single walking leg
+const MAX_TRANSFERS = 4;
+const MAX_WALK_MIN  = 20;   // hard cap on a single walking leg
 
-// ── Main entry point ─────────────────────────────────────────────────────────
+// ── Binary Min-Heap ───────────────────────────────────────────────────────────
+// Replaces the O(n log n) Array.sort() that caused the 504 timeout.
+// Each operation is O(log n).
+class MinHeap {
+  constructor() { this._h = []; }
+
+  get size() { return this._h.length; }
+
+  push(item) {
+    this._h.push(item);
+    this._bubbleUp(this._h.length - 1);
+  }
+
+  pop() {
+    const top = this._h[0];
+    const last = this._h.pop();
+    if (this._h.length > 0) {
+      this._h[0] = last;
+      this._siftDown(0);
+    }
+    return top;
+  }
+
+  _bubbleUp(i) {
+    while (i > 0) {
+      const parent = (i - 1) >> 1;
+      if (this._h[parent].score <= this._h[i].score) break;
+      [this._h[parent], this._h[i]] = [this._h[i], this._h[parent]];
+      i = parent;
+    }
+  }
+
+  _siftDown(i) {
+    const n = this._h.length;
+    while (true) {
+      let smallest = i;
+      const l = 2 * i + 1, r = 2 * i + 2;
+      if (l < n && this._h[l].score < this._h[smallest].score) smallest = l;
+      if (r < n && this._h[r].score < this._h[smallest].score) smallest = r;
+      if (smallest === i) break;
+      [this._h[smallest], this._h[i]] = [this._h[i], this._h[smallest]];
+      i = smallest;
+    }
+  }
+}
+
+// ── Main entry point ──────────────────────────────────────────────────────────
 /**
  * @param {Object}   opts
  * @param {number[]} opts.originStopIds       – candidate start stops (sorted by proximity)
@@ -55,10 +101,10 @@ function findRoutes(opts) {
     lineMap,
     scheduleMap,
     departureTime,
-    searchType  = 'fastest',
+    searchType     = 'fastest',
     accessibleOnly = false,
-    walkingOriginMinutes  = 0,
-    walkingDestMinutes    = 0,
+    walkingOriginMinutes = 0,
+    walkingDestMinutes   = 0,
     originCoords,
     destCoords,
   } = opts;
@@ -66,60 +112,72 @@ function findRoutes(opts) {
   const weights = WEIGHTS[searchType] || WEIGHTS.fastest;
   const destSet = new Set(destStopIds);
 
-  // ── Labels: stopId → best label per (lineId | 'walk') ─────────────────────
-  // label = { score, totalTime, transfers, fare, walkMin, prev, prevLine, arrivalTime }
-  const bestScore = {}; // stopId → best composite score reached so far
-  for (const id in graph) bestScore[id] = Infinity;
+  // ── Per-stop best scores (dominance pruning) ───────────────────────────────
+  // Key: `${stopId}:${transfers}:${boardedLineId ?? 'walk'}`
+  // Keeps the search focused without the visited-set overhead.
+  const bestScore = new Map();
 
-  // Priority queue: simple sorted array (adequate for city-scale graphs ~300 stops)
-  // For 1000+ stops, swap in a proper binary heap.
-  const queue = [];
+  const getBest = (stopId, transfers, lineId) => {
+    const key = `${stopId}:${transfers}:${lineId ?? 'w'}`;
+    return bestScore.get(key) ?? Infinity;
+  };
+  const setBest = (stopId, transfers, lineId, score) => {
+    const key = `${stopId}:${transfers}:${lineId ?? 'w'}`;
+    bestScore.set(key, score);
+  };
 
-  // Seed: all origin stops (user walks to each)
+  // ── Priority queue (min-heap) ──────────────────────────────────────────────
+  const heap = new MinHeap();
+
+  // Seed: all origin stops
   for (const sid of originStopIds) {
-    const walkMin = walkingOriginMinutes; // set per origin, or use 0 for nearest
-    const label   = {
-      stopId:     sid,
-      score:      weights.walk * walkMin,
-      totalTime:  walkMin,
-      transfers:  0,
-      fare:       0,
+    const walkMin = walkingOriginMinutes;
+    const label = {
+      stopId:        sid,
+      score:         weights.walk * walkMin,
+      totalTime:     walkMin,
+      transfers:     0,
+      fare:          0,
       walkMin,
       boardedLineId: null,
-      prev:       null,
-      prevEdge:   null,
-      visitedStops: new Set([sid]),
+      prev:          null,
+      prevEdge:      null,
     };
-    queue.push(label);
-    bestScore[sid] = label.score;
+    if (label.score < getBest(sid, 0, null)) {
+      setBest(sid, 0, null, label.score);
+      heap.push(label);
+    }
   }
 
   const completedRoutes = [];
+  // Deduplicate destinations: key = stopId:transfers:lastLine
   const seenDestSignatures = new Set();
 
-  while (queue.length > 0) {
-    // Pop best
-    queue.sort((a, b) => a.score - b.score);
-    const curr = queue.shift();
+  while (heap.size > 0) {
+    const curr = heap.pop();
+
+    // Stale label check (score may have improved since this label was enqueued)
+    if (curr.score > getBest(curr.stopId, curr.transfers, curr.boardedLineId) * 1.001) continue;
 
     // ── Destination reached ────────────────────────────────────────────────
     if (destSet.has(curr.stopId)) {
-      const finalWalk    = walkingDestMinutes;
-      const finalTime    = curr.totalTime + finalWalk;
-      const finalScore   = curr.score + weights.walk * finalWalk;
-      const sig          = `${curr.stopId}:${curr.transfers}:${curr.boardedLineId}`;
+      const finalWalk  = walkingDestMinutes;
+      const finalTime  = curr.totalTime + finalWalk;
+      const finalScore = curr.score + weights.walk * finalWalk;
+      // Signature: stop + transfer-count + last line to avoid exact duplicates
+      const sig = `${curr.stopId}:${curr.transfers}:${curr.boardedLineId ?? 'w'}`;
 
       if (!seenDestSignatures.has(sig)) {
         seenDestSignatures.add(sig);
         completedRoutes.push({
           ...curr,
-          totalTime:  finalTime,
-          score:      finalScore,
+          totalTime:    finalTime,
+          score:        finalScore,
           walkMinFinal: finalWalk,
         });
       }
-      // Keep searching for alternatives (up to limit)
-      if (completedRoutes.length >= 6) break;
+      if (completedRoutes.length >= 8) break;
+      // Do NOT continue — let the search find alternative routes through other paths
       continue;
     }
 
@@ -131,68 +189,69 @@ function findRoutes(opts) {
     for (const edge of edges) {
       const { toStopId, travelTime, edgeType, lineId, isAccessible, fare } = edge;
 
-      // Accessibility filter
       if (accessibleOnly && !isAccessible) continue;
-
-      // Cycle avoidance
-      if (curr.visitedStops.has(toStopId)) continue;
-
-      // Walking cap
       if (edgeType === 'walk' && travelTime > MAX_WALK_MIN) continue;
 
-      // Is this a transfer (switching lines)?
+      // ── Transfer detection ───────────────────────────────────────────────
+      // A transfer happens when we switch from one bus line to another.
+      // Boarding for the first time (boardedLineId === null) is NOT a transfer.
       const isTransfer = (
         edgeType === 'bus' &&
         curr.boardedLineId !== null &&
         curr.boardedLineId !== lineId
       );
+
       const newTransfers = curr.transfers + (isTransfer ? 1 : 0);
       if (newTransfers > MAX_TRANSFERS) continue;
 
-      // Wait time for bus edges
+      // ── Wait time ────────────────────────────────────────────────────────
+      // Pay wait cost only when boarding a bus (first time or after a transfer).
+      // Staying on the same line never incurs a wait.
       let waitMin = 0;
-      if (edgeType === 'bus' && (curr.boardedLineId !== lineId)) {
-        // Boarding a (new) line — pay waiting cost
+      const isBoarding = edgeType === 'bus' && curr.boardedLineId !== lineId;
+      if (isBoarding) {
         waitMin = calcWaitMinutes(lineId, departureTime, scheduleMap, lineMap);
-        if (waitMin === Infinity) continue; // line not running
+        if (waitMin === Infinity) continue; // line not operating
       }
 
-      // Transfer penalty
       const transferPenalty = isTransfer ? TRANSFER_MIN : 0;
+      const addedTime       = waitMin + travelTime + transferPenalty;
+      const newWalkMin      = curr.walkMin + (edgeType === 'walk' ? travelTime : 0);
+      const newTotal        = curr.totalTime + addedTime;
 
-      const addedTime   = waitMin + travelTime + transferPenalty;
-      const newWalkMin  = edgeType === 'walk' ? curr.walkMin + travelTime : curr.walkMin;
-      const newFare     = curr.fare + (isTransfer ? fare : edgeType === 'bus' && curr.boardedLineId === null ? fare : 0);
-      const newTotal    = curr.totalTime + addedTime;
+      // ── Fare: charge once per boarding event ─────────────────────────────
+      // First boarding: boardedLineId was null, now boarding a bus.
+      // Transfer: boardedLineId was set, now switching to a different line.
+      const newFare = curr.fare + (isBoarding ? (fare ?? 0) : 0);
 
-      const addedScore  =
+      const addedScore =
         weights.time      * addedTime +
         weights.walk      * (edgeType === 'walk' ? travelTime : 0) +
         weights.transfers * (isTransfer ? 1 : 0) +
-        weights.fare      * (isTransfer ? fare : 0);
+        weights.fare      * (isBoarding ? (fare ?? 0) : 0);
 
-      const newScore = curr.score + addedScore;
+      const newScore       = curr.score + addedScore;
+      const newBoardedLine = edgeType === 'bus' ? lineId : curr.boardedLineId;
 
-      // Prune dominated labels
-      if (newScore >= (bestScore[toStopId] ?? Infinity) * 1.5) continue;
-      if (newScore < (bestScore[toStopId] ?? Infinity)) {
-        bestScore[toStopId] = newScore;
+      // ── Dominance pruning ────────────────────────────────────────────────
+      // Allow a 50% score slack so alternative routes (more transfers but fewer
+      // changes, etc.) can still be found for deduplication later.
+      const existingBest = getBest(toStopId, newTransfers, newBoardedLine);
+      if (newScore >= existingBest * 1.5) continue;
+      if (newScore < existingBest) {
+        setBest(toStopId, newTransfers, newBoardedLine, newScore);
       }
 
-      const newVisited = new Set(curr.visitedStops);
-      newVisited.add(toStopId);
-
-      queue.push({
+      heap.push({
         stopId:        toStopId,
         score:         newScore,
         totalTime:     newTotal,
         transfers:     newTransfers,
         fare:          newFare,
         walkMin:       newWalkMin,
-        boardedLineId: edgeType === 'bus' ? lineId : curr.boardedLineId,
+        boardedLineId: newBoardedLine,
         prev:          curr,
         prevEdge:      edge,
-        visitedStops:  newVisited,
       });
     }
   }
@@ -202,18 +261,19 @@ function findRoutes(opts) {
   // ── Reconstruct and deduplicate routes ────────────────────────────────────
   const reconstructed = completedRoutes
     .sort((a, b) => a.score - b.score)
-    .slice(0, 6)
-    .map((label, idx) => reconstructRoute(label, stopMap, lineMap, idx + 1, walkingDestMinutes, originCoords, destCoords));
+    .slice(0, 8)
+    .map((label, idx) =>
+      reconstructRoute(label, stopMap, lineMap, idx + 1, walkingDestMinutes, originCoords, destCoords)
+    );
 
-  // Return distinct variants
   return deduplicateRoutes(reconstructed);
 }
 
 // ── Route reconstruction ───────────────────────────────────────────────────────
 function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCoords, destCoords) {
+  // Walk the linked list backwards to collect segments
   const segments = [];
   let node = endLabel;
-
   while (node && node.prevEdge) {
     segments.unshift({
       fromStopId: node.prev.stopId,
@@ -223,11 +283,11 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
     node = node.prev;
   }
 
-  // Group consecutive same-line bus segments
+  // ── Group consecutive same-line bus segments into a single step ────────────
   const steps = [];
   let i = 0;
   while (i < segments.length) {
-    const seg = segments[i];
+    const seg  = segments[i];
     const { edge } = seg;
 
     if (edge.edgeType === 'walk') {
@@ -244,19 +304,19 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
       });
       i++;
     } else {
-      // Bus: accumulate until line changes
-      const lineId     = edge.lineId;
-      const lineNumber = edge.lineNumber;
-      const lineName   = edge.lineName;
-      const lineColor  = edge.lineColor;
-      const fare       = edge.fare;
-      let   rideTime   = edge.travelTime;
-      const fromStop   = stopMap.get(seg.fromStopId);
-      let   toStop     = stopMap.get(seg.toStopId);
+      // Bus: accumulate all consecutive segments on the same line
+      const { lineId, lineNumber, lineName, lineColor, fare } = edge;
+      let   rideTime     = edge.travelTime;
+      const fromStop     = stopMap.get(seg.fromStopId);
+      let   toStop       = stopMap.get(seg.toStopId);
       const stopSequence = [fromStop?.name || '—', toStop?.name || '—'];
 
       let j = i + 1;
-      while (j < segments.length && segments[j].edge.edgeType === 'bus' && segments[j].edge.lineId === lineId) {
+      while (
+        j < segments.length &&
+        segments[j].edge.edgeType === 'bus' &&
+        segments[j].edge.lineId === lineId
+      ) {
         rideTime += segments[j].edge.travelTime;
         toStop    = stopMap.get(segments[j].toStopId);
         stopSequence.push(toStop?.name || '—');
@@ -273,7 +333,7 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
         polyline:     edge.polyline || edge.linePolyline || null,
         linePolyline: edge.linePolyline || null,
         fromStopId:   seg.fromStopId,
-        toStopId:     segments[j-1].toStopId,
+        toStopId:     segments[j - 1].toStopId,
         fromStation:  fromStop?.name || '—',
         toStation:    toStop?.name   || '—',
         stopSequence,
@@ -283,18 +343,8 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
     }
   }
 
-  // Prepend walking to first stop if needed
-  const firstSeg = segments[0];
-  if (firstSeg && originCoords) {
-    const fromStop = stopMap.get(firstSeg.fromStopId);
-    // Walk leg only if first edge is not already a walk
-    if (firstSeg.edge.edgeType !== 'walk' && endLabel.walkMin > 0) {
-      // already accounted for in score; add as walk step if > 0 min
-    }
-  }
-
-  // Append final walk if needed
-  if (finalWalkMin > 0 && destCoords) {
+  // ── Append final walking leg to the user's destination ────────────────────
+  if (finalWalkMin > 0) {
     const lastSeg  = segments[segments.length - 1];
     const lastStop = stopMap.get(lastSeg?.toStopId);
     steps.push({
@@ -308,21 +358,24 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
     });
   }
 
-  // Compute line badges for summary
-  const busLines = steps
-    .filter(s => s.type === 'bus')
-    .map(s => ({ number: s.lineNumber, color: s.lineColor, name: s.lineName }));
+  // ── Summary badges ────────────────────────────────────────────────────────
+  const busSteps = steps.filter(s => s.type === 'bus');
+  const busLines = busSteps.map(s => ({
+    number: s.lineNumber,
+    color:  s.lineColor,
+    name:   s.lineName,
+  }));
 
-  const totalFare = steps
-    .filter(s => s.type === 'bus')
-    .reduce((sum, s, idx) => sum + (idx === 0 ? s.fare : (endLabel.transfers > 0 ? s.fare : 0)), 0);
+  // Fare: sum all bus-step fares (each step = one boarding event, already
+  // deduplicated by the router). Fall back to 40 Lek if none recorded.
+  const totalFare = busSteps.reduce((sum, s) => sum + (s.fare || 0), 0) || 40;
 
   return {
     id,
     totalTime:   endLabel.totalTime,
     score:       endLabel.score,
     transfers:   endLabel.transfers,
-    fare:        totalFare || 40,
+    fare:        totalFare,
     walkMin:     endLabel.walkMin + (finalWalkMin || 0),
     steps,
     busLines,
@@ -331,33 +384,40 @@ function reconstructRoute(endLabel, stopMap, lineMap, id, finalWalkMin, originCo
   };
 }
 
-// ── Deduplication — keep best of fastest/fewest-transfers/least-walking ───────
+// ── Deduplication ─────────────────────────────────────────────────────────────
+// Keep best-of-four dimensions: score, transfers, walking, fare.
 function deduplicateRoutes(routes) {
   if (routes.length === 0) return [];
 
-  // Always include the top-scored route
-  const kept = [routes[0]];
+  const kept = [routes[0]]; // best overall score
 
-  // Fewest transfers
-  const byTransfers = [...routes].sort((a, b) => a.transfers - b.transfers || a.totalTime - b.totalTime);
-  if (byTransfers[0].id !== kept[0].id) kept.push(byTransfers[0]);
+  const tryAdd = (candidate) => {
+    if (!kept.find(r => r.id === candidate.id)) kept.push(candidate);
+  };
 
-  // Least walking
-  const byWalk = [...routes].sort((a, b) => a.walkMin - b.walkMin || a.totalTime - b.totalTime);
-  const leastWalk = byWalk[0];
-  if (!kept.find(r => r.id === leastWalk.id)) kept.push(leastWalk);
+  // Fewest transfers (tie-break: time)
+  const byTransfers = [...routes].sort((a, b) =>
+    a.transfers - b.transfers || a.totalTime - b.totalTime
+  );
+  tryAdd(byTransfers[0]);
 
-  // Cheapest
-  const byCheap = [...routes].sort((a, b) => a.fare - b.fare || a.totalTime - b.totalTime);
-  const cheapest = byCheap[0];
-  if (!kept.find(r => r.id === cheapest.id)) kept.push(cheapest);
+  // Least walking (tie-break: time)
+  const byWalk = [...routes].sort((a, b) =>
+    a.walkMin - b.walkMin || a.totalTime - b.totalTime
+  );
+  tryAdd(byWalk[0]);
 
-  // Re-tag variants with labels
+  // Cheapest fare (tie-break: time)
+  const byCheap = [...routes].sort((a, b) =>
+    a.fare - b.fare || a.totalTime - b.totalTime
+  );
+  tryAdd(byCheap[0]);
+
   const labels = ['Më e shpejta', 'Më pak ndërrime', 'Më pak ecje', 'Çmim i ulët'];
   return kept.slice(0, 4).map((r, i) => ({
     ...r,
-    title:  labels[i] || `Rruga ${i + 1}`,
-    id:     i + 1,
+    title: labels[i] || `Rruga ${i + 1}`,
+    id:    i + 1,
   }));
 }
 
