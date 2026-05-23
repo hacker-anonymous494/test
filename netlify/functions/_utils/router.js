@@ -131,9 +131,22 @@ function findRoutes(opts) {
   const completedIdxs     = [];
   const seenDestSigs       = new Set();
 
+  // Safeguards: prevent endless search and guarantee return before Netlify's 10s limit
+  const MAX_LABELS = 15000;   // safety cap
+  let labelCount = 0;
+  const startTime = Date.now();
+  const MAX_TIME_MS = 9500;   // leave 500ms for response
+
   while (heap.size > 0) {
     const { idx, score: heapScore } = heap.pop();
     const curr = store[idx];
+
+    // Early termination safeguards
+    labelCount++;
+    if (labelCount > MAX_LABELS || (Date.now() - startTime) > MAX_TIME_MS) {
+      console.warn(`Router terminating early: labels=${labelCount} time=${Date.now()-startTime}ms`);
+      break;
+    }
 
     // Stale check
     const currBucket = Math.floor(curr.totalTime / 15);
