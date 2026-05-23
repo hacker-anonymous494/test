@@ -29,7 +29,7 @@ const WEIGHTS = {
 };
 
 const MAX_TRANSFERS = 4;
-const MAX_WALK_MIN  = 20;
+const MAX_WALK_MIN  = 10;  // >10 min walks between stops are rarely optimal in a city network
 
 // ── Binary Min-Heap ───────────────────────────────────────────────────────────
 class MinHeap {
@@ -164,7 +164,11 @@ function findRoutes(opts) {
       const isBoarding = edgeType === 'bus' && curr.boardedLineId !== lineId;
       let waitMin = 0;
       if (isBoarding) {
-        waitMin = calcWaitMinutes(lineId, departureTime, scheduleMap, lineMap);
+        // Use the real clock time when the user arrives at this stop, not the
+        // original departure time. This correctly prunes lines that have stopped
+        // running by the time the user gets there, and gives accurate wait times.
+        const actualArrival = new Date(departureTime.getTime() + curr.totalTime * 60000);
+        waitMin = calcWaitMinutes(lineId, actualArrival, scheduleMap, lineMap);
         if (waitMin === Infinity) continue;
       }
 

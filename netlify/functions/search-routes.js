@@ -20,8 +20,8 @@ const { findRoutes }                 = require('./_utils/router');
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const MAX_WALK_MIN        = 15;   // default max user walking
-const MAX_ORIGIN_STOPS    = 5;    // evaluate N nearest origin stops
-const MAX_DEST_STOPS      = 5;
+const MAX_ORIGIN_STOPS    = 3;    // evaluate N nearest origin stops (3×3=9 combos vs old 5×5=25)
+const MAX_DEST_STOPS      = 3;
 const CACHE_WINDOW_MINUTES = 10;  // route_cache bucket size
 
 // ── Handler ───────────────────────────────────────────────────────────────────
@@ -65,7 +65,9 @@ exports.handler = async (event) => {
 
   try {
     // ── 1. Load transit graph (cached) ───────────────────────────────────────
+    console.time('[search-routes] graph');
     const { graph, stopMap, lineMap, scheduleMap } = await getTransitGraph();
+    console.timeEnd('[search-routes] graph');
 
     // ── 2. Find nearby stops for origin & destination ────────────────────────
     // Convert maxWalkingMin → metres: walking speed 1.1 m/s × 60 s/min = 66 m/min
@@ -109,6 +111,7 @@ exports.handler = async (event) => {
     const walkToOrigin = nearOrigin[0].walkingMinutes;
     const walkToDest   = nearDest[0].walkingMinutes;
 
+    console.time('[search-routes] routing');
     const routes = findRoutes({
       originStopIds,
       destStopIds,
@@ -124,6 +127,8 @@ exports.handler = async (event) => {
       originCoords: { lat: fromLat, lng: fromLng },
       destCoords:   { lat: toLat,   lng: toLng },
     });
+    console.timeEnd('[search-routes] routing');
+    console.log(`[search-routes] found ${routes.length} route(s) for searchType=${searchType}`);
 
     if (routes.length === 0) {
       return respond(404, {
