@@ -3,6 +3,11 @@
   publish = "."
   functions = "netlify/functions"
 
+[functions]
+  node_bundler = "esbuild"           # Use the modern, faster bundler
+  [functions."search-routes"]
+    included_files = ["netlify/functions/_utils/**"]   # Include all utility modules
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
