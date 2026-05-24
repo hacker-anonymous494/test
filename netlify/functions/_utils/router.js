@@ -29,7 +29,7 @@ const WEIGHTS = {
 };
 
 const MAX_TRANSFERS = 4;
-const MAX_WALK_MIN  = 20;  // >20 min walks between stops are rarely optimal in a city network
+const MAX_WALK_MIN  = 30;  // >30 min walks between stops are rarely optimal in a city network
 
 // ── Binary Min-Heap ───────────────────────────────────────────────────────────
 class MinHeap {
@@ -132,7 +132,7 @@ function findRoutes(opts) {
   const seenDestSigs       = new Set();
 
   // Safeguards: prevent endless search and guarantee return before Netlify's 10s limit
-  const MAX_LABELS = 50000;   // safety cap
+  const MAX_LABELS = 100000;   // safety cap
   let labelCount = 0;
   const startTime = Date.now();
   const MAX_TIME_MS = 9500;   // leave 500ms for response
