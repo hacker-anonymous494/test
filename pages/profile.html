@@ -886,40 +886,36 @@
 </head>
 <body>
     <!-- ── Header ─────────────────────────────────────────── -->
-    <header class="header">
-        <nav class="navbar">
-            <div class="logo-container">
-                <div class="logo">
-                    <i class="fas fa-bus"></i>
-                    <span class="logo-text">Sherbimijone</span>
-                </div>
-                <div class="tagline">Transporti Juaj në Tiranë</div>
-            </div>
+<nav class="nav">
+  <a class="nav-logo" href="../index.html">
+    <div class="nav-logo-icon"><i class="fas fa-bus"></i></div>
+    Sherbimijone
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html"><i class="fas fa-home"></i> Kryefaqja</a></li>
+    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Paneli</a></li>
+    <li><a href="map.html"><i class="fas fa-map"></i> Harta</a></li>
+    <li><a href="taxi.html"><i class="fas fa-taxi"></i> Taksi</a></li>
+    <li><a href="profile.html" class="active"><i class="fas fa-user"></i> Profili</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-ghost" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Dilni</button>
+  </div>
+  <div class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
 
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Kryefaqja</a></li>
-                <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Paneli</a></li>
-                <li class="nav-item"><a href="map.html" class="nav-link"><i class="fas fa-map"></i> Harta</a></li>
-                <li class="nav-item"><a href="taxi.html" class="nav-link"><i class="fas fa-taxi"></i> Taksi</a></li>
-                <li class="nav-item"><a href="profile.html" class="nav-link active"><i class="fas fa-user"></i> Profili</a></li>
-            </ul>
-
-            <div class="auth-buttons" id="auth-buttons"></div>
-
-            <div class="theme-toggle">
-                <input type="checkbox" id="theme-switch" class="theme-switch">
-                <label for="theme-switch" class="theme-label">
-                    <i class="fas fa-sun"></i>
-                    <i class="fas fa-moon"></i>
-                    <span class="theme-ball"></span>
-                </label>
-            </div>
-
-            <div class="hamburger">
-                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-            </div>
-        </nav>
-    </header>
+<!-- Mobile overlay menu -->
+<nav class="mobile-nav" id="mobile-nav">
+  <a href="../index.html"><i class="fas fa-home"></i> Kryefaqja</a>
+  <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Paneli</a>
+  <a href="map.html"><i class="fas fa-map"></i> Harta</a>
+  <a href="taxi.html"><i class="fas fa-taxi"></i> Taksi</a>
+  <a href="profile.html" class="active"><i class="fas fa-user"></i> Profili</a>
+  <div class="mobile-nav-divider"></div>
+  <a href="#" id="mobile-logout"><i class="fas fa-sign-out-alt"></i> Dilni</a>
+</nav>
 
     <!-- ── Page ───────────────────────────────────────────── -->
     <main class="profile-page">
@@ -1822,5 +1818,25 @@
 
     })();
     </script>
+
+<!-- Hamburger Menu Toggle -->
+<script>
+  (function() {
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    if (hamburger && mobileNav) {
+      hamburger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        mobileNav.classList.toggle('open');
+      });
+      // Close mobile nav when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!mobileNav.contains(event.target) && !hamburger.contains(event.target)) {
+          mobileNav.classList.remove('open');
+        }
+      });
+    }
+  })();
+</script>
 </body>
 </html>
