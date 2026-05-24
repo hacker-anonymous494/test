@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const themeSwitch = document.getElementById('theme-switch');
         const body = document.body;
         
+        // Exit if themeSwitch element doesn't exist (e.g., on pages without theme toggle)
+        if (!themeSwitch) return;
+        
         // Vendos temën e ruajtur
         if (currentTheme === 'dark') {
             themeSwitch.checked = true;

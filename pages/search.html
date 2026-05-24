@@ -1419,7 +1419,7 @@
 <!-- ══ SCRIPTS ══ -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="../config.js" onerror="window.CONFIG={}"></script>
-<script src="../assets/js/auth.js" onerror="window.auth=null"></script>
+<script src="../assets/js/auth.js"></script>
 <script src="../script.js" onerror="void 0"></script>
 
 <script>
@@ -2478,18 +2478,55 @@
   // BOOT
   // ════════════════════════════════════════════════════
   document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('travel-date').valueAsDate = new Date();
-    initMap();
-    initControls();
-    loadSavedRoutes().catch(() => {});
+  document.getElementById('travel-date').valueAsDate = new Date();
+  initMap();
+  initControls();
+  loadSavedRoutes().catch(() => {});
 
-    // Initialize authentication (restores login buttons)
-    if (window.auth && typeof window.auth.init === 'function') {
-      window.auth.init();
-    } else {
-      console.warn('Auth module not loaded');
-    }
-  });
+  // Use authManager (which is defined by auth.js) to update the navbar
+  if (window.authManager) {
+    // authManager.checkAuth() ensures the user data is fetched from the cookie
+    window.authManager.checkAuth().then(() => {
+      const user = window.authManager.getCurrentUser();
+      const navActions = document.querySelector('.nav-actions');
+      if (navActions) {
+        if (user) {
+          const displayName = user.firstName || user.email?.split('@')[0] || 'Përdorues';
+          navActions.innerHTML = `
+            <div class="user-info" style="display:flex;align-items:center;gap:8px;margin-right:8px">
+              <i class="fas fa-user-circle"></i>
+              <span>${escapeHtml(displayName)}</span>
+              <button class="btn-ghost" id="logout-btn" style="padding:4px 12px">
+                <i class="fas fa-sign-out-alt"></i> Dil
+              </button>
+            </div>`;
+          const logoutBtn = document.getElementById('logout-btn');
+          if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => window.authManager.logout());
+          }
+        } else {
+          // If already showing login/register, keep them (they are already in the HTML)
+          // But in case the content was overwritten, restore them
+          if (!navActions.innerHTML.includes('Kyçu')) {
+            navActions.innerHTML = `
+              <a href="login.html" class="btn-ghost"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
+              <a href="register.html" class="btn-solid"><i class="fas fa-user-plus"></i> Regjistrohu</a>`;
+          }
+        }
+      }
+    }).catch(() => {});
+  }
+});
+
+// Helper function (if escapeHtml is not already defined)
+if (typeof escapeHtml !== 'function') {
+  window.escapeHtml = function(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  };
+}
 
   window.addEventListener('beforeunload', () => {
     if (S.watchId) navigator.geolocation.clearWatch(S.watchId);
