@@ -1033,6 +1033,58 @@
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+    /* ══════════════════════════════════════════════
+       FIX: Layout Overflow & Responsiveness
+    ══════════════════════════════════════════════ */
+    body {
+      overflow-x: hidden;
+    }
+    .workspace {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+    .map-card, .results-card, .saved-card {
+      width: 100%;
+      overflow: hidden;
+    }
+    #map {
+      width: 100% !important;
+      height: 460px;
+    }
+    .main-area {
+      width: 100%;
+      min-width: 0;
+    }
+    @media (max-width: 1100px) {
+      .workspace {
+        padding: 12px;
+      }
+    }
+    @media (max-width: 768px) {
+      .rc-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+      .rc-actions {
+        flex-direction: column;
+      }
+      .rc-actions .rc-btn {
+        width: 100%;
+      }
+      .nm-steps {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      .hero-strip h1 {
+        font-size: 18px;
+      }
+      .workspace {
+        padding: 8px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1395,6 +1447,7 @@
     showVehicles:   false,
     results:        [],
     activeRouteId:  null,
+    currentRouteLines: [],    // array of line numbers (strings) for the active route
     // Navigation mode
     navActive:      false,
     navRoute:       null,
@@ -1646,6 +1699,12 @@
   // ════════════════════════════════════════════════════
   async function drawRoute(route, fromGeo, toGeo, meta) {
     clearMapLayers();
+
+    // Store current route's bus line numbers for vehicle filtering
+    if (route && route.busLines) {
+      S.currentRouteLines = route.busLines.map(l => l.number);
+    }
+
     const bounds = [];
 
     for (const step of route.steps) {
@@ -1730,6 +1789,11 @@
     const seen = new Set();
 
     for (const v of vehicles) {
+      // Filter vehicles by current route's bus lines
+      if (S.currentRouteLines.length && !S.currentRouteLines.includes(v.line_number)) {
+        continue; // skip buses not on current route
+      }
+
       seen.add(v.id);
       const color = v.color || '#2563EB';
       const lbl   = v.line_number || '?';
@@ -1773,7 +1837,7 @@
       if (v) updateVehicleMarkers(v);
     };
     poll();
-    S.vehiclePoll = setInterval(poll, 6000);
+    S.vehiclePoll = setInterval(poll, 3000);
     toast('Ndjekja e autobusëve live u aktivizua', 'success');
   }
 
@@ -2418,6 +2482,13 @@
     initMap();
     initControls();
     loadSavedRoutes().catch(() => {});
+
+    // Initialize authentication (restores login buttons)
+    if (window.auth && typeof window.auth.init === 'function') {
+      window.auth.init();
+    } else {
+      console.warn('Auth module not loaded');
+    }
   });
 
   window.addEventListener('beforeunload', () => {
