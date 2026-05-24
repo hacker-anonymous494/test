@@ -1846,61 +1846,78 @@ async function drawRoute(route, fromGeo, toGeo, meta) {
   }
 
   function updateVehicleMarkers(vehicles) {
-    if (!vehicles || !Array.isArray(vehicles)) return;
-    const seen = new Set();
-
-    for (const v of vehicles) {
-      // Filter vehicles by current route's bus lines
-      if (S.currentRouteLines.length && !S.currentRouteLines.includes(v.line_number)) {
-        continue; // skip buses not on current route
-      }
-
-      seen.add(v.id);
-      const color = v.color || '#2563EB';
-      const lbl   = v.line_number || '?';
-
-      const markerHtml = `
-        <div class="bus-marker-wrap">
-          <div class="bus-marker" style="background:${esc(color)}">
-            <i class="fas fa-bus" style="font-size:13px"></i>
-          </div>
-          <div class="bus-marker-label" style="color:${esc(color)}">${esc(lbl)}</div>
-        </div>`;
-
-      if (S.vehicleMarkers.has(v.id)) {
-        const m = S.vehicleMarkers.get(v.id);
-        // Animate smooth movement
-        m.setLatLng([v.lat, v.lng]);
-      } else {
-        const m = L.marker([v.lat, v.lng], {
-          icon: L.divIcon({ html: markerHtml, iconSize: [36, 46], iconAnchor: [18, 16], className: '' }),
-          zIndexOffset: 600,
-        }).bindPopup(`<b>🚌 Linja ${esc(lbl)}</b><br>Drejtim: ${esc(v.direction||'—')}<br>Shpejtësia: ${v.speed ? Math.round(v.speed)+' km/h' : '—'}`).addTo(S.map);
-        S.vehicleMarkers.set(v.id, m);
-      }
+  if (!vehicles || !Array.isArray(vehicles)) return;
+  const now = Date.now();
+  for (const v of vehicles) {
+    const id = v.line_number;
+    const existing = S.vehicleMarkers.get(id);
+    if (existing) {
+      // Store target for smooth animation
+      existing._fromLat = existing.getLatLng().lat;
+      existing._fromLng = existing.getLatLng().lng;
+      existing._targetLat = v.lat;
+      existing._targetLng = v.lng;
+      existing._startTime = now;
+      existing._duration = 3000;
+      existing.bindPopup(`<b>🚌 Linja ${esc(v.line_number)}</b><br>Drejtim: ${esc(v.direction)}`);
+    } else {
+      const markerHtml = `<div class="bus-marker-wrap"><div class="bus-marker" style="background:${esc(v.color)}"><i class="fas fa-bus"></i></div><div class="bus-marker-label">${esc(v.line_number)}</div></div>`;
+      const marker = L.marker([v.lat, v.lng], {
+        icon: L.divIcon({ html: markerHtml, iconSize: [36,46], iconAnchor: [18,16], className: '' }),
+        zIndexOffset: 600,
+      }).bindPopup(`<b>🚌 Linja ${esc(v.line_number)}</b>`).addTo(S.map);
+      marker._targetLat = v.lat;
+      marker._targetLng = v.lng;
+      marker._fromLat = v.lat;
+      marker._fromLng = v.lng;
+      marker._startTime = now;
+      marker._duration = 3000;
+      S.vehicleMarkers.set(id, marker);
     }
-
-    // Remove gone vehicles
-    for (const [id, m] of S.vehicleMarkers) {
-      if (!seen.has(id)) { S.map.removeLayer(m); S.vehicleMarkers.delete(id); }
-    }
-
-    document.getElementById('live-count').textContent = `${vehicles.length} autobusë live`;
-    document.getElementById('live-badge').style.display = vehicles.length ? 'flex' : 'none';
   }
 
-  function startVehicleTracking() {
-    S.showVehicles = true;
-    document.getElementById('toggle-vehicles-btn').classList.add('active');
-    const poll = async () => {
-      if (!S.showVehicles) return;
-      const v = await fetchLiveVehicles();
-      if (v) updateVehicleMarkers(v);
-    };
-    poll();
-    S.vehiclePoll = setInterval(poll, 3000);
-    toast('Ndjekja e autobusëve live u aktivizua', 'success');
+  // Remove markers for lines not in response
+  const currentIds = new Set(vehicles.map(v => v.line_number));
+  for (const [id, marker] of S.vehicleMarkers) {
+    if (!currentIds.has(id)) {
+      S.map.removeLayer(marker);
+      S.vehicleMarkers.delete(id);
+    }
   }
+}
+function animateVehicles() {
+  if (!S.showVehicles) return;
+  const now = Date.now();
+  for (const marker of S.vehicleMarkers.values()) {
+    if (marker._targetLat !== undefined && marker._startTime) {
+      const elapsed = Math.min(now - marker._startTime, marker._duration);
+      const t = elapsed / marker._duration;
+      const lat = marker._fromLat + (marker._targetLat - marker._fromLat) * t;
+      const lng = marker._fromLng + (marker._targetLng - marker._fromLng) * t;
+      marker.setLatLng([lat, lng]);
+      if (elapsed >= marker._duration) {
+        marker._startTime = now;
+        marker._fromLat = marker._targetLat;
+        marker._fromLng = marker._targetLng;
+      }
+    }
+  }
+  requestAnimationFrame(animateVehicles);
+}
+
+function startVehicleTracking() {
+  S.showVehicles = true;
+  document.getElementById('toggle-vehicles-btn').classList.add('active');
+  const poll = async () => {
+    if (!S.showVehicles) return;
+    const v = await fetchLiveVehicles();
+    if (v) updateVehicleMarkers(v);
+  };
+  poll();
+  S.vehiclePoll = setInterval(poll, 3000);
+  requestAnimationFrame(animateVehicles);
+  toast('Ndjekja e autobusëve live u aktivizua', 'success');
+}
 
   function stopVehicleTracking() {
     S.showVehicles = false;
