@@ -1666,7 +1666,71 @@
   // ════════════════════════════════════════════════════
   // POLYLINE DECODE
   // ════════════════════════════════════════════════════
-  function decodePoly(encoded) {
+  function getPolylinePoints(step) {
+  if (!step.polyline) return null;
+  // If polyline is a string that starts with '[', treat as JSON array of [lat,lng]
+  if (typeof step.polyline === 'string' && step.polyline.trim().startsWith('[')) {
+    try {
+      const arr = JSON.parse(step.polyline);
+      // arr should be array of [lat, lng] or [lng, lat]? We assume [lat,lng] as we stored
+      return arr;
+    } catch(e) { console.warn('Invalid JSON polyline', e); }
+  }
+  // Fallback to encoded polyline decoding
+  return decodeEncodedPolyline(step.polyline);
+}
+
+function decodeEncodedPolyline(encoded) {
+  if (!encoded) return [];
+  let idx = 0, lat = 0, lng = 0;
+  const pts = [];
+  while (idx < encoded.length) {
+    let b, shift = 0, result = 0;
+    do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+    lng += dlng;
+    shift = 0; result = 0;
+    do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+    lat += dlat;
+    pts.push([lat * 1e-5, lng * 1e-5]);
+  }
+  return pts;
+}
+  // ════════════════════════════════════════════════════
+  // OSRM WALKING ROUTE
+  // ════════════════════════════════════════════════════
+  async function fetchWalkRoute(aLat, aLng, bLat, bLng) {
+    try {
+      const url = `https://router.project-osrm.org/route/v1/foot/${aLng},${aLat};${bLng},${bLat}?overview=full&geometries=polyline`;
+      const r = await fetch(url);
+      if (!r.ok) return null;
+      const d = await r.json();
+      return d.routes?.[0]?.geometry ? decodePoly(d.routes[0].geometry) : null;
+    } catch { return null; }
+  }
+
+  // ════════════════════════════════════════════════════
+  // DRAW ROUTE ON MAP
+  // ════════════════════════════════════════════════════
+  // ========== HELPER FUNCTIONS (place before drawRoute) ==========
+function getPolylinePoints(polylineData) {
+  if (!polylineData) return null;
+  
+  // If it's a string and starts with '[', treat as JSON array of [lat, lng]
+  if (typeof polylineData === 'string' && polylineData.trim().startsWith('[')) {
+    try {
+      const arr = JSON.parse(polylineData);
+      if (Array.isArray(arr) && arr.length > 0 && Array.isArray(arr[0])) {
+        return arr; // already [lat, lng] pairs
+      }
+    } catch(e) { console.warn('Invalid JSON polyline', e); }
+  }
+  // Fallback: assume it's an encoded Google polyline
+  return decodeEncodedPolyline(polylineData);
+}
+
+function decodeEncodedPolyline(encoded) {
   if (!encoded) return [];
   let idx = 0, lat = 0, lng = 0;
   const pts = [];
@@ -1689,103 +1753,87 @@
     const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
     lat += dlat;
     
-    // Leaflet expects [lat, lng] – swap to correct order
     pts.push([lat * 1e-5, lng * 1e-5]);
   }
   return pts;
 }
-  // ════════════════════════════════════════════════════
-  // OSRM WALKING ROUTE
-  // ════════════════════════════════════════════════════
-  async function fetchWalkRoute(aLat, aLng, bLat, bLng) {
-    try {
-      const url = `https://router.project-osrm.org/route/v1/foot/${aLng},${aLat};${bLng},${bLat}?overview=full&geometries=polyline`;
-      const r = await fetch(url);
-      if (!r.ok) return null;
-      const d = await r.json();
-      return d.routes?.[0]?.geometry ? decodePoly(d.routes[0].geometry) : null;
-    } catch { return null; }
+
+// ========== CORRECTED drawRoute FUNCTION ==========
+async function drawRoute(route, fromGeo, toGeo, meta) {
+  clearMapLayers();
+
+  // Store current route's bus line numbers for vehicle filtering
+  if (route && route.busLines) {
+    S.currentRouteLines = route.busLines.map(l => l.number);
   }
 
-  // ════════════════════════════════════════════════════
-  // DRAW ROUTE ON MAP
-  // ════════════════════════════════════════════════════
-  async function drawRoute(route, fromGeo, toGeo, meta) {
-    clearMapLayers();
+  const bounds = [];
 
-    // Store current route's bus line numbers for vehicle filtering
-    if (route && route.busLines) {
-      S.currentRouteLines = route.busLines.map(l => l.number);
-    }
+  for (const step of route.steps) {
+    if (!step.fromCoords || !step.toCoords) continue;
+    const from = [step.fromCoords.lat, step.fromCoords.lng];
+    const to   = [step.toCoords.lat, step.toCoords.lng];
 
-    const bounds = [];
+    if (step.type === 'walk') {
+      // Try OSRM real walking route
+      const walkPts = await fetchWalkRoute(step.fromCoords.lat, step.fromCoords.lng, step.toCoords.lat, step.toCoords.lng);
+      const pts = walkPts || [from, to];
+      const layer = L.polyline(pts, {
+        color: '#16A34A', weight: 4, dashArray: '8 6',
+        opacity: .85, lineCap: 'round', lineJoin: 'round',
+      }).addTo(S.map);
+      S.walkLayers.push(layer);
+      bounds.push(...pts);
+    } else {
+      // ✅ FIX: use the new helper that handles both JSON and encoded polylines
+      const rawPts = step.polyline ? getPolylinePoints(step.polyline) : null;
+      const pts = (rawPts && rawPts.length > 1) ? rawPts : [from, to];
 
-    for (const step of route.steps) {
-      if (!step.fromCoords || !step.toCoords) continue;
-      const from = [step.fromCoords.lat, step.fromCoords.lng];
-      const to   = [step.toCoords.lat, step.toCoords.lng];
+      // Shadow layer
+      const shadow = L.polyline(pts, {
+        color: '#000', weight: 8, opacity: .08, lineCap: 'round',
+      }).addTo(S.map);
+      S.routeLayers.push(shadow);
 
-      if (step.type === 'walk') {
-        // Try OSRM real walking route
-        const walkPts = await fetchWalkRoute(step.fromCoords.lat, step.fromCoords.lng, step.toCoords.lat, step.toCoords.lng);
-        const pts = walkPts || [from, to];
-        const layer = L.polyline(pts, {
-          color: '#16A34A', weight: 4, dashArray: '8 6',
-          opacity: .85, lineCap: 'round', lineJoin: 'round',
-        }).addTo(S.map);
-        S.walkLayers.push(layer);
-        bounds.push(...pts);
+      const layer = L.polyline(pts, {
+        color: step.lineColor || '#2563EB',
+        weight: 5, opacity: .95, lineCap: 'round', lineJoin: 'round',
+      }).addTo(S.map);
+      S.routeLayers.push(layer);
+      bounds.push(...pts);
 
-      } else {
-        const rawPts = step.polyline ? decodePoly(step.polyline) : null;
-        const pts = (rawPts && rawPts.length > 1) ? rawPts : [from, to];
-
-        // Shadow layer
-        const shadow = L.polyline(pts, {
-          color: '#000', weight: 8, opacity: .08, lineCap: 'round',
-        }).addTo(S.map);
-        S.routeLayers.push(shadow);
-
-        const layer = L.polyline(pts, {
-          color: step.lineColor || '#2563EB',
-          weight: 5, opacity: .95, lineCap: 'round', lineJoin: 'round',
-        }).addTo(S.map);
-        S.routeLayers.push(layer);
-        bounds.push(...pts);
-
-        // Stop markers along bus leg
-        if (step.stopSequence && step.stopSequence.length > 0 && step.fromCoords && step.toCoords) {
-          placeBusStopMarker(step.fromCoords.lat, step.fromCoords.lng, step.fromStation, step.lineColor || '#2563EB');
-          placeBusStopMarker(step.toCoords.lat, step.toCoords.lng, step.toStation, step.lineColor || '#2563EB');
-        }
+      // Stop markers along bus leg
+      if (step.stopSequence && step.stopSequence.length > 0 && step.fromCoords && step.toCoords) {
+        placeBusStopMarker(step.fromCoords.lat, step.fromCoords.lng, step.fromStation, step.lineColor || '#2563EB');
+        placeBusStopMarker(step.toCoords.lat, step.toCoords.lng, step.toStation, step.lineColor || '#2563EB');
       }
-    }
-
-    // Walking connections: user origin → first bus stop
-    if (fromGeo && meta?.originStops?.[0]?.coords) {
-      const oc = meta.originStops[0].coords;
-      const pts = await fetchWalkRoute(parseFloat(fromGeo.lat), parseFloat(fromGeo.lon), oc.lat, oc.lng);
-      if (pts) {
-        const l = L.polyline(pts, { color:'#16A34A', weight:3, dashArray:'6 5', opacity:.75, lineCap:'round' }).addTo(S.map);
-        S.walkLayers.push(l);
-        bounds.push(...pts);
-      }
-    }
-    if (toGeo && meta?.destStops?.[0]?.coords) {
-      const dc = meta.destStops[0].coords;
-      const pts = await fetchWalkRoute(dc.lat, dc.lng, parseFloat(toGeo.lat), parseFloat(toGeo.lon));
-      if (pts) {
-        const l = L.polyline(pts, { color:'#DC2626', weight:3, dashArray:'6 5', opacity:.75, lineCap:'round' }).addTo(S.map);
-        S.walkLayers.push(l);
-        bounds.push(...pts);
-      }
-    }
-
-    if (bounds.length > 1) {
-      S.map.fitBounds(L.latLngBounds(bounds), { padding: [60, 60] });
     }
   }
 
+  // Walking connections: user origin → first bus stop (if meta available)
+  if (fromGeo && meta?.originStops?.[0]?.coords) {
+    const oc = meta.originStops[0].coords;
+    const pts = await fetchWalkRoute(parseFloat(fromGeo.lat), parseFloat(fromGeo.lon), oc.lat, oc.lng);
+    if (pts) {
+      const l = L.polyline(pts, { color:'#16A34A', weight:3, dashArray:'6 5', opacity:.75 }).addTo(S.map);
+      S.walkLayers.push(l);
+      bounds.push(...pts);
+    }
+  }
+  if (toGeo && meta?.destStops?.[0]?.coords) {
+    const dc = meta.destStops[0].coords;
+    const pts = await fetchWalkRoute(dc.lat, dc.lng, parseFloat(toGeo.lat), parseFloat(toGeo.lon));
+    if (pts) {
+      const l = L.polyline(pts, { color:'#DC2626', weight:3, dashArray:'6 5', opacity:.75 }).addTo(S.map);
+      S.walkLayers.push(l);
+      bounds.push(...pts);
+    }
+  }
+
+  if (bounds.length > 1) {
+    S.map.fitBounds(L.latLngBounds(bounds), { padding: [60, 60] });
+  }
+}
   // ════════════════════════════════════════════════════
   // LIVE VEHICLE TRACKING
   // ════════════════════════════════════════════════════
