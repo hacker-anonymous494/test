@@ -740,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (user) {
       // User is logged in – show profile dropdown
-      const displayName = user.firstName || user.email?.split('@')[0] || 'Përdorues';
+      const displayName = user.firstName || user.email?.split('@')[0] || 'Perdorues';
       const userHtml = `
         <div class="user-dropdown">
           <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
@@ -749,7 +749,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <ul class="user-dropdown-menu">
             <li><a href="pages/dashboard.html"><i class="fas fa-tachometer-alt"></i> Paneli</a></li>
             <li><a href="pages/profile.html"><i class="fas fa-user"></i> Profili Im</a></li>
-            <li><a href="pages/favorites.html"><i class="fas fa-heart"></i> Rrugët e Preferuara</a></li>
+            <li><a href="pages/favorites.html"><i class="fas fa-heart"></i> Rruget e Preferuara</a></li>
             <li><hr></li>
             <li><a href="#" id="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
           </ul>

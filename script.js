@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initEventListeners();
     initStatsCounter();
     
-    // Funksioni për inicializimin e temës
+    // Funksioni per inicializimin e temes
     function initTheme() {
         const themeSwitch = document.getElementById('theme-switch');
         const body = document.body;
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Exit if themeSwitch element doesn't exist (e.g., on pages without theme toggle)
         if (!themeSwitch) return;
         
-        // Vendos temën e ruajtur
+        // Vendos temen e ruajtur
         if (currentTheme === 'dark') {
             themeSwitch.checked = true;
             body.setAttribute('data-theme', 'dark');
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
             body.setAttribute('data-theme', 'light');
         }
         
-        // Shto event listener për ndryshimin e temës
+        // Shto event listener per ndryshimin e temes
         themeSwitch.addEventListener('change', function() {
             if (this.checked) {
                 body.setAttribute('data-theme', 'dark');
@@ -46,14 +46,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Funksioni për inicializimin e gjuhës
+    // Funksioni per inicializimin e gjuhes
     function initLanguage() {
         const langOptions = document.querySelectorAll('.lang-option');
         
-        // Vendos gjuhën e ruajtur
+        // Vendos gjuhen e ruajtur
         document.documentElement.lang = currentLanguage;
         
-        // Shto event listener për ndryshimin e gjuhës
+        // Shto event listener per ndryshimin e gjuhes
         langOptions.forEach(option => {
             option.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -66,14 +66,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Funksioni për ndryshimin e gjuhës (do të shtohet më shumë më vonë)
+    // Funksioni per ndryshimin e gjuhes (do te shtohet me shume me vone)
     function changeLanguage(lang) {
-        // Kjo funksion do të plotësohet me tekstet e përkthimit
-        console.log('Gjuha u ndërrua në:', lang);
-        alert(`Gjuha u ndërrua në ${lang === 'sq' ? 'Shqip' : 'English'}. Ky funksion do të plotësohet më tej.`);
+        // Kjo funksion do te plotesohet me tekstet e perkthimit
+        console.log('Gjuha u nderrua ne:', lang);
+        alert(`Gjuha u nderrua ne ${lang === 'sq' ? 'Shqip' : 'English'}. Ky funksion do te plotesohet me tej.`);
     }
     
-    // Funksioni për inicializimin e menysë hamburger
+    // Funksioni per inicializimin e menyse hamburger
     function initHamburgerMenu() {
         const hamburger = document.querySelector('.hamburger');
         const navMenu = document.querySelector('.nav-menu');
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 navMenu.classList.toggle('active');
             });
             
-            // Mbyll menunë kur klikohet një link
+            // Mbyll menune kur klikohet nje link
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', function() {
                     hamburger.classList.remove('active');
@@ -94,15 +94,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Funksioni për inicializimin e hartës
+    // Funksioni per inicializimin e hartes
     function initMap() {
         const mapElement = document.getElementById('hero-map');
         
         if (mapElement) {
-            // Inicializo hartën me qendër në Tiranë
+            // Inicializo harten me qender ne Tirane
             map = L.map('hero-map').setView([41.3275, 19.8187], 13);
             
-            // Shto layer-in e hartës
+            // Shto layer-in e hartes
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
@@ -110,13 +110,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Expose map globally so other scripts (picker) can access it
             window.heroMap = map;
             
-            // Shto marker për stacionet kryesore të autobusëve në Tiranë
+            // Shto marker per stacionet kryesore te autobuseve ne Tirane
             const busStations = [
-                { name: 'Stacioni i Autobusëve të Jugut', lat: 41.3186, lng: 19.8184 },
-                { name: 'Stacioni i Autobusëve të Veriut', lat: 41.3382, lng: 19.8201 },
-                { name: 'Qendra e Tiranës', lat: 41.3275, lng: 19.8187 },
+                { name: 'Stacioni i Autobuseve te Jugut', lat: 41.3186, lng: 19.8184 },
+                { name: 'Stacioni i Autobuseve te Veriut', lat: 41.3382, lng: 19.8201 },
+                { name: 'Qendra e Tiranes', lat: 41.3275, lng: 19.8187 },
                 { name: 'Stacioni i Trenit', lat: 41.3222, lng: 19.7986 },
-                { name: 'Aeroporti Nënë Tereza', lat: 41.4147, lng: 19.7206 }
+                { name: 'Aeroporti Nene Tereza', lat: 41.4147, lng: 19.7206 }
             ];
             
             // Optional: bus station markers (commented out to avoid clutter)
@@ -124,22 +124,22 @@ document.addEventListener('DOMContentLoaded', function() {
             busStations.forEach(station => {
                 L.marker([station.lat, station.lng])
                     .addTo(map)
-                    .bindPopup(`<b>${station.name}</b><br>Stacion kryesor i autobusëve`)
+                    .bindPopup(`<b>${station.name}</b><br>Stacion kryesor i autobuseve`)
                     .openPopup();
             });
             */
         }
     }
     
-    // Funksioni për inicializimin e event listener-ëve
+    // Funksioni per inicializimin e event listener-eve
     function initEventListeners() {
-        // Butoni për lokacionin aktual
+        // Butoni per lokacionin aktual
         const currentLocationBtn = document.getElementById('current-location-btn');
         if (currentLocationBtn) {
             currentLocationBtn.addEventListener('click', getCurrentLocation);
         }
         
-        // Butoni për kërkimin e rrugës
+        // Butoni per kerkimin e rruges
         const searchRouteBtn = document.getElementById('search-route-btn');
         if (searchRouteBtn) {
             searchRouteBtn.addEventListener('click', searchRoute);
@@ -160,7 +160,7 @@ if (contactForm) {
     // Disable button and show loading
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke dërguar...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke derguar...';
     submitBtn.disabled = true;
 
     try {
@@ -178,13 +178,13 @@ if (contactForm) {
       const data = await response.json();
       if (response.ok) {
         // Show success message
-        alert('Mesazhi u dërgua me sukses!');
+        alert('Mesazhi u dergua me sukses!');
         contactForm.reset();
       } else {
-        alert(data.error || 'Dërgimi dështoi.');
+        alert(data.error || 'Dergimi deshtoi.');
       }
     } catch (err) {
-      alert('Gabim në lidhje me serverin.');
+      alert('Gabim ne lidhje me serverin.');
       console.error(err);
     } finally {
       submitBtn.innerHTML = originalText;
@@ -193,13 +193,13 @@ if (contactForm) {
   });
 }
         
-        // Modal për rezultatet e kërkimit
+        // Modal per rezultatet e kerkimit
         const modalClose = document.querySelector('.modal-close');
         if (modalClose) {
             modalClose.addEventListener('click', closeModal);
         }
         
-        // Mbyll modal kur klikohet jashtë
+        // Mbyll modal kur klikohet jashte
         window.addEventListener('click', function(e) {
             const modal = document.getElementById('search-results-modal');
             if (e.target === modal) {
@@ -208,7 +208,7 @@ if (contactForm) {
         });
     }
     
-    // Funksioni për marrjen e lokacionit aktual
+    // Funksioni per marrjen e lokacionit aktual
     function getCurrentLocation() {
         const fromLocationInput = document.getElementById('from-location');
         
@@ -220,14 +220,14 @@ if (contactForm) {
                         lng: position.coords.longitude
                     };
                     
-                    // Përdor një shërbim të kundërt të geokodimit për të marrë emrin e vendndodhjes
+                    // Perdor nje sherbim te kundert te geokodimit per te marre emrin e vendndodhjes
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLocation.lat}&lon=${userLocation.lng}`)
                         .then(response => response.json())
                         .then(data => {
                             const address = data.display_name || 'Lokacioni juaj aktual';
                             fromLocationInput.value = address;
                             
-                            // Shto marker në hartë për lokacionin aktual
+                            // Shto marker ne harte per lokacionin aktual
                             if (map) {
                                 if (userMarker) {
                                     map.removeLayer(userMarker);
@@ -235,36 +235,36 @@ if (contactForm) {
                                 
                                 userMarker = L.marker([userLocation.lat, userLocation.lng])
                                     .addTo(map)
-                                    .bindPopup('<b>Ju jeni këtu</b>')
+                                    .bindPopup('<b>Ju jeni ketu</b>')
                                     .openPopup();
                                 
                                 map.setView([userLocation.lat, userLocation.lng], 15);
                             }
                         })
                         .catch(error => {
-                            console.error('Gabim në marrjen e adresës:', error);
+                            console.error('Gabim ne marrjen e adreses:', error);
                             fromLocationInput.value = 'Lokacioni juaj aktual';
                         });
                 },
                 function(error) {
-                    console.error('Gabim në marrjen e lokacionit:', error);
-                    alert('Nuk mundi të merret lokacioni juaj. Ju lutem sigurohuni që keni lejuar aksesin në lokacion.');
-                    fromLocationInput.value = 'Lokacioni nuk është i disponueshëm';
+                    console.error('Gabim ne marrjen e lokacionit:', error);
+                    alert('Nuk mundi te merret lokacioni juaj. Ju lutem sigurohuni qe keni lejuar aksesin ne lokacion.');
+                    fromLocationInput.value = 'Lokacioni nuk eshte i disponueshem';
                 }
             );
         } else {
-            alert('Shfletuesi juaj nuk mbështet gjeolokacionin.');
+            alert('Shfletuesi juaj nuk mbeshtet gjeolokacionin.');
         }
     }
     
-    // Funksioni për kërkimin e rrugës
+    // Funksioni per kerkimin e rruges
     // Replace the old searchRoute function in script.js
 function searchRoute() {
   const fromLocation = document.getElementById('from-location').value.trim();
   const toLocation = document.getElementById('to-location').value.trim();
   
   if (!fromLocation || !toLocation) {
-    alert('Ju lutem plotësoni të dyja fushat: vendndodhjen dhe destinacionin.');
+    alert('Ju lutem plotesoni te dyja fushat: vendndodhjen dhe destinacionin.');
     return;
   }
   
@@ -282,19 +282,19 @@ function searchRoute() {
   window.location.href = `pages/search.html?${params.toString()}`;
 }
     
-    // Funksioni për shfaqjen e ngarkimit
+    // Funksioni per shfaqjen e ngarkimit
     function showLoading() {
         const searchBtn = document.getElementById('search-route-btn');
         const originalText = searchBtn.innerHTML;
         
-        searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke kërkuar...';
+        searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke kerkuar...';
         searchBtn.disabled = true;
         
-        // Ruaj tekstin origjinal për ta rivendosur më vonë
+        // Ruaj tekstin origjinal per ta rivendosur me vone
         searchBtn.setAttribute('data-original-text', originalText);
     }
     
-    // Funksioni për fshehjen e ngarkimit
+    // Funksioni per fshehjen e ngarkimit
     function hideLoading() {
         const searchBtn = document.getElementById('search-route-btn');
         const originalText = searchBtn.getAttribute('data-original-text');
@@ -302,64 +302,64 @@ function searchRoute() {
         if (originalText) {
             searchBtn.innerHTML = originalText;
         } else {
-            searchBtn.innerHTML = '<i class="fas fa-search"></i> Gjej Rrugën';
+            searchBtn.innerHTML = '<i class="fas fa-search"></i> Gjej Rrugen';
         }
         
         searchBtn.disabled = false;
     }
     
-    // Funksioni për shfaqjen e rezultateve të kërkimit
+    // Funksioni per shfaqjen e rezultateve te kerkimit
     function showSearchResults(from, to, option) {
         const modal = document.getElementById('search-results-modal');
         const routeOptionsContainer = document.getElementById('route-options');
         
-        // Krijoj rezultate të simulura
+        // Krijoj rezultate te simulura
         const results = [
             {
                 id: 1,
-                title: 'Rruga më e shpejtë',
+                title: 'Rruga me e shpejte',
                 time: '35 min',
                 transfers: 1,
-                price: '40 Lekë',
+                price: '40 Leke',
                 steps: [
-                    'Ecni 5 minuta deri në stacionin "Sheshi Shqiponja"',
-                    'Merrni autobusin L2 për 20 minuta',
+                    'Ecni 5 minuta deri ne stacionin "Sheshi Shqiponja"',
+                    'Merrni autobusin L2 per 20 minuta',
                     'Nda tek stacioni "21 Dhjetori"',
-                    'Merrni autobusin L5 për 10 minuta',
-                    'Arritni në destinacion'
+                    'Merrni autobusin L5 per 10 minuta',
+                    'Arritni ne destinacion'
                 ]
             },
             {
                 id: 2,
-                title: 'Rruga me më pak ndërrime',
+                title: 'Rruga me me pak nderrime',
                 time: '45 min',
                 transfers: 0,
-                price: '50 Lekë',
+                price: '50 Leke',
                 steps: [
-                    'Ecni 10 minuta deri në stacionin "Qendra"',
-                    'Merrni autobusin L8 për 35 minuta',
-                    'Arritni direkt në destinacion'
+                    'Ecni 10 minuta deri ne stacionin "Qendra"',
+                    'Merrni autobusin L8 per 35 minuta',
+                    'Arritni direkt ne destinacion'
                 ]
             },
             {
                 id: 3,
-                title: 'Rruga më e lirë',
+                title: 'Rruga me e lire',
                 time: '55 min',
                 transfers: 2,
-                price: '30 Lekë',
+                price: '30 Leke',
                 steps: [
-                    'Ecni 3 minuta deri në stacionin "Pazari i Ri"',
-                    'Merrni autobusin L1 për 25 minuta',
+                    'Ecni 3 minuta deri ne stacionin "Pazari i Ri"',
+                    'Merrni autobusin L1 per 25 minuta',
                     'Nda tek stacioni "Zogu i Zi"',
-                    'Merrni autobusin L3 për 15 minuta',
+                    'Merrni autobusin L3 per 15 minuta',
                     'Nda tek stacioni "Kombinat"',
-                    'Merrni autobusin L11 për 12 minuta',
-                    'Arritni në destinacion'
+                    'Merrni autobusin L11 per 12 minuta',
+                    'Arritni ne destinacion'
                 ]
             }
         ];
         
-        // Krijoj HTML për rezultatet
+        // Krijoj HTML per rezultatet
         let html = '';
         results.forEach(route => {
             html += `
@@ -371,7 +371,7 @@ function searchRoute() {
                     <div class="route-details">
                         <div class="route-stops">
                             <i class="fas fa-exchange-alt"></i>
-                            <span>${route.transfers} ndërrime</span>
+                            <span>${route.transfers} nderrime</span>
                         </div>
                         <div class="route-price">${route.price}</div>
                     </div>
@@ -379,7 +379,7 @@ function searchRoute() {
                         ${route.steps.map(step => `<div class="route-step"><i class="fas fa-arrow-right"></i> ${step}</div>`).join('')}
                     </div>
                     <button class="btn btn-primary select-route-btn" style="margin-top: 15px; width: 100%;">
-                        <i class="fas fa-directions"></i> Zgjidh këtë rrugë
+                        <i class="fas fa-directions"></i> Zgjidh kete rruge
                     </button>
                 </div>
             `;
@@ -387,7 +387,7 @@ function searchRoute() {
         
         routeOptionsContainer.innerHTML = html;
         
-        // Shto event listener për butonat e zgjedhjes së rrugës
+        // Shto event listener per butonat e zgjedhjes se rruges
         document.querySelectorAll('.select-route-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const routeOption = this.closest('.route-option');
@@ -401,43 +401,43 @@ function searchRoute() {
         document.body.style.overflow = 'hidden';
     }
     
-    // Funksioni për zgjedhjen e një rruge
+    // Funksioni per zgjedhjen e nje rruge
     function selectRoute(routeId) {
-        alert(`Ju zgjodhët rrugën me ID: ${routeId}. Do të ridrejtoheni tek faqja me udhëzimet e detajuara.`);
+        alert(`Ju zgjodhet rrugen me ID: ${routeId}. Do te ridrejtoheni tek faqja me udhezimet e detajuara.`);
         closeModal();
         
-        // Në një implementim real, do të ridrejtohej tek faqja e udhëzimeve
+        // Ne nje implementim real, do te ridrejtohej tek faqja e udhezimeve
         // window.location.href = `pages/route-details.html?route=${routeId}`;
     }
     
-    // Funksioni për mbylljen e modal
+    // Funksioni per mbylljen e modal
     function closeModal() {
         const modal = document.getElementById('search-results-modal');
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
     }
     
-    // Funksioni për trajtimin e formës së kontaktit
+    // Funksioni per trajtimin e formes se kontaktit
     function handleContactForm(e) {
         e.preventDefault();
         
-        // Simuloj dërgimin e formës
+        // Simuloj dergimin e formes
         showLoadingForm();
         
-        // Simuloj vonesën e serverit
+        // Simuloj vonesen e serverit
         setTimeout(() => {
             hideLoadingForm();
-            alert('Mesazhi juaj u dërgua me sukses! Do t\'ju kontaktojmë së shpejti.');
+            alert('Mesazhi juaj u dergua me sukses! Do t\'ju kontaktojme se shpejti.');
             e.target.reset();
         }, 2000);
     }
     
-    // Funksionet për ngarkimin e formës
+    // Funksionet per ngarkimin e formes
     function showLoadingForm() {
         const submitBtn = document.querySelector('#contact-form button[type="submit"]');
         const originalText = submitBtn.innerHTML;
         
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke dërguar...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke derguar...';
         submitBtn.disabled = true;
         submitBtn.setAttribute('data-original-text', originalText);
     }
@@ -449,13 +449,13 @@ function searchRoute() {
         if (originalText) {
             submitBtn.innerHTML = originalText;
         } else {
-            submitBtn.innerHTML = 'Dërgo Mesazhin';
+            submitBtn.innerHTML = 'Dergo Mesazhin';
         }
         
         submitBtn.disabled = false;
     }
     
-    // Funksioni për animimin e numrave të statistikave
+    // Funksioni per animimin e numrave te statistikave
     function initStatsCounter() {
         const statNumbers = document.querySelectorAll('.stat-number');
         
@@ -488,7 +488,7 @@ function searchRoute() {
         });
     }
     
-    // Funksioni për mbylljen e dropdown-ëve kur klikohet jashtë
+    // Funksioni per mbylljen e dropdown-eve kur klikohet jashte
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.dropdown')) {
             document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -499,7 +499,7 @@ function searchRoute() {
         }
     });
     
-    // Funksioni për scroll-in e butë tek seksionet
+    // Funksioni per scroll-in e bute tek seksionet
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
@@ -519,86 +519,86 @@ function searchRoute() {
     });
 });
 
-// Funksion për inicializimin e autocomplete për lokacionet
+// Funksion per inicializimin e autocomplete per lokacionet
 function initAutocomplete() {
     const fromInput = document.getElementById('from-location');
     const toInput = document.getElementById('to-location');
     
     if (fromInput && toInput) {
-        // Inicializo autocomplete për të dy inputet
+        // Inicializo autocomplete per te dy inputet
         initLocationAutocomplete(fromInput);
         initLocationAutocomplete(toInput);
     }
 }
 
-// Funksioni për inicializimin e autocomplete për një input
+// Funksioni per inicializimin e autocomplete per nje input
 function initLocationAutocomplete(input) {
-    // Këtu do të implementohet autocomplete me OpenStreetMap Nominatim
-    // Për momentin, do të shtojmë vetëm disa sugjerime të thjeshta
+    // Ketu do te implementohet autocomplete me OpenStreetMap Nominatim
+    // Per momentin, do te shtojme vetem disa sugjerime te thjeshta
     
     input.addEventListener('input', function() {
         const value = this.value.toLowerCase();
         
         if (value.length < 3) return;
         
-        // Sugjerime të thjeshta (në një implementim real, do të bëhej një kërkesë në server)
+        // Sugjerime te thjeshta (ne nje implementim real, do te behej nje kerkese ne server)
         const suggestions = [
-            'Sheshi Skënderbej, Tiranë',
-            'Stacioni i Autobusëve të Jugut, Tiranë',
-            'Stacioni i Autobusëve të Veriut, Tiranë',
-            'Aeroporti Nënë Tereza, Tiranë',
-            'Universiteti i Tiranës',
-            'Qendra Tregtare TEG, Tiranë',
-            'Spitali Nënë Tereza, Tiranë',
-            'Parku i Madh, Tiranë',
-            'Zona e Re, Tiranë',
-            'Kinema Millenium, Tiranë'
+            'Sheshi Skenderbej, Tirane',
+            'Stacioni i Autobuseve te Jugut, Tirane',
+            'Stacioni i Autobuseve te Veriut, Tirane',
+            'Aeroporti Nene Tereza, Tirane',
+            'Universiteti i Tiranes',
+            'Qendra Tregtare TEG, Tirane',
+            'Spitali Nene Tereza, Tirane',
+            'Parku i Madh, Tirane',
+            'Zona e Re, Tirane',
+            'Kinema Millenium, Tirane'
         ];
         
         const filtered = suggestions.filter(suggestion => 
             suggestion.toLowerCase().includes(value)
         );
         
-        // Krijoj dropdown për sugjerimet (do të implementohet më shumë në versionet e ardhshme)
+        // Krijoj dropdown per sugjerimet (do te implementohet me shume ne versionet e ardhshme)
         if (filtered.length > 0) {
-            console.log('Sugjerime për', value, ':', filtered);
+            console.log('Sugjerime per', value, ':', filtered);
         }
     });
 }
 
-// Thirr funksionin për autocomplete pasi të ngarkohet faqja
+// Thirr funksionin per autocomplete pasi te ngarkohet faqja
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAutocomplete);
 } else {
     initAutocomplete();
 }
 
-// Ruaj historikun e kërkimeve në localStorage
+// Ruaj historikun e kerkimeve ne localStorage
 function saveSearchHistory(from, to) {
     const history = JSON.parse(localStorage.getItem('searchHistory')) || [];
     
-    // Shto kërkimin e ri në fillim të historikut
+    // Shto kerkimin e ri ne fillim te historikut
     history.unshift({
         from,
         to,
         timestamp: new Date().toISOString()
     });
     
-    // Ruaj vetëm 10 kërkimet e fundit
+    // Ruaj vetem 10 kerkimet e fundit
     const limitedHistory = history.slice(0, 10);
     
     localStorage.setItem('searchHistory', JSON.stringify(limitedHistory));
 }
 
-// Funksioni për marrjen e historikut të kërkimeve
+// Funksioni per marrjen e historikut te kerkimeve
 function getSearchHistory() {
     return JSON.parse(localStorage.getItem('searchHistory')) || [];
 }
 
-// Funksioni për pastrimin e historikut të kërkimeve
+// Funksioni per pastrimin e historikut te kerkimeve
 function clearSearchHistory() {
     localStorage.removeItem('searchHistory');
-    alert('Historia e kërkimeve u pastrua.');
+    alert('Historia e kerkimeve u pastrua.');
 }
 
 // Language dropdown toggle

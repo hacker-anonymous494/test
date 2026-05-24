@@ -1,6 +1,6 @@
 /* CSS Reset dhe Variablat */
 :root {
-    /* Ngjyrat për modalitetin e dritës */
+    /* Ngjyrat per modalitetin e drites */
     --primary-color: #1a73e8;
     --primary-dark: #0d47a1;
     --primary-light: #63a4ff;
@@ -50,7 +50,7 @@
     --font-display: 'Montserrat', sans-serif;
 }
 
-/* Modaliteti i errët */
+/* Modaliteti i erret */
 [data-theme="dark"] {
     --primary-color: #5e97f6;
     --primary-dark: #1a73e8;
@@ -769,7 +769,7 @@ section.hero {
     border-radius: var(--border-radius);
 }
 
-/* Seksionet e Përgjithshme */
+/* Seksionet e Pergjithshme */
 .section-title {
     font-size: 36px;
     font-weight: 800;

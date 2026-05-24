@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kërko Rrugë · Sherbimijone</title>
+  <title>Kerko Rruge · Sherbimijone</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -1099,7 +1099,7 @@
     <li><a href="../index.html"><i class="fas fa-home"></i> Kryefaqja</a></li>
     <li><a href="map.html"><i class="fas fa-map"></i> Harta</a></li>
     <li><a href="taxi.html"><i class="fas fa-taxi"></i> Taksi</a></li>
-    <li><a href="search.html" class="active"><i class="fas fa-search"></i> Kërko</a></li>
+    <li><a href="search.html" class="active"><i class="fas fa-search"></i> Kerko</a></li>
     <li><a href="driver.html"><i class="fas fa-user-tie"></i> Shofer</a></li>
   </ul>
   <div class="nav-actions">
@@ -1116,7 +1116,7 @@
   <a href="../index.html"><i class="fas fa-home"></i> Kryefaqja</a>
   <a href="map.html"><i class="fas fa-map"></i> Harta</a>
   <a href="taxi.html"><i class="fas fa-taxi"></i> Taksi</a>
-  <a href="search.html" class="active"><i class="fas fa-search"></i> Kërko Rrugë</a>
+  <a href="search.html" class="active"><i class="fas fa-search"></i> Kerko Rruge</a>
   <a href="driver.html"><i class="fas fa-user-tie"></i> Shofer</a>
   <div class="mobile-nav-divider"></div>
   <a href="login.html"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
@@ -1126,8 +1126,8 @@
 <!-- ══ PAGE ══ -->
 <div class="page">
   <div class="hero-strip">
-    <h1><i class="fas fa-route"></i> Planifikuesi i Udhëtimit</h1>
-    <p>Gjeni rrugën tuaj ideale — me autobuz, duke ecur, ose si kombinim i të dyjave</p>
+    <h1><i class="fas fa-route"></i> Planifikuesi i Udhetimit</h1>
+    <p>Gjeni rrugen tuaj ideale — me autobuz, duke ecur, ose si kombinim i te dyjave</p>
   </div>
 
   <div class="workspace">
@@ -1156,7 +1156,7 @@
               </div>
               <div class="loc-field" id="to-field">
                 <div class="loc-dot dest"></div>
-                <input type="text" id="to-loc" placeholder="Ku dëshironi të shkoni?" required>
+                <input type="text" id="to-loc" placeholder="Ku deshironi te shkoni?" required>
                 <button type="button" class="loc-action" id="to-clear-btn" title="Pastro">
                   <i class="fas fa-times"></i>
                 </button>
@@ -1167,7 +1167,7 @@
                 <input type="checkbox" id="use-gps">
                 <div class="toggle-track"></div>
               </label>
-              <label class="toggle-label" for="use-gps">Përdor lokacionin tim aktual</label>
+              <label class="toggle-label" for="use-gps">Perdor lokacionin tim aktual</label>
             </div>
             <div class="map-pick-row">
               <button type="button" class="map-pick-btn" id="pick-origin-btn">
@@ -1179,7 +1179,7 @@
             </div>
             <div class="pick-hint" id="pick-hint">
               <i class="fas fa-hand-pointer"></i>
-              <span id="pick-hint-text">Klikoni në hartë…</span>
+              <span id="pick-hint-text">Klikoni ne harte…</span>
             </div>
           </div>
 
@@ -1196,7 +1196,7 @@
                 <select id="time-mode">
                   <option value="now">Tani</option>
                   <option value="departure">Nisje specifike</option>
-                  <option value="arrival">Mbërritje specifike</option>
+                  <option value="arrival">Mberritje specifike</option>
                 </select>
               </div>
             </div>
@@ -1208,44 +1208,44 @@
 
           <!-- SEARCH TYPE -->
           <div>
-            <div class="section-label">Lloji i Kërkimit</div>
+            <div class="section-label">Lloji i Kerkimit</div>
             <div class="type-grid">
               <div class="type-chip active" data-type="fastest">
                 <div class="type-chip-icon">⚡</div>
-                <div class="type-chip-name">Më e Shpejtë</div>
-                <div class="type-chip-desc">Kohë minimale</div>
+                <div class="type-chip-name">Me e Shpejte</div>
+                <div class="type-chip-desc">Kohe minimale</div>
               </div>
               <div class="type-chip" data-type="comfort">
                 <div class="type-chip-icon">🛋</div>
                 <div class="type-chip-name">Komoditet</div>
-                <div class="type-chip-desc">Pak ndërrime</div>
+                <div class="type-chip-desc">Pak nderrime</div>
               </div>
               <div class="type-chip" data-type="cheapest">
                 <div class="type-chip-icon">💰</div>
-                <div class="type-chip-name">Më e Lirë</div>
-                <div class="type-chip-desc">Çmim i ulët</div>
+                <div class="type-chip-name">Me e Lire</div>
+                <div class="type-chip-desc">Çmim i ulet</div>
               </div>
               <div class="type-chip" data-type="walking">
                 <div class="type-chip-icon">🚶</div>
                 <div class="type-chip-name">Pak Ecje</div>
-                <div class="type-chip-desc">Distancë min.</div>
+                <div class="type-chip-desc">Distance min.</div>
               </div>
             </div>
           </div>
 
           <!-- OPTIONS -->
           <div>
-            <div class="section-label">Mundësi Shtesë</div>
+            <div class="section-label">Mundesi Shtese</div>
             <div class="opts-row">
               <label class="opt-item">
                 <input type="checkbox" id="opt-accessible">
                 <div class="opt-box"></div>
-                <span class="opt-text"><i class="fas fa-wheelchair" style="color:var(--blue);margin-right:4px"></i> Vetëm linja të aksesueshme</span>
+                <span class="opt-text"><i class="fas fa-wheelchair" style="color:var(--blue);margin-right:4px"></i> Vetem linja te aksesueshme</span>
               </label>
               <label class="opt-item">
                 <input type="checkbox" id="opt-realtime" checked>
                 <div class="opt-box"></div>
-                <span class="opt-text"><i class="fas fa-satellite-dish" style="color:var(--green);margin-right:4px"></i> Konsidero vonesat në kohë reale</span>
+                <span class="opt-text"><i class="fas fa-satellite-dish" style="color:var(--green);margin-right:4px"></i> Konsidero vonesat ne kohe reale</span>
               </label>
             </div>
             <div style="margin-top:12px;">
@@ -1260,7 +1260,7 @@
           </div>
 
           <button type="submit" class="search-cta" id="search-btn">
-            <i class="fas fa-search"></i> Kërko Rrugën
+            <i class="fas fa-search"></i> Kerko Rrugen
           </button>
         </form>
       </div>
@@ -1272,15 +1272,15 @@
       <!-- MAP -->
       <div class="map-card">
         <div class="map-card-header">
-          <div class="map-card-title"><i class="fas fa-map-marked-alt"></i> Harta Ndëraktive</div>
+          <div class="map-card-title"><i class="fas fa-map-marked-alt"></i> Harta Nderaktive</div>
           <div class="map-actions">
-            <button class="map-action-btn" id="toggle-vehicles-btn" title="Trego autobusët live">
+            <button class="map-action-btn" id="toggle-vehicles-btn" title="Trego autobuset live">
               <i class="fas fa-bus"></i> Live
             </button>
-            <button class="map-action-btn" id="center-user-btn" title="Centro te unë">
+            <button class="map-action-btn" id="center-user-btn" title="Centro te une">
               <i class="fas fa-crosshairs"></i> Lokacioni im
             </button>
-            <button class="map-action-btn" id="toggle-nav-btn" title="Mënyra e navigimit" style="display:none">
+            <button class="map-action-btn" id="toggle-nav-btn" title="Menyra e navigimit" style="display:none">
               <i class="fas fa-location-arrow"></i> Navigo
             </button>
           </div>
@@ -1288,7 +1288,7 @@
         <div id="map"></div>
         <div class="live-badge" id="live-badge" style="display:none">
           <div class="live-dot"></div>
-          <span id="live-count">0 autobusë live</span>
+          <span id="live-count">0 autobuse live</span>
         </div>
       </div>
 
@@ -1298,7 +1298,7 @@
           <div class="nm-icon">🧭</div>
           <div class="nm-info">
             <h3 id="nm-title">Navigim Aktiv</h3>
-            <p id="nm-subtitle">Ndiqni hapat e mëposhtëm</p>
+            <p id="nm-subtitle">Ndiqni hapat e meposhtem</p>
           </div>
           <button class="nm-btn" style="flex:0 0 auto;padding:8px 14px;margin-left:auto" id="nm-close-btn">
             <i class="fas fa-times"></i>
@@ -1315,7 +1315,7 @@
           </div>
           <div class="eta-chip">
             <div class="eta-chip-val" id="eta-arrive">—</div>
-            <div class="eta-chip-label">mbërrij në</div>
+            <div class="eta-chip-label">mberrij ne</div>
           </div>
         </div>
         <div class="nm-steps" id="nm-steps"></div>
@@ -1323,15 +1323,15 @@
           <div class="nm-progress-bar" id="nm-progress-bar" style="width:0%"></div>
         </div>
         <div class="nm-actions">
-          <button class="nm-btn" id="nm-prev-btn"><i class="fas fa-chevron-left"></i> Hapi Paraardhës</button>
-          <button class="nm-btn nm-btn-primary" id="nm-next-btn">Hapi Tjetër <i class="fas fa-chevron-right"></i></button>
+          <button class="nm-btn" id="nm-prev-btn"><i class="fas fa-chevron-left"></i> Hapi Paraardhes</button>
+          <button class="nm-btn nm-btn-primary" id="nm-next-btn">Hapi Tjeter <i class="fas fa-chevron-right"></i></button>
         </div>
       </div>
 
       <!-- RESULTS -->
       <div class="results-card" id="results-card">
         <div class="results-head">
-          <h2><i class="fas fa-route"></i> Rrugët e Gjetura</h2>
+          <h2><i class="fas fa-route"></i> Rruget e Gjetura</h2>
           <span class="results-count" id="results-count">—</span>
         </div>
         <div class="sort-bar">
@@ -1339,15 +1339,15 @@
           <button class="sort-chip active" data-sort="score">⭐ Rekomanduar</button>
           <button class="sort-chip" data-sort="time">⏱ Koha</button>
           <button class="sort-chip" data-sort="fare">💰 Çmimi</button>
-          <button class="sort-chip" data-sort="transfers">🔄 Ndërrime</button>
+          <button class="sort-chip" data-sort="transfers">🔄 Nderrime</button>
           <button class="sort-chip" data-sort="walk">🚶 Ecje</button>
         </div>
         <div id="meta-strip-wrap"></div>
         <div class="routes-list" id="routes-list">
           <div class="empty-state">
             <div class="empty-state-icon"><i class="fas fa-search"></i></div>
-            <h3>Filloni Kërkimin</h3>
-            <p>Plotësoni lokacionin e nisjes dhe destinacionin, pastaj klikoni "Kërko Rrugën"</p>
+            <h3>Filloni Kerkimin</h3>
+            <p>Plotesoni lokacionin e nisjes dhe destinacionin, pastaj klikoni "Kerko Rrugen"</p>
           </div>
         </div>
       </div>
@@ -1355,15 +1355,15 @@
       <!-- SAVED ROUTES -->
       <div class="saved-card">
         <div class="saved-head">
-          <h3><i class="fas fa-bookmark"></i> Rrugët e Ruajtura</h3>
+          <h3><i class="fas fa-bookmark"></i> Rruget e Ruajtura</h3>
           <button class="btn-ghost" id="view-all-saved" style="font-size:12px;padding:6px 12px">
-            <i class="fas fa-eye"></i> Të gjitha
+            <i class="fas fa-eye"></i> Te gjitha
           </button>
         </div>
         <div class="saved-list" id="saved-list">
           <div class="no-data">
             <i class="fas fa-bookmark"></i>
-            <p>Nuk keni rrugë të ruajtura</p>
+            <p>Nuk keni rruge te ruajtura</p>
           </div>
         </div>
       </div>
@@ -1376,7 +1376,7 @@
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal-box">
     <div class="modal-head">
-      <h3 id="modal-title">Detajet e Rrugës</h3>
+      <h3 id="modal-title">Detajet e Rruges</h3>
       <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-body" id="modal-body"></div>
@@ -1391,7 +1391,7 @@
   <div class="footer-grid">
     <div>
       <div class="footer-logo"><i class="fas fa-bus"></i> Sherbimijone</div>
-      <p class="footer-desc">Platforma kryesore për transportin publik dhe taksi në Tiranë. Planifikoni udhëtimin tuaj me lehtësi.</p>
+      <p class="footer-desc">Platforma kryesore per transportin publik dhe taksi ne Tirane. Planifikoni udhetimin tuaj me lehtesi.</p>
     </div>
     <div>
       <div class="footer-title">Lidhje</div>
@@ -1399,7 +1399,7 @@
         <li><a href="../index.html">Kryefaqja</a></li>
         <li><a href="map.html">Harta</a></li>
         <li><a href="taxi.html">Taksi</a></li>
-        <li><a href="search.html">Kërko</a></li>
+        <li><a href="search.html">Kerko</a></li>
         <li><a href="driver.html">Shofer</a></li>
       </ul>
     </div>
@@ -1412,7 +1412,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2024 Sherbimijone. Të gjitha të drejtat e rezervuara.</p>
+    <p>© 2024 Sherbimijone. Te gjitha te drejtat e rezervuara.</p>
   </div>
 </footer>
 
@@ -1564,8 +1564,8 @@
     const hint = document.getElementById('pick-hint');
     const text = document.getElementById('pick-hint-text');
     text.textContent = type === 'origin'
-      ? 'Klikoni në hartë për pikën e nisjes'
-      : 'Klikoni në hartë për destinacionin';
+      ? 'Klikoni ne harte per piken e nisjes'
+      : 'Klikoni ne harte per destinacionin';
     hint.classList.add('show');
     document.getElementById('pick-origin-btn').classList.toggle('active', type==='origin');
     document.getElementById('pick-dest-btn').classList.toggle('active', type==='dest');
@@ -1916,7 +1916,7 @@ function startVehicleTracking() {
   poll();
   S.vehiclePoll = setInterval(poll, 3000);
   requestAnimationFrame(animateVehicles);
-  toast('Ndjekja e autobusëve live u aktivizua', 'success');
+  toast('Ndjekja e autobuseve live u aktivizua', 'success');
 }
 
   function stopVehicleTracking() {
@@ -1926,7 +1926,7 @@ function startVehicleTracking() {
     S.vehicleMarkers.forEach(m => S.map.removeLayer(m));
     S.vehicleMarkers.clear();
     document.getElementById('live-badge').style.display = 'none';
-    toast('Ndjekja e autobusëve u ndalua');
+    toast('Ndjekja e autobuseve u ndalua');
   }
 
   // ════════════════════════════════════════════════════
@@ -2010,10 +2010,10 @@ function startVehicleTracking() {
   async function performSearch() {
     const fromVal = document.getElementById('from-loc').value.trim();
     const toVal   = document.getElementById('to-loc').value.trim();
-    if (!fromVal || !toVal) { toast('Plotëso të dy fushat e lokacionit', 'error'); return; }
+    if (!fromVal || !toVal) { toast('Ploteso te dy fushat e lokacionit', 'error'); return; }
 
     const btn = document.getElementById('search-btn');
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke kërkuar…';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke kerkuar…';
     btn.disabled = true;
 
     // Show skeleton
@@ -2074,10 +2074,10 @@ function startVehicleTracking() {
       });
 
       const data = await res.json();
-      if (!res.ok) { toast(data.error || 'Gabim gjatë kërkimit', 'error'); showEmpty(data.error); return; }
+      if (!res.ok) { toast(data.error || 'Gabim gjate kerkimit', 'error'); showEmpty(data.error); return; }
 
       S.results = data.results || [];
-      if (S.results.length === 0) { showEmpty('Nuk u gjet asnjë rrugë. Provoni të rrisni ecjen maksimale.'); return; }
+      if (S.results.length === 0) { showEmpty('Nuk u gjet asnje rruge. Provoni te rrisni ecjen maksimale.'); return; }
 
       renderResults(S.results, data.meta);
 
@@ -2093,7 +2093,7 @@ function startVehicleTracking() {
       toast('Gabim: ' + err.message, 'error');
       showEmpty();
     } finally {
-      btn.innerHTML = '<i class="fas fa-search"></i> Kërko Rrugën';
+      btn.innerHTML = '<i class="fas fa-search"></i> Kerko Rrugen';
       btn.disabled = false;
     }
   }
@@ -2102,14 +2102,14 @@ function startVehicleTracking() {
   // RENDER RESULTS
   // ════════════════════════════════════════════════════
   function renderResults(routes, meta) {
-    document.getElementById('results-count').textContent = `${routes.length} rrugë`;
+    document.getElementById('results-count').textContent = `${routes.length} rruge`;
 
     // Meta strip
     const mw = document.getElementById('meta-strip-wrap');
     if (meta?.originStops?.[0]) {
       mw.innerHTML = `<div class="meta-strip">
         <span><i class="fas fa-walking" style="color:var(--blue)"></i> Stacioni i nisjes: <strong>${esc(meta.originStops[0].name)}</strong> (~${meta.originStops[0].distanceM}m)</span>
-        <span><i class="fas fa-flag-checkered" style="color:var(--red)"></i> Stacioni i mbërritjes: <strong>${esc(meta.destStops?.[0]?.name||'?')}</strong> (~${meta.destStops?.[0]?.distanceM||'?'}m)</span>
+        <span><i class="fas fa-flag-checkered" style="color:var(--red)"></i> Stacioni i mberritjes: <strong>${esc(meta.destStops?.[0]?.name||'?')}</strong> (~${meta.destStops?.[0]?.distanceM||'?'}m)</span>
         <span><i class="fas fa-clock" style="color:var(--ink-3)"></i> Nisja: <strong>${new Date(meta.departureTime).toLocaleTimeString('sq',{hour:'2-digit',minute:'2-digit'})}</strong></span>
       </div>`;
     } else mw.innerHTML = '';
@@ -2162,7 +2162,7 @@ function startVehicleTracking() {
       }
     }).join('');
 
-    const transferLabel = route.transfers === 0 ? '🟢 Direkte' : `🔄 ${route.transfers} ndërrim${route.transfers > 1 ? 'e' : ''}`;
+    const transferLabel = route.transfers === 0 ? '🟢 Direkte' : `🔄 ${route.transfers} nderrim${route.transfers > 1 ? 'e' : ''}`;
 
     return `<div class="route-card" data-id="${route.id}" data-score="${route.score||0}" data-time="${route.totalTime}" data-fare="${route.fare}" data-transfers="${route.transfers}" data-walk="${route.walkMin}">
       <div class="rc-top">
@@ -2173,13 +2173,13 @@ function startVehicleTracking() {
         <div class="rc-time">${route.totalTime} min</div>
       </div>
       <div class="rc-stats">
-        <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-exchange-alt"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${transferLabel}</div><div class="stat-pill-label">Ndërrime</div></div></div>
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-exchange-alt"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${transferLabel}</div><div class="stat-pill-label">Nderrime</div></div></div>
         <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-walking"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${route.walkMin} min</div><div class="stat-pill-label">Ecje totale</div></div></div>
         <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-coins"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${route.fare} L</div><div class="stat-pill-label">Çmimi</div></div></div>
         <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-road"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${Math.round(route.walkMin*66)} m</div><div class="stat-pill-label">Distanca ecje</div></div></div>
       </div>
       <div class="rc-steps">
-        <button class="steps-toggle" onclick="toggleSteps(this, event)"><i class="fas fa-chevron-down"></i> Shiko hapat e rrugës (${route.steps.length})</button>
+        <button class="steps-toggle" onclick="toggleSteps(this, event)"><i class="fas fa-chevron-down"></i> Shiko hapat e rruges (${route.steps.length})</button>
         <div class="steps-body">
           <div class="step-timeline">${stepsHtml}</div>
         </div>
@@ -2203,10 +2203,10 @@ function startVehicleTracking() {
   function showEmpty(msg) {
     document.getElementById('routes-list').innerHTML = `<div class="empty-state">
       <div class="empty-state-icon"><i class="fas fa-map-marked-alt"></i></div>
-      <h3>Asnjë rrugë nuk u gjet</h3>
-      <p>${esc(msg || 'Provoni të ndryshoni vendndodhjet ose të rrisni kohën maksimale të ecjes.')}</p>
+      <h3>Asnje rruge nuk u gjet</h3>
+      <p>${esc(msg || 'Provoni te ndryshoni vendndodhjet ose te rrisni kohen maksimale te ecjes.')}</p>
     </div>`;
-    document.getElementById('results-count').textContent = '0 rrugë';
+    document.getElementById('results-count').textContent = '0 rruge';
     document.getElementById('meta-strip-wrap').innerHTML = '';
   }
 
@@ -2236,7 +2236,7 @@ function startVehicleTracking() {
     e?.stopPropagation();
     const route = S.results.find(r => r.id === id);
     if (!route) return;
-    document.getElementById('modal-title').textContent = route.title || 'Detajet e Rrugës';
+    document.getElementById('modal-title').textContent = route.title || 'Detajet e Rruges';
     document.getElementById('modal-body').innerHTML = buildModalBody(route);
     document.getElementById('modal-overlay').classList.add('open');
   };
@@ -2255,7 +2255,7 @@ function startVehicleTracking() {
           <div style="width:36px;height:36px;border-radius:10px;background:${step.lineColor||'#2563EB'};color:#fff;display:grid;place-items:center;font-size:16px;flex-shrink:0">${icon}</div>
           <div><div style="font-weight:700;font-size:14px">Linja ${esc(step.lineNumber)} — ${esc(step.lineName||'')}</div>
           <div style="font-size:12px;color:var(--ink-3)">${esc(step.fromStation)} → ${esc(step.toStation)} · ${step.time} min</div>
-          ${step.stopSequence?.length > 2 ? `<div style="font-size:11px;color:var(--ink-4);margin-top:3px">${step.stopSequence.length-1} stacione ndërmjetëse</div>` : ''}
+          ${step.stopSequence?.length > 2 ? `<div style="font-size:11px;color:var(--ink-4);margin-top:3px">${step.stopSequence.length-1} stacione ndermjetese</div>` : ''}
           </div>
         </div>`;
       }
@@ -2269,18 +2269,18 @@ function startVehicleTracking() {
         </div>
         <div style="text-align:center;padding:14px;background:var(--green-light);border-radius:12px">
           <div style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--green)">${route.fare}</div>
-          <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em">lekë</div>
+          <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em">leke</div>
         </div>
         <div style="text-align:center;padding:14px;background:var(--surface-3);border-radius:12px">
           <div style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--ink)">${route.transfers}</div>
-          <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em">ndërrime</div>
+          <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em">nderrime</div>
         </div>
       </div>
-      <div style="font-weight:700;font-size:13px;color:var(--ink-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Hapat e Rrugës</div>
+      <div style="font-weight:700;font-size:13px;color:var(--ink-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Hapat e Rruges</div>
       ${stepsHtml}
       <div style="margin-top:16px;display:flex;gap:10px">
         <button onclick="window._startNav(${route.id});document.getElementById('modal-overlay').classList.remove('open')" class="rc-btn success" style="flex:1"><i class="fas fa-location-arrow"></i> Fillo Navigimin</button>
-        <button onclick="window._saveRoute(${route.id})" class="rc-btn" style="flex:1"><i class="fas fa-bookmark"></i> Ruaj Rrugën</button>
+        <button onclick="window._saveRoute(${route.id})" class="rc-btn" style="flex:1"><i class="fas fa-bookmark"></i> Ruaj Rrugen</button>
       </div>`;
   }
 
@@ -2296,7 +2296,7 @@ function startVehicleTracking() {
     e?.stopPropagation();
     const route = S.results.find(r => r.id === id);
     if (!route) return;
-    const name = prompt('Emri i rrugës:', route.title || `Rruga ${id}`);
+    const name = prompt('Emri i rruges:', route.title || `Rruga ${id}`);
     if (!name) return;
     const data = {
       id: Date.now(),
@@ -2361,7 +2361,7 @@ function startVehicleTracking() {
     const routes = await getSavedRoutes();
     const list = document.getElementById('saved-list');
     if (!routes.length) {
-      list.innerHTML = `<div class="no-data"><i class="fas fa-bookmark"></i><p>Nuk keni rrugë të ruajtura</p></div>`;
+      list.innerHTML = `<div class="no-data"><i class="fas fa-bookmark"></i><p>Nuk keni rruge te ruajtura</p></div>`;
       return;
     }
     list.innerHTML = routes.slice(0, 5).map(r => `
@@ -2372,7 +2372,7 @@ function startVehicleTracking() {
           <div class="saved-item-path">${esc(r.from)} → ${esc(r.to)}</div>
         </div>
         <div class="saved-item-btns">
-          <button class="saved-icon-btn" title="Përdor" onclick="window._useSaved('${esc(r.from)}', '${esc(r.to)}')"><i class="fas fa-directions"></i></button>
+          <button class="saved-icon-btn" title="Perdor" onclick="window._useSaved('${esc(r.from)}', '${esc(r.to)}')"><i class="fas fa-directions"></i></button>
           <button class="saved-icon-btn del" title="Fshi" onclick="window._deleteSaved(${r.id}, this)"><i class="fas fa-trash"></i></button>
         </div>
       </div>`).join('');
@@ -2385,7 +2385,7 @@ function startVehicleTracking() {
   };
 
   window._deleteSaved = async function(id, btn) {
-    if (!confirm('Fshi këtë rrugë?')) return;
+    if (!confirm('Fshi kete rruge?')) return;
     await deleteSavedRoute(id);
     toast('Rruga u fshi', 'success');
     loadSavedRoutes();
@@ -2416,7 +2416,7 @@ function startVehicleTracking() {
 
     // GPS for from
     document.getElementById('from-gps-btn').addEventListener('click', () => {
-      if (!navigator.geolocation) { toast('Geolokacioni nuk mbështetet', 'error'); return; }
+      if (!navigator.geolocation) { toast('Geolokacioni nuk mbeshtetet', 'error'); return; }
       navigator.geolocation.getCurrentPosition(async pos => {
         const { latitude:lat, longitude:lng } = pos.coords;
         S.userPos = { lat, lng };
@@ -2427,13 +2427,13 @@ function startVehicleTracking() {
         placeOriginMarker(lat, lng, name);
         S.map.setView([lat, lng], 15);
         toast('Lokacioni juaj u caktua', 'success');
-      }, err => toast('Nuk mundi të merret lokacioni', 'error'));
+      }, err => toast('Nuk mundi te merret lokacioni', 'error'));
     });
 
     // GPS toggle
     document.getElementById('use-gps').addEventListener('change', function() {
       if (!this.checked) { S.originCoords = null; return; }
-      if (!navigator.geolocation) { toast('Geolokacioni nuk mbështetet', 'error'); this.checked = false; return; }
+      if (!navigator.geolocation) { toast('Geolokacioni nuk mbeshtetet', 'error'); this.checked = false; return; }
       navigator.geolocation.getCurrentPosition(async pos => {
         const { latitude:lat, longitude:lng } = pos.coords;
         const name = await reverseGeocode(lat, lng);
@@ -2443,7 +2443,7 @@ function startVehicleTracking() {
         updateUserMarker();
         placeOriginMarker(lat, lng, name);
         toast('Lokacioni juaj u caktua', 'success');
-      }, () => { this.checked = false; toast('Nuk mundi të merret lokacioni', 'error'); });
+      }, () => { this.checked = false; toast('Nuk mundi te merret lokacioni', 'error'); });
     });
 
     // Clear dest
@@ -2494,7 +2494,7 @@ function startVehicleTracking() {
     // Center user
     document.getElementById('center-user-btn').addEventListener('click', () => {
       if (S.userPos) S.map.setView([S.userPos.lat, S.userPos.lng], 16);
-      else toast('Lokacioni juaj nuk është i disponueshëm', 'error');
+      else toast('Lokacioni juaj nuk eshte i disponueshem', 'error');
     });
 
     // Nav mode toggle
@@ -2514,7 +2514,7 @@ function startVehicleTracking() {
     });
     document.getElementById('nm-next-btn').addEventListener('click', () => {
       if (!S.navRoute) return;
-      if (S.navStep >= S.navRoute.steps.length - 1) { stopNavMode(); toast('Udhëtimi u kompletua!', 'success'); return; }
+      if (S.navStep >= S.navRoute.steps.length - 1) { stopNavMode(); toast('Udhetimi u kompletua!', 'success'); return; }
       S.navStep++; renderNavSteps(); updateNavETA();
       const step = S.navRoute.steps[S.navStep];
       if (step?.fromCoords) S.map.setView([step.fromCoords.lat, step.fromCoords.lng], 16, { animate: true });
@@ -2536,7 +2536,7 @@ function startVehicleTracking() {
 
     // View all saved
     document.getElementById('view-all-saved').addEventListener('click', () =>
-      toast('Funksion në zhvillim', ''));
+      toast('Funksion ne zhvillim', ''));
 
     // URL params auto-search
     const p = new URLSearchParams(window.location.search);
@@ -2569,7 +2569,7 @@ function startVehicleTracking() {
       const navActions = document.querySelector('.nav-actions');
       if (navActions) {
         if (user) {
-          const displayName = user.firstName || user.email?.split('@')[0] || 'Përdorues';
+          const displayName = user.firstName || user.email?.split('@')[0] || 'Perdorues';
           navActions.innerHTML = `
             <div class="user-info" style="display:flex;align-items:center;gap:8px;margin-right:8px">
               <i class="fas fa-user-circle"></i>

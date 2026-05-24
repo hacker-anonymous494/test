@@ -78,10 +78,10 @@ exports.handler = async (event) => {
       .slice(0, MAX_DEST_STOPS);
 
     if (nearOrigin.length === 0) {
-      return respond(404, { error: 'Nuk u gjet asnjë stacion autobusi pranë pikës së nisjes.' }, event);
+      return respond(404, { error: 'Nuk u gjet asnje stacion autobusi prane pikes se nisjes.' }, event);
     }
     if (nearDest.length === 0) {
-      return respond(404, { error: 'Nuk u gjet asnjë stacion autobusi pranë destinacionit.' }, event);
+      return respond(404, { error: 'Nuk u gjet asnje stacion autobusi prane destinacionit.' }, event);
     }
 
     // ── 3. Cache lookup ──────────────────────────────────────────────────────
@@ -132,7 +132,7 @@ exports.handler = async (event) => {
 
     if (routes.length === 0) {
       return respond(404, {
-        error: 'Nuk u gjet asnjë rrugë. Provoni të rrisni kohën maksimale të ecjes ose ndërrimi.',
+        error: 'Nuk u gjet asnje rruge. Provoni te rrisni kohen maksimale te ecjes ose nderrimi.',
       }, event);
     }
 

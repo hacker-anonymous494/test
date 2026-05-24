@@ -351,7 +351,7 @@ function deduplicateRoutes(routes) {
   tryAdd([...routes].sort((a,b) => a.walkMin   - b.walkMin   || a.totalTime - b.totalTime)[0]);
   tryAdd([...routes].sort((a,b) => a.fare       - b.fare       || a.totalTime - b.totalTime)[0]);
 
-  const labels = ['Më e shpejta', 'Më pak ndërrime', 'Më pak ecje', 'Çmim i ulët'];
+  const labels = ['Me e shpejta', 'Me pak nderrime', 'Me pak ecje', 'Çmim i ulet'];
   return kept.slice(0, 4).map((r, i) => ({ ...r, title: labels[i] || `Rruga ${i+1}`, id: i+1 }));
 }
 

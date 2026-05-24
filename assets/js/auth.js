@@ -147,7 +147,7 @@ class AuthManager {
           </button>
           <div class="dropdown-menu" id="user-dropdown-menu">
             <a href="${pagePrefix}profile.html"><i class="fas fa-user"></i> Profili</a>
-            <a href="${pagePrefix}saved-routes.html"><i class="fas fa-bookmark"></i> Rrugët e Ruajtura</a>
+            <a href="${pagePrefix}saved-routes.html"><i class="fas fa-bookmark"></i> Rruget e Ruajtura</a>
             <div class="divider"></div>
             <a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Dil</a>
           </div>

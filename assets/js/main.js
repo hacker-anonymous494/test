@@ -144,7 +144,7 @@ class SherbimijoneApp {
             // In production, you would fetch this from your database
             // For now, we'll use a sample of Tirana bus stops
             const busStops = [
-                { name: "Sheshi Skënderbej", lat: 41.3275, lng: 19.8187, routes: ["L1", "L2", "L3"] },
+                { name: "Sheshi Skenderbej", lat: 41.3275, lng: 19.8187, routes: ["L1", "L2", "L3"] },
                 { name: "21 Dhjetori", lat: 41.3250, lng: 19.8200, routes: ["L2", "L4", "L5"] },
                 { name: "Zogu i Zi", lat: 41.3333, lng: 19.8333, routes: ["L1", "L3", "L6"] },
                 { name: "Unaza e Re", lat: 41.3200, lng: 19.8300, routes: ["L1", "L4", "L7"] },
@@ -167,7 +167,7 @@ class SherbimijoneApp {
                         <h4>${stop.name}</h4>
                         <p><strong>Linjat:</strong> ${stop.routes.join(', ')}</p>
                         <button class="btn btn-sm btn-primary use-stop-btn" data-location="${stop.name}">
-                            Përdor këtë stacion
+                            Perdor kete stacion
                         </button>
                     </div>
                 `);
@@ -192,7 +192,7 @@ class SherbimijoneApp {
                 })
             }).addTo(this.map);
             
-            userMarker.bindPopup('<strong>Ju jeni këtu</strong>');
+            userMarker.bindPopup('<strong>Ju jeni ketu</strong>');
             
             // Center map on user location
             this.map.setView([location.lat, location.lng], 15);
@@ -242,7 +242,7 @@ class SherbimijoneApp {
             btn.addEventListener('click', (e) => {
                 if (!this.utils.currentUser) {
                     e.preventDefault();
-                    this.utils.showNotification('Ju duhet të identifikoheni për të përdorur këtë veçori', 'warning');
+                    this.utils.showNotification('Ju duhet te identifikoheni per te perdorur kete veçori', 'warning');
                 }
             });
         });
@@ -298,20 +298,20 @@ class SherbimijoneApp {
         
         // Common locations in Tirana
         const commonLocations = [
-            "Sheshi Skënderbej, Tiranë",
-            "21 Dhjetori, Tiranë",
-            "Zogu i Zi, Tiranë",
-            "Unaza e Re, Tiranë",
-            "Kombinat, Tiranë",
-            "Qender, Tiranë",
-            "Rruga Myslym Shyri, Tiranë",
-            "Bulevardi Dëshmorët e Kombit, Tiranë",
-            "Parku i Madh, Tiranë",
-            "Universiteti i Tiranës",
-            "Spitali Qendror, Tiranë",
-            "Aeroporti Nënë Tereza, Tiranë",
-            "Stacioni i Autobusëve, Tiranë",
-            "Tregu i Bërshit, Tiranë"
+            "Sheshi Skenderbej, Tirane",
+            "21 Dhjetori, Tirane",
+            "Zogu i Zi, Tirane",
+            "Unaza e Re, Tirane",
+            "Kombinat, Tirane",
+            "Qender, Tirane",
+            "Rruga Myslym Shyri, Tirane",
+            "Bulevardi Deshmoret e Kombit, Tirane",
+            "Parku i Madh, Tirane",
+            "Universiteti i Tiranes",
+            "Spitali Qendror, Tirane",
+            "Aeroporti Nene Tereza, Tirane",
+            "Stacioni i Autobuseve, Tirane",
+            "Tregu i Bershit, Tirane"
         ];
         
         // Simple autocomplete implementation
@@ -366,7 +366,7 @@ class SherbimijoneApp {
             
         } catch (error) {
             console.error('Error getting location:', error);
-            this.utils.showNotification('Nuk mund të merret lokacioni. Ju lutem aktivizoni GPS.', 'error');
+            this.utils.showNotification('Nuk mund te merret lokacioni. Ju lutem aktivizoni GPS.', 'error');
         }
     }
 
@@ -376,7 +376,7 @@ class SherbimijoneApp {
         const toLocation = document.getElementById('to-location').value.trim();
         
         if (!fromLocation || !toLocation) {
-            this.utils.showNotification('Ju lutem plotësoni të dyja lokacionet', 'error');
+            this.utils.showNotification('Ju lutem plotesoni te dyja lokacionet', 'error');
             return;
         }
         
@@ -401,8 +401,8 @@ class SherbimijoneApp {
             resultsContainer.innerHTML = `
                 <div class="no-results">
                     <i class="fas fa-search"></i>
-                    <h4>Nuk u gjet asnjë rrugë</h4>
-                    <p>Provoni të kërkoni me emra të ndryshëm ose zgjidhni një opsion tjetër kërkimi.</p>
+                    <h4>Nuk u gjet asnje rruge</h4>
+                    <p>Provoni te kerkoni me emra te ndryshem ose zgjidhni nje opsion tjeter kerkimi.</p>
                 </div>
             `;
         } else {
@@ -442,10 +442,10 @@ class SherbimijoneApp {
                             <i class="${this.getRouteIcon(route.type)}"></i>
                         </div>
                         <div class="route-info">
-                            <h4>${route.routeName || route.serviceName || 'Rrugë'}</h4>
+                            <h4>${route.routeName || route.serviceName || 'Rruge'}</h4>
                             <p class="route-details">
                                 ${route.routeNumber ? `Linja ${route.routeNumber} • ` : ''}
-                                ${route.transfers} ndërrime • ${this.utils.formatDistance(route.distance)}
+                                ${route.transfers} nderrime • ${this.utils.formatDistance(route.distance)}
                             </p>
                         </div>
                     </div>
@@ -470,7 +470,7 @@ class SherbimijoneApp {
                         <i class="fas fa-bookmark"></i> Ruaj
                     </button>
                     <button class="btn btn-primary select-route-btn" data-route-id="${route.id}">
-                        <i class="fas fa-check"></i> Zgjidh këtë rrugë
+                        <i class="fas fa-check"></i> Zgjidh kete rruge
                     </button>
                 </div>
                 
@@ -510,7 +510,7 @@ class SherbimijoneApp {
             <div class="bus-info-card">
                 <div class="bus-info-header">
                     <i class="fas fa-bus"></i>
-                    <h5>Informacion për autobusin</h5>
+                    <h5>Informacion per autobusin</h5>
                 </div>
                 <div class="bus-info-content">
                     <div class="bus-info-row">
@@ -525,13 +525,13 @@ class SherbimijoneApp {
                     ` : ''}
                     ${busInfo.current_speed ? `
                         <div class="bus-info-row">
-                            <span>Shpejtësia:</span>
+                            <span>Shpejtesia:</span>
                             <strong>${busInfo.current_speed} km/h</strong>
                         </div>
                     ` : ''}
                     ${busInfo.passengers_count !== undefined ? `
                         <div class="bus-info-row">
-                            <span>Pasagjerë:</span>
+                            <span>Pasagjere:</span>
                             <strong>${busInfo.passengers_count}/${busInfo.capacity || '?'}</strong>
                         </div>
                     ` : ''}
@@ -548,7 +548,7 @@ class SherbimijoneApp {
             <div class="taxi-info-card">
                 <div class="taxi-info-header">
                     <i class="fas fa-taxi"></i>
-                    <h5>Informacion për taksi</h5>
+                    <h5>Informacion per taksi</h5>
                 </div>
                 <div class="taxi-info-content">
                     <div class="taxi-info-row">
@@ -563,7 +563,7 @@ class SherbimijoneApp {
                     ` : ''}
                     ${taxiInfo.rating ? `
                         <div class="taxi-info-row">
-                            <span>Vlerësimi:</span>
+                            <span>Vleresimi:</span>
                             <strong>${taxiInfo.rating}/5.0</strong>
                         </div>
                     ` : ''}
@@ -618,7 +618,7 @@ class SherbimijoneApp {
         const route = this.searchResults.find(r => r.id === routeId);
         if (!route) return;
         
-        this.utils.showNotification(`Rruga u zgjodh! Koha e vlerësuar: ${this.utils.formatTime(route.totalTime)}`, 'success');
+        this.utils.showNotification(`Rruga u zgjodh! Koha e vleresuar: ${this.utils.formatTime(route.totalTime)}`, 'success');
         
         // In production, you would redirect to detailed view or start navigation
         console.log('Selected route:', route);
@@ -635,7 +635,7 @@ class SherbimijoneApp {
     // Save a route
     async saveRoute(routeId) {
         if (!this.utils.currentUser) {
-            this.utils.showNotification('Ju duhet të identifikoheni për të ruajtur rrugë', 'warning');
+            this.utils.showNotification('Ju duhet te identifikoheni per te ruajtur rruge', 'warning');
             return;
         }
         
@@ -659,7 +659,7 @@ class SherbimijoneApp {
             const data = await response.json();
             
             if (!response.ok) {
-                throw new Error(data.error || 'Gabim gjatë ruajtjes');
+                throw new Error(data.error || 'Gabim gjate ruajtjes');
             }
             
             this.utils.showNotification('Rruga u ruajt me sukses!', 'success');
@@ -782,7 +782,7 @@ class SherbimijoneApp {
                     window.location.reload();
                 }, 1500);
             } else {
-                throw new Error(data.error || 'Gabim gjatë shkyçjes');
+                throw new Error(data.error || 'Gabim gjate shkyçjes');
             }
         } catch (error) {
             console.error('Logout error:', error);
@@ -857,10 +857,10 @@ class SherbimijoneApp {
                     <h4>Autobusi ${bus.busNumber}</h4>
                     <p><strong>Linja:</strong> ${bus.routeNumber} - ${bus.routeName}</p>
                     <p><strong>Shoferi:</strong> ${bus.driver?.name || 'N/A'}</p>
-                    <p><strong>Pasagjerë:</strong> ${bus.passengersCount}/${bus.capacity} (${bus.occupancy}%)</p>
+                    <p><strong>Pasagjere:</strong> ${bus.passengersCount}/${bus.capacity} (${bus.occupancy}%)</p>
                     ${bus.nextStop ? `
-                        <p><strong>Stacioni i radhës:</strong> ${bus.nextStop.name}</p>
-                        <p><strong>Arritja e vlerësuar:</strong> ${bus.estimatedArrival?.minutes || '?'} min</p>
+                        <p><strong>Stacioni i radhes:</strong> ${bus.nextStop.name}</p>
+                        <p><strong>Arritja e vleresuar:</strong> ${bus.estimatedArrival?.minutes || '?'} min</p>
                     ` : ''}
                     <p><strong>Statusi:</strong> ${this.getBusStatusText(bus.status)}</p>
                     <button class="btn btn-sm btn-primary track-bus-btn" data-bus-id="${bus.id}">
@@ -888,8 +888,8 @@ class SherbimijoneApp {
             'inactive': 'Jo aktiv',
             'delayed': 'I vonuar',
             'broken': 'I prishur',
-            'on_duty': 'Në shërbim',
-            'off_duty': 'Jashtë shërbimit'
+            'on_duty': 'Ne sherbim',
+            'off_duty': 'Jashte sherbimit'
         };
         return statusMap[status] || status;
     }
@@ -963,7 +963,7 @@ class SherbimijoneApp {
         
         // For now, just show a notification
         const langName = lang === 'sq' ? 'Shqip' : 'English';
-        this.utils.showNotification(`Gjuha u ndryshua në ${langName}`, 'info');
+        this.utils.showNotification(`Gjuha u ndryshua ne ${langName}`, 'info');
         
         // Save preference
         if (this.utils.currentUser) {
