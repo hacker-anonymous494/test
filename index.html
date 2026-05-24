@@ -747,9 +747,9 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="user-name">${escapeHtml(displayName)}</div>
           <i class="fas fa-chevron-down"></i>
           <ul class="user-dropdown-menu">
-            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Paneli</a></li>
-            <li><a href="profile.html"><i class="fas fa-user"></i> Profili Im</a></li>
-            <li><a href="favorites.html"><i class="fas fa-heart"></i> Rrugët e Preferuara</a></li>
+            <li><a href="pages/dashboard.html"><i class="fas fa-tachometer-alt"></i> Paneli</a></li>
+            <li><a href="pages/profile.html"><i class="fas fa-user"></i> Profili Im</a></li>
+            <li><a href="pages/favorites.html"><i class="fas fa-heart"></i> Rrugët e Preferuara</a></li>
             <li><hr></li>
             <li><a href="#" id="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
           </ul>
@@ -787,8 +787,8 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       // Not logged in – show login/register buttons
       navActions.innerHTML = `
-        <a href="login.html" class="btn-ghost"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
-        <a href="register.html" class="btn-solid"><i class="fas fa-user-plus"></i> Regjistrohu</a>
+        <a href="pages/login.html" class="btn-ghost"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
+        <a href="pages/register.html" class="btn-solid"><i class="fas fa-user-plus"></i> Regjistrohu</a>
       `;
     }
   }

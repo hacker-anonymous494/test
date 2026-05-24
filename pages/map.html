@@ -1749,5 +1749,312 @@
     }
   })();
 </script>
+<script>
+(function() {
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+  function updateNavbarAuth() {
+    const navActions = document.querySelector('.nav-actions');
+    const mobileAuthContainer = document.getElementById('mobile-auth-links');
+    if (!navActions) return;
+    const user = window.authManager ? window.authManager.getCurrentUser() : null;
+    if (user) {
+      const displayName = user.firstName || user.email?.split('@')[0] || 'Përdorues';
+      const userHtml = `
+        <div class="user-dropdown">
+          <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+          <div class="user-name">${escapeHtml(displayName)}</div>
+          <i class="fas fa-chevron-down"></i>
+          <ul class="user-dropdown-menu">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Paneli</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profili Im</a></li>
+            <li><a href="favorites.html"><i class="fas fa-heart"></i> Rrugët e Preferuara</a></li>
+            <li><hr></li>
+            <li><a href="#" id="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
+          </ul>
+        </div>
+      `;
+      navActions.innerHTML = userHtml;
+      if (mobileAuthContainer) {
+        mobileAuthContainer.innerHTML = `
+          <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Paneli</a>
+          <a href="profile.html"><i class="fas fa-user"></i> Profili Im</a>
+          <a href="favorites.html"><i class="fas fa-heart"></i> Rrugët e Preferuara</a>
+          <a href="#" id="mobile-logout-btn"><i class="fas fa-sign-out-alt"></i> Dil</a>
+        `;
+        const mobileLogout = document.getElementById('mobile-logout-btn');
+        if (mobileLogout) mobileLogout.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (window.authManager) window.authManager.logout().then(() => location.href = '../index.html');
+          else location.href = '../index.html';
+        });
+      }
+      const logoutBtn = document.getElementById('logout-nav-btn');
+      if (logoutBtn && window.authManager) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.authManager.logout().then(() => location.href = '../index.html');
+        });
+      }
+      const dropdown = navActions.querySelector('.user-dropdown');
+      const menu = navActions.querySelector('.user-dropdown-menu');
+      if (dropdown && menu) {
+        dropdown.addEventListener('click', (e) => {
+          e.stopPropagation();
+          menu.classList.toggle('show');
+          dropdown.classList.toggle('active');
+        });
+        document.addEventListener('click', () => {
+          menu.classList.remove('show');
+          dropdown.classList.remove('active');
+        });
+      }
+    } else {
+      navActions.innerHTML = `
+        <a href="login.html" class="btn-ghost"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
+        <a href="register.html" class="btn-solid"><i class="fas fa-user-plus"></i> Regjistrohu</a>
+      `;
+      if (mobileAuthContainer) {
+        mobileAuthContainer.innerHTML = `
+          <a href="login.html"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
+          <a href="register.html"><i class="fas fa-user-plus"></i> Regjistrohu</a>
+        `;
+      }
+    }
+  }
+  function initMobileMenu() {
+    const hamburger = document.querySelector('.hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    if (!hamburger || !mobileNav) return;
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      mobileNav.classList.toggle('open');
+    });
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        mobileNav.classList.remove('open');
+      });
+    });
+  }
+  if (window.authManager && typeof window.authManager.getCurrentUser === 'function') {
+    updateNavbarAuth();
+    if (window.authManager.onAuthChange) window.authManager.onAuthChange(() => updateNavbarAuth());
+  } else {
+    const check = setInterval(() => {
+      if (window.authManager && typeof window.authManager.getCurrentUser === 'function') {
+        clearInterval(check);
+        updateNavbarAuth();
+      }
+    }, 100);
+    setTimeout(() => clearInterval(check), 5000);
+  }
+  initMobileMenu();
+})();
+</script>
+<style>
+/* ===== USER DROPDOWN ===== */
+.user-dropdown {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 40px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+
+.user-dropdown:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--primary-color);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-dropdown .fa-chevron-down {
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: transform 0.2s;
+}
+
+.user-dropdown.active .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-primary);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+  z-index: 1000;
+  display: none;
+  border: 1px solid var(--border);
+}
+
+.user-dropdown-menu.show {
+  display: block;
+  animation: fadeInDown 0.2s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-dropdown-menu li {
+  padding: 0;
+}
+
+.user-dropdown-menu li hr {
+  margin: 8px 0;
+  border-color: var(--border);
+}
+
+.user-dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.user-dropdown-menu a:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--primary-color);
+}
+
+/* ===== MOBILE NAV ===== */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: var(--nav-h);
+  left: 0;
+  right: 0;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  z-index: 999;
+  padding: 16px 20px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mobile-nav.open {
+  display: flex;
+}
+
+.mobile-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+
+.mobile-nav a:hover,
+.mobile-nav a.active {
+  background: var(--bg-tertiary);
+  color: var(--primary-color);
+}
+
+.mobile-nav-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 8px 0;
+}
+
+/* Responsive: hide desktop nav links on mobile, show hamburger */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important;
+  }
+  .hamburger {
+    display: flex !important;
+  }
+  .user-name {
+    display: none;
+  }
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Hamburger icon */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+</style>
 </body>
 </html>
