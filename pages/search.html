@@ -1667,20 +1667,33 @@
   // POLYLINE DECODE
   // ════════════════════════════════════════════════════
   function decodePoly(encoded) {
-    if (!encoded) return [];
-    let idx = 0, lat = 0, lng = 0;
-    const pts = [];
-    while (idx < encoded.length) {
-      let b, sh = 0, res = 0;
-      do { b = encoded.charCodeAt(idx++) - 63; res |= (b & 0x1f) << sh; sh += 5; } while (b >= 0x20);
-      lat += (res & 1) ? ~(res >> 1) : (res >> 1); sh = 0; res = 0;
-      do { b = encoded.charCodeAt(idx++) - 63; res |= (b & 0x1f) << sh; sh += 5; } while (b >= 0x20);
-      lng += (res & 1) ? ~(res >> 1) : (res >> 1);
-      pts.push([lat * 1e-5, lng * 1e-5]);
-    }
-    return pts;
+  if (!encoded) return [];
+  let idx = 0, lat = 0, lng = 0;
+  const pts = [];
+  while (idx < encoded.length) {
+    let b, shift = 0, result = 0;
+    do {
+      b = encoded.charCodeAt(idx++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
+    lng += dlng;
+    
+    shift = 0; result = 0;
+    do {
+      b = encoded.charCodeAt(idx++) - 63;
+      result |= (b & 0x1f) << shift;
+      shift += 5;
+    } while (b >= 0x20);
+    const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+    lat += dlat;
+    
+    // Leaflet expects [lat, lng] – swap to correct order
+    pts.push([lat * 1e-5, lng * 1e-5]);
   }
-
+  return pts;
+}
   // ════════════════════════════════════════════════════
   // OSRM WALKING ROUTE
   // ════════════════════════════════════════════════════
