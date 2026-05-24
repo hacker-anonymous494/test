@@ -1,2447 +1,2432 @@
 <!DOCTYPE html>
 <html lang="sq">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kërko Rrugë - Sherbimijone</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="../style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #1a73e8;
-            --primary-dark: #1557b0;
-            --accent-color: #f9a825;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8f9fa;
-            --bg-tertiary: #e8f0fe;
-            --text-primary: #202124;
-            --text-secondary: #5f6368;
-            --text-light: #ffffff;
-            --border-color: #dadce0;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
-            --shadow-xl: 0 16px 50px rgba(0, 0, 0, 0.18);
-            --border-radius: 12px;
-            --border-radius-lg: 20px;
-            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --font-family: 'Poppins', system-ui, -apple-system, sans-serif;
-        }
-
-        .search-page {
-            padding: 120px 0 50px;
-            min-height: 100vh;
-            background: linear-gradient(180deg, #f0f4ff 0%, #f8f9fa 100%);
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 0 20px;
-        }
-
-        .page-header h1 {
-            font-size: 38px;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            letter-spacing: -0.5px;
-        }
-
-        .page-header h1 i {
-            color: var(--primary-color);
-            font-size: 36px;
-            background: linear-gradient(135deg, #1a73e8, #4285f4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .page-header p {
-            font-size: 17px;
-            color: var(--text-secondary);
-            max-width: 650px;
-            margin: 0 auto;
-            line-height: 1.5;
-        }
-
-        .search-container {
-            display: grid;
-            grid-template-columns: 370px 1fr;
-            gap: 28px;
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 0 20px;
-            align-items: start;
-        }
-
-        .search-sidebar {
-            background-color: var(--bg-primary);
-            border-radius: var(--border-radius-lg);
-            padding: 28px;
-            box-shadow: var(--shadow-lg);
-            height: fit-content;
-            position: sticky;
-            top: 100px;
-            border: 1px solid var(--border-color);
-        }
-
-        .search-form {
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-        }
-
-        .form-group {
-            margin-bottom: 4px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            letter-spacing: 0.2px;
-        }
-
-        .form-group label i {
-            color: var(--primary-color);
-            font-size: 15px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 13px 14px;
-            border: 1.5px solid var(--border-color);
-            border-radius: var(--border-radius);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 15px;
-            font-family: var(--font-family);
-            transition: var(--transition);
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.08);
-            background-color: #fafbff;
-        }
-
-        .location-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .input-with-icon {
-            position: relative;
-        }
-
-        .input-with-icon i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-color);
-            font-size: 14px;
-            z-index: 1;
-        }
-
-        .input-with-icon input {
-            padding-left: 42px;
-        }
-
-        .swap-locations {
-            display: flex;
-            justify-content: center;
-            margin: 2px 0;
-        }
-
-        .swap-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background-color: var(--bg-secondary);
-            border: 1.5px solid var(--border-color);
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 14px;
-        }
-
-        .swap-btn:hover {
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            border-color: var(--primary-color);
-            transform: rotate(180deg);
-        }
-
-        .date-time-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .option-card {
-            background-color: var(--bg-secondary);
-            border: 2px solid transparent;
-            border-radius: var(--border-radius);
-            padding: 14px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .option-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-            background-color: #fff;
-        }
-
-        .option-card.selected {
-            border-color: var(--primary-color);
-            background-color: #e8f0fe;
-            box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.06);
-        }
-
-        .option-card.selected::after {
-            content: '✓';
-            position: absolute;
-            top: 8px;
-            right: 10px;
-            font-size: 12px;
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
-        .option-icon {
-            font-size: 26px;
-            color: var(--primary-color);
-            margin-bottom: 8px;
-        }
-
-        .option-name {
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 3px;
-            font-size: 14px;
-        }
-
-        .option-desc {
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 400;
-        }
-
-        .filter-section {
-            background-color: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            padding: 18px;
-            margin-top: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        .filter-section h4 {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .filter-section h4 i {
-            color: var(--accent-color);
-        }
-
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-
-        .checkbox-item input {
-            display: none;
-        }
-
-        .checkbox-custom {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--border-color);
-            border-radius: 5px;
-            position: relative;
-            transition: var(--transition);
-            flex-shrink: 0;
-        }
-
-        .checkbox-item input:checked+.checkbox-custom {
-            border-color: var(--primary-color);
-            background-color: var(--primary-color);
-        }
-
-        .checkbox-item input:checked+.checkbox-custom::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .checkbox-label {
-            flex: 1;
-            color: var(--text-primary);
-            font-weight: 500;
-            font-size: 13px;
-        }
-
-        .search-btn {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: 700;
-            margin-top: 6px;
-            border-radius: var(--border-radius);
-            background: linear-gradient(135deg, #1a73e8, #4285f4);
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            transition: var(--transition);
-            letter-spacing: 0.3px;
-            box-shadow: 0 4px 14px rgba(26, 115, 232, 0.35);
-        }
-
-        .search-btn:hover {
-            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.5);
-            transform: translateY(-1px);
-        }
-
-        .search-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .map-pick-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .map-pick-btn {
-            flex: 1;
-            font-size: 13px !important;
-            padding: 10px 8px !important;
-            border-radius: var(--border-radius) !important;
-            transition: var(--transition);
-            font-weight: 600 !important;
-            background: var(--bg-secondary);
-            border: 1.5px solid var(--border-color);
-            cursor: pointer;
-            color: var(--text-primary);
-            font-family: var(--font-family);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .map-pick-btn:hover {
-            border-color: var(--primary-color);
-            background: #e8f0fe;
-        }
-        .map-pick-btn.active {
-            background-color: var(--primary-color) !important;
-            color: #fff !important;
-            border-color: var(--primary-color) !important;
-            animation: pulse-btn 1.5s infinite;
-        }
-
-        @keyframes pulse-btn {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(26, 115, 232, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 0 12px rgba(26, 115, 232, 0);
-            }
-        }
-
-        #pick-status {
-            margin-top: 12px;
-            font-size: 13px;
-            text-align: center;
-            color: var(--primary-color);
-            display: none;
-            background: #e8f0fe;
-            padding: 10px;
-            border-radius: var(--border-radius);
-            font-weight: 500;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .search-main {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .results-header h2 {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .results-header h2 i {
-            color: var(--primary-color);
-        }
-
-        .results-count {
-            color: var(--text-secondary);
-            font-size: 14px;
-            background: var(--bg-secondary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 500;
-        }
-
-        .sort-options {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-
-        .sort-btn {
-            padding: 8px 15px;
-            background-color: var(--bg-primary);
-            border: 1.5px solid var(--border-color);
-            border-radius: 20px;
-            color: var(--text-primary);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 13px;
-            font-family: var(--font-family);
-        }
-
-        .sort-btn:hover,
-        .sort-btn.active {
-            background-color: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .results-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .route-card {
-            background-color: var(--bg-primary);
-            border-radius: var(--border-radius-lg);
-            padding: 22px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            cursor: pointer;
-            border: 2px solid transparent;
-            position: relative;
-        }
-
-        .route-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .route-card.selected {
-            border-color: var(--primary-color);
-            background-color: #fafcff;
-            box-shadow: 0 0 0 6px rgba(26, 115, 232, 0.04);
-        }
-
-        .route-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            gap: 12px;
-        }
-
-        .route-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--text-primary);
-            line-height: 1.3;
-        }
-
-        .route-badges {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 6px;
-        }
-        .line-badge {
-            display: inline-block;
-            padding: 3px 11px;
-            border-radius: 999px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 12px;
-            letter-spacing: 0.4px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-        }
-
-        .route-time {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary-color);
-            white-space: nowrap;
-            background: #e8f0fe;
-            padding: 6px 14px;
-            border-radius: 20px;
-        }
-
-        .route-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--bg-secondary);
-            padding: 10px 12px;
-            border-radius: var(--border-radius);
-        }
-
-        .detail-icon {
-            width: 36px;
-            height: 36px;
-            background-color: #e8f0fe;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-            flex-shrink: 0;
-        }
-
-        .detail-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .detail-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .detail-value {
-            font-weight: 700;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        .route-steps {
-            background-color: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            padding: 18px;
-            margin-top: 4px;
-        }
-
-        .steps-header {
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 15px;
-        }
-
-        .steps-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .step-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 8px 0;
-        }
-
-        .step-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 13px;
-        }
-        .step-walk .step-icon {
-            background: #34A853;
-        }
-        .step-bus .step-icon {
-            background: #1a73e8;
-        }
-        .step-content {
-            flex: 1;
-            color: var(--text-primary);
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        .step-sub {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-        .step-time {
-            font-weight: 700;
-            color: var(--text-secondary);
-            font-size: 13px;
-            min-width: 70px;
-            text-align: right;
-        }
-
-        .route-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            flex: 1;
-            min-width: 80px;
-            padding: 11px 8px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            font-size: 13px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: var(--font-family);
-            border: 1.5px solid var(--border-color);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-        .action-btn:hover {
-            background: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
-        .action-btn.btn-primary-action {
-            background: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
-        .action-btn.btn-primary-action:hover {
-            background: var(--primary-dark);
-        }
-
-        .map-container {
-            height: 420px;
-            border-radius: var(--border-radius-lg);
-            overflow: hidden;
-            box-shadow: var(--shadow-lg);
-            border: 2px solid var(--border-color);
-        }
-
-        #search-map {
-            width: 100%;
-            height: 100%;
-        }
-
-        .route-meta-bar {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            background: #e8f0fe;
-            border-radius: var(--border-radius);
-            padding: 10px 16px;
-            margin-bottom: 12px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        .route-meta-bar i {
-            color: var(--primary-color);
-            margin-right: 4px;
-        }
-        .route-meta-bar strong {
-            color: var(--text-primary);
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 50px 20px;
-            background-color: var(--bg-primary);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow);
-        }
-
-        .no-results i {
-            font-size: 56px;
-            color: #dadce0;
-            margin-bottom: 18px;
-        }
-
-        .no-results h3 {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-        }
-
-        .no-results p {
-            color: var(--text-secondary);
-            max-width: 450px;
-            margin: 0 auto 22px;
-            line-height: 1.5;
-        }
-
-        .saved-routes {
-            background-color: var(--bg-primary);
-            border-radius: var(--border-radius-lg);
-            padding: 26px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .saved-routes-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .saved-routes-header h3 {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .saved-routes-header h3 i {
-            color: var(--accent-color);
-        }
-
-        .saved-routes-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .saved-route {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px;
-            background-color: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            cursor: pointer;
-            gap: 10px;
-        }
-
-        .saved-route:hover {
-            background-color: #e8f0fe;
-        }
-
-        .saved-route-info {
-            flex: 1;
-        }
-
-        .saved-route-name {
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 3px;
-        }
-
-        .saved-route-path {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .saved-route-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .saved-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            border: 1.5px solid var(--border-color);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .saved-btn:hover {
-            background-color: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
-
-        /* ===== MODAL ===== */
-        .driver-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.65);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-        }
-
-        .driver-modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-primary);
-            width: 90%;
-            max-width: 650px;
-            max-height: 82vh;
-            border-radius: 20px;
-            box-shadow: var(--shadow-xl);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.94);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 22px;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-        }
-
-        .modal-header h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--text-primary);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 28px;
-            line-height: 1;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: 0.2s;
-            padding: 4px 8px;
-            border-radius: 8px;
-        }
-
-        .modal-close:hover {
-            color: var(--primary-color);
-            background: #e8f0fe;
-        }
-
-        .modal-body {
-            padding: 22px;
-            overflow-y: auto;
-            flex: 1;
-            color: var(--text-primary);
-        }
-
-        .modal-body .route-steps {
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            padding: 15px;
-            margin-top: 0;
-        }
-
-        .modal-body .step-item {
-            margin-bottom: 12px;
-        }
-
-        /* ===== USER LOCATION MARKER STYLES ===== */
-        .user-location-marker {
-            position: relative;
-            width: 24px;
-            height: 24px;
-        }
-        .user-location-dot {
-            width: 16px;
-            height: 16px;
-            background: #1a73e8;
-            border: 3px solid #fff;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
-        }
-        .user-location-pulse {
-            width: 32px;
-            height: 32px;
-            background: rgba(26, 115, 232, 0.3);
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            animation: pulse-ring 2s infinite;
-        }
-        @keyframes pulse-ring {
-            0% {
-                transform: translate(-50%, -50%) scale(0.5);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(2.2);
-                opacity: 0;
-            }
-        }
-        .user-direction-arrow {
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-bottom: 14px solid #1a73e8;
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
-            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
-            transition: transform 0.4s ease;
-        }
-
-        /* Station markers */
-        .station-marker-start,
-        .station-marker-stop {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-            font-size: 13px;
-            color: #fff;
-            position: relative;
-        }
-        .station-marker-start {
-            background: #34A853;
-            border: 3px solid #fff;
-        }
-        .station-marker-stop {
-            background: #ea4335;
-            border: 3px solid #fff;
-        }
-        .station-label {
-            position: absolute;
-            bottom: -22px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 11px;
-            font-weight: 700;
-            color: #202124;
-            background: #fff;
-            padding: 2px 8px;
-            border-radius: 10px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-            pointer-events: none;
-        }
-
-        /* Destination marker */
-        .dest-marker-final {
-            width: 30px;
-            height: 30px;
-            background: #ea4335;
-            border-radius: 50% 50% 50% 0;
-            transform: rotate(-45deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 10px rgba(234, 67, 53, 0.4);
-            border: 3px solid #fff;
-        }
-        .dest-marker-final i {
-            transform: rotate(45deg);
-            color: #fff;
-            font-size: 12px;
-        }
-
-        @media (max-width: 1200px) {
-            .search-container {
-                grid-template-columns: 1fr;
-                max-width: 750px;
-            }
-            .search-sidebar {
-                position: static;
-                order: 2;
-            }
-            .search-main {
-                order: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .page-header h1 {
-                font-size: 28px;
-            }
-            .date-time-group,
-            .options-grid {
-                grid-template-columns: 1fr;
-            }
-            .route-details {
-                grid-template-columns: 1fr;
-            }
-            .route-actions {
-                flex-direction: column;
-            }
-            .sort-options {
-                flex-wrap: wrap;
-            }
-            .map-container {
-                height: 300px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .search-container {
-                padding: 0 10px;
-            }
-            .search-sidebar {
-                padding: 18px;
-            }
-            .route-card {
-                padding: 16px;
-            }
-            .route-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            .saved-routes {
-                padding: 16px;
-            }
-            .saved-routes-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kërko Rrugë · Sherbimijone</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ══════════════════════════════════════════════
+       TOKENS & RESET
+    ══════════════════════════════════════════════ */
+    :root {
+      --blue:       #2563EB;
+      --blue-light: #EFF6FF;
+      --blue-mid:   #DBEAFE;
+      --green:      #16A34A;
+      --green-light:#DCFCE7;
+      --red:        #DC2626;
+      --amber:      #D97706;
+      --ink:        #0F172A;
+      --ink-2:      #334155;
+      --ink-3:      #64748B;
+      --ink-4:      #94A3B8;
+      --surface:    #FFFFFF;
+      --surface-2:  #F8FAFC;
+      --surface-3:  #F1F5F9;
+      --border:     #E2E8F0;
+      --border-2:   #CBD5E1;
+      --radius-sm:  8px;
+      --radius:     14px;
+      --radius-lg:  20px;
+      --radius-xl:  28px;
+      --shadow-xs:  0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+      --shadow-sm:  0 2px 8px rgba(15,23,42,.08);
+      --shadow:     0 4px 16px rgba(15,23,42,.10);
+      --shadow-lg:  0 8px 32px rgba(15,23,42,.13);
+      --shadow-xl:  0 20px 60px rgba(15,23,42,.18);
+      --nav-h:      68px;
+      --ease:       cubic-bezier(.4,0,.2,1);
+      --spring:     cubic-bezier(.34,1.56,.64,1);
+      --font:       'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-display: 'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--surface-2);
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════════════
+       NAVBAR
+    ══════════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: var(--nav-h);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 32px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-display);
+      font-size: 22px; font-weight: 800; color: var(--ink);
+      text-decoration: none; flex-shrink: 0;
+    }
+    .nav-logo-icon {
+      width: 40px; height: 40px;
+      background: var(--blue);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: #fff; font-size: 18px;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 4px;
+      list-style: none; flex: 1;
+    }
+    .nav-links a {
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--ink-2); text-decoration: none;
+      font-size: 14px; font-weight: 600;
+      transition: background .2s var(--ease), color .2s;
+    }
+    .nav-links a:hover { background: var(--surface-3); color: var(--ink); }
+    .nav-links a.active { background: var(--blue-light); color: var(--blue); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+    .btn-ghost {
+      padding: 8px 18px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border-2); background: transparent;
+      font: 600 14px var(--font); color: var(--ink-2); cursor: pointer;
+      transition: .2s var(--ease); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .btn-solid {
+      padding: 8px 18px; border-radius: var(--radius-sm);
+      background: var(--blue); border: none;
+      font: 600 14px var(--font); color: #fff; cursor: pointer;
+      transition: .2s var(--ease); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-solid:hover { background: #1d4ed8; box-shadow: 0 4px 12px rgba(37,99,235,.35); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: .3s; }
+
+    /* ══════════════════════════════════════════════
+       PAGE LAYOUT
+    ══════════════════════════════════════════════ */
+    .page {
+      padding-top: var(--nav-h);
+      min-height: 100vh;
+    }
+
+    .hero-strip {
+      background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #3b82f6 100%);
+      padding: 32px 24px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-strip::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-strip h1 {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 4vw, 36px);
+      color: #fff;
+      font-weight: 800;
+      position: relative;
+    }
+    .hero-strip p {
+      color: rgba(255,255,255,.75);
+      font-size: 15px;
+      margin-top: 6px;
+      position: relative;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 0;
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 24px;
+      align-items: start;
+      gap: 20px;
+    }
+
+    /* ══════════════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════════════ */
+    .sidebar {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      position: sticky;
+      top: calc(var(--nav-h) + 16px);
+      overflow: hidden;
+    }
+
+    .sidebar-inner {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 10px;
+    }
+
+    /* Location Inputs */
+    .loc-block {
+      position: relative;
+    }
+    .loc-line {
+      position: absolute;
+      left: 19px;
+      top: 40px;
+      bottom: 40px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--blue), var(--red));
+      opacity: .3;
+    }
+    .loc-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      transition: .2s var(--ease);
+      position: relative;
+    }
+    .loc-field:focus-within {
+      border-color: var(--blue);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+    .loc-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .loc-dot.origin { background: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,.2); }
+    .loc-dot.dest   { background: var(--red);   box-shadow: 0 0 0 3px rgba(220,38,38,.2); }
+    .loc-field input {
+      flex: 1; border: none; background: transparent;
+      font: 500 14px var(--font); color: var(--ink);
+      outline: none;
+    }
+    .loc-field input::placeholder { color: var(--ink-4); }
+    .loc-field .loc-action {
+      width: 28px; height: 28px;
+      border-radius: 8px; border: none;
+      background: var(--surface-3); cursor: pointer;
+      display: grid; place-items: center;
+      color: var(--ink-3); font-size: 12px;
+      transition: .2s;
+    }
+    .loc-field .loc-action:hover { background: var(--blue-light); color: var(--blue); }
+
+    .swap-row {
+      display: flex; justify-content: center; margin: 6px 0;
+    }
+    .swap-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--surface);
+      cursor: pointer; color: var(--ink-2); font-size: 14px;
+      display: grid; place-items: center;
+      transition: .25s var(--spring);
+      box-shadow: var(--shadow-xs);
+    }
+    .swap-btn:hover {
+      border-color: var(--blue); color: var(--blue);
+      transform: rotate(180deg);
+      box-shadow: 0 4px 12px rgba(37,99,235,.2);
+    }
+
+    .gps-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 10px;
+    }
+    .toggle {
+      position: relative; width: 38px; height: 22px; flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track {
+      position: absolute; inset: 0;
+      background: var(--border-2); border-radius: 11px;
+      cursor: pointer; transition: .3s;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      width: 18px; height: 18px;
+      background: #fff; border-radius: 50%;
+      top: 2px; left: 2px;
+      transition: .3s var(--spring);
+      box-shadow: var(--shadow-xs);
+    }
+    .toggle input:checked + .toggle-track { background: var(--blue); }
+    .toggle input:checked + .toggle-track::after { transform: translateX(16px); }
+    .toggle-label { font-size: 13px; color: var(--ink-2); font-weight: 500; cursor: pointer; }
+
+    .map-pick-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      margin-top: 8px;
+    }
+    .map-pick-btn {
+      padding: 9px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      font: 600 12px var(--font); color: var(--ink-2);
+      cursor: pointer; transition: .2s var(--ease);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .map-pick-btn:hover { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+    .map-pick-btn.active {
+      background: var(--blue); color: #fff; border-color: var(--blue);
+      animation: pick-pulse 1.5s infinite;
+    }
+    @keyframes pick-pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(37,99,235,.4); }
+      50%      { box-shadow: 0 0 0 8px rgba(37,99,235,0); }
+    }
+
+    .pick-hint {
+      display: none;
+      background: var(--blue-mid); color: var(--blue);
+      border-radius: var(--radius-sm); padding: 10px 14px;
+      font-size: 13px; font-weight: 600;
+      align-items: center; gap: 8px;
+      animation: fadeSlide .3s var(--ease);
+    }
+    .pick-hint.show { display: flex; }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Date + time */
+    .dt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field-wrap { position: relative; }
+    .field-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--ink-4); font-size: 13px; pointer-events: none;
+    }
+    .field-wrap input, .field-wrap select {
+      width: 100%; padding: 10px 12px 10px 34px;
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface-2); font: 500 13px var(--font); color: var(--ink);
+      transition: .2s; outline: none;
+    }
+    .field-wrap input:focus, .field-wrap select:focus {
+      border-color: var(--blue); background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+
+    /* Search type chips */
+    .type-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    }
+    .type-chip {
+      padding: 12px 10px;
+      border: 2px solid var(--border); border-radius: var(--radius);
+      background: var(--surface-2); cursor: pointer;
+      text-align: center; transition: .2s var(--ease);
+      position: relative; overflow: hidden;
+    }
+    .type-chip:hover { border-color: var(--blue); background: var(--blue-light); }
+    .type-chip.active {
+      border-color: var(--blue); background: var(--blue-light);
+    }
+    .type-chip.active::after {
+      content: '✓';
+      position: absolute; top: 6px; right: 8px;
+      font-size: 11px; font-weight: 800; color: var(--blue);
+    }
+    .type-chip-icon { font-size: 22px; margin-bottom: 4px; }
+    .type-chip-name { font-size: 12px; font-weight: 700; color: var(--ink); }
+    .type-chip-desc { font-size: 10px; color: var(--ink-3); }
+
+    /* Options */
+    .opts-row { display: flex; flex-direction: column; gap: 8px; }
+    .opt-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 0; cursor: pointer;
+    }
+    .opt-item input { display: none; }
+    .opt-box {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border-2); border-radius: 5px;
+      flex-shrink: 0; transition: .2s; position: relative;
+    }
+    .opt-item input:checked ~ .opt-box {
+      background: var(--blue); border-color: var(--blue);
+    }
+    .opt-item input:checked ~ .opt-box::after {
+      content: ''; position: absolute;
+      left: 3px; top: 0px; width: 5px; height: 9px;
+      border: 2px solid #fff; border-top: none; border-left: none;
+      transform: rotate(45deg);
+    }
+    .opt-text { font-size: 13px; font-weight: 500; color: var(--ink-2); }
+
+    /* Walk slider */
+    .slider-row { display: flex; align-items: center; gap: 12px; }
+    .slider-row input[type=range] {
+      flex: 1; accent-color: var(--blue);
+    }
+    .slider-val {
+      font-size: 13px; font-weight: 700; color: var(--blue);
+      min-width: 40px; text-align: right;
+    }
+
+    /* Search Button */
+    .search-cta {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
+      border: none; border-radius: var(--radius);
+      font: 700 15px var(--font); color: #fff;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: .25s var(--ease);
+      box-shadow: 0 4px 16px rgba(37,99,235,.35);
+    }
+    .search-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 24px rgba(37,99,235,.45);
+    }
+    .search-cta:active { transform: translateY(0); }
+    .search-cta:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+    /* ══════════════════════════════════════════════
+       MAIN AREA
+    ══════════════════════════════════════════════ */
+    .main-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Map */
+    .map-card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+    .map-card-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px; justify-content: space-between;
+    }
+    .map-card-title {
+      font-size: 14px; font-weight: 700; color: var(--ink);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .map-card-title i { color: var(--blue); }
+    .map-actions { display: flex; gap: 8px; }
+    .map-action-btn {
+      padding: 6px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface-2); font: 600 12px var(--font);
+      color: var(--ink-2); cursor: pointer; transition: .2s;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .map-action-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .map-action-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    #map {
+      width: 100%; height: 460px;
+    }
+
+    /* Live indicator */
+    .live-badge {
+      position: absolute; top: 58px; left: 12px;
+      background: rgba(255,255,255,.95);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 5px 12px;
+      font: 600 12px var(--font); color: var(--ink-2);
+      display: flex; align-items: center; gap: 6px;
+      z-index: 450; box-shadow: var(--shadow-sm);
+      pointer-events: none;
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      animation: live-pulse 1.5s infinite;
+    }
+    @keyframes live-pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .6; transform: scale(.85); }
+    }
+
+    /* ══════════════════════════════════════════════
+       NAVIGATION MODE PANEL
+    ══════════════════════════════════════════════ */
+    .nav-mode {
+      display: none;
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .nav-mode.show { display: block; }
+    .nav-mode::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 150px; height: 150px;
+      background: rgba(255,255,255,.05);
+      border-radius: 50%;
+    }
+    .nm-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+    .nm-icon {
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,.15); border-radius: 12px;
+      display: grid; place-items: center; font-size: 22px; flex-shrink: 0;
+    }
+    .nm-info h3 { font-size: 18px; font-weight: 800; }
+    .nm-info p  { font-size: 13px; opacity: .75; }
+    .nm-steps {
+      display: flex; flex-direction: column; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .nm-step {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,.1);
+      border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600;
+      transition: .3s; cursor: pointer;
+    }
+    .nm-step.current {
+      background: rgba(255,255,255,.25);
+      box-shadow: 0 2px 12px rgba(0,0,0,.15);
+    }
+    .nm-step.done {
+      opacity: .5;
+      text-decoration: line-through;
+    }
+    .nm-step-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: rgba(255,255,255,.2);
+      display: grid; place-items: center; font-size: 14px; flex-shrink: 0;
+    }
+    .nm-step.current .nm-step-icon { background: rgba(255,255,255,.9); color: var(--blue); }
+    .nm-progress {
+      height: 4px; background: rgba(255,255,255,.2); border-radius: 2px; overflow: hidden;
+    }
+    .nm-progress-bar {
+      height: 100%; background: #fff; border-radius: 2px; transition: width .6s var(--ease);
+    }
+    .nm-actions { display: flex; gap: 10px; margin-top: 14px; }
+    .nm-btn {
+      flex: 1; padding: 10px;
+      border: 2px solid rgba(255,255,255,.4); border-radius: var(--radius-sm);
+      background: transparent; font: 600 13px var(--font); color: #fff;
+      cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .nm-btn:hover { background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.7); }
+    .nm-btn.nm-btn-primary { background: rgba(255,255,255,.9); color: var(--blue); border-color: transparent; }
+    .nm-btn.nm-btn-primary:hover { background: #fff; }
+
+    /* ETA countdown */
+    .eta-bar {
+      display: flex; gap: 12px; margin-top: 12px;
+    }
+    .eta-chip {
+      flex: 1; background: rgba(255,255,255,.1); border-radius: var(--radius-sm);
+      padding: 10px; text-align: center;
+    }
+    .eta-chip-val { font: 800 22px var(--font-display); }
+    .eta-chip-label { font-size: 10px; opacity: .7; text-transform: uppercase; letter-spacing: .08em; }
+
+    /* ══════════════════════════════════════════════
+       RESULTS
+    ══════════════════════════════════════════════ */
+    .results-card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .results-head {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    .results-head h2 {
+      font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--ink);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .results-head h2 i { color: var(--blue); font-size: 16px; }
+    .results-count {
+      background: var(--blue-light); color: var(--blue);
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+    }
+    .sort-bar {
+      padding: 12px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 8px; overflow-x: auto;
+    }
+    .sort-bar-label { font-size: 12px; font-weight: 600; color: var(--ink-3); white-space: nowrap; }
+    .sort-chip {
+      padding: 6px 14px;
+      border: 1.5px solid var(--border); border-radius: 20px;
+      background: transparent; font: 600 12px var(--font); color: var(--ink-2);
+      cursor: pointer; transition: .2s; white-space: nowrap;
+    }
+    .sort-chip:hover { border-color: var(--blue); color: var(--blue); }
+    .sort-chip.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    .routes-list { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+
+    /* Route Card */
+    .route-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      cursor: pointer;
+      transition: .25s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .route-card::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: var(--blue);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+    .route-card:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .route-card:hover::before { opacity: 1; }
+    .route-card.selected { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(37,99,235,.08); }
+    .route-card.selected::before { opacity: 1; }
+
+    .rc-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .rc-title { font-family: var(--font-display); font-size: 17px; font-weight: 800; color: var(--ink); }
+    .rc-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+    .rc-time {
+      font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--blue);
+      background: var(--blue-light); padding: 6px 14px; border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    .line-badge {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px; border-radius: 999px;
+      color: #fff; font: 700 11px var(--font);
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+    }
+
+    .rc-stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 8px; margin-bottom: 14px;
+    }
+    .stat-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface-2); border-radius: var(--radius-sm);
+      padding: 9px 12px;
+    }
+    .stat-pill-icon {
+      width: 30px; height: 30px;
+      background: var(--blue-light); border-radius: 8px;
+      display: grid; place-items: center;
+      color: var(--blue); font-size: 12px; flex-shrink: 0;
+    }
+    .stat-pill-info { display: flex; flex-direction: column; }
+    .stat-pill-val { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+    .stat-pill-label { font-size: 10px; color: var(--ink-3); }
+
+    /* Steps timeline */
+    .rc-steps { margin-top: 2px; }
+    .steps-toggle {
+      font-size: 12px; font-weight: 600; color: var(--ink-3); cursor: pointer;
+      display: flex; align-items: center; gap: 6px; padding: 2px 0; margin-bottom: 8px;
+      background: none; border: none; font-family: var(--font);
+    }
+    .steps-toggle:hover { color: var(--blue); }
+    .steps-body { display: none; }
+    .steps-body.open { display: block; }
+    .step-timeline { display: flex; flex-direction: column; gap: 0; }
+    .st-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0;
+    }
+    .st-item:not(:last-child) .st-icon-wrap::after {
+      content: '';
+      display: block;
+      width: 2px; height: 100%;
+      background: var(--border);
+      margin: 4px auto 0;
+      min-height: 16px;
+    }
+    .st-icon-wrap { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 32px; }
+    .st-icon {
+      width: 32px; height: 32px; border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 13px; color: #fff;
+    }
+    .st-icon.walk { background: var(--green); }
+    .st-icon.bus  { background: var(--blue); }
+    .st-text { flex: 1; padding-top: 6px; font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+    .st-text strong { color: var(--ink); }
+    .st-sub { font-size: 11px; color: var(--ink-3); margin-top: 1px; }
+    .st-duration { font-size: 12px; font-weight: 700; color: var(--ink-3); padding-top: 8px; min-width: 50px; text-align: right; }
+
+    /* Stop sequence pills */
+    .stop-seq {
+      display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;
+    }
+    .stop-pill {
+      font-size: 10px; padding: 2px 8px;
+      background: var(--blue-light); color: var(--blue);
+      border-radius: 999px; font-weight: 600;
+    }
+
+    /* Route actions */
+    .rc-actions {
+      display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
+    }
+    .rc-btn {
+      flex: 1; min-width: 80px;
+      padding: 9px 10px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: var(--surface-2);
+      font: 600 12px var(--font); color: var(--ink-2);
+      cursor: pointer; transition: .2s; display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .rc-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .rc-btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .rc-btn.primary:hover { background: #1d4ed8; }
+    .rc-btn.success { background: var(--green); color: #fff; border-color: var(--green); }
+    .rc-btn.success:hover { background: #15803d; }
+
+    /* ══════════════════════════════════════════════
+       META BAR
+    ══════════════════════════════════════════════ */
+    .meta-strip {
+      margin: 0 14px;
+      padding: 12px 16px;
+      background: var(--blue-light);
+      border-radius: var(--radius-sm);
+      display: flex; flex-wrap: wrap; gap: 16px;
+      font-size: 12px; color: var(--ink-2);
+    }
+    .meta-strip span { display: flex; align-items: center; gap: 5px; }
+    .meta-strip strong { color: var(--ink); }
+
+    /* ══════════════════════════════════════════════
+       SAVED ROUTES
+    ══════════════════════════════════════════════ */
+    .saved-card {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .saved-head {
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .saved-head h3 {
+      font-family: var(--font-display); font-size: 16px; font-weight: 800;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .saved-head h3 i { color: var(--amber); }
+    .saved-list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .saved-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--surface-2);
+      transition: .2s;
+    }
+    .saved-item:hover { border-color: var(--blue); background: var(--blue-light); }
+    .saved-item-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--blue-light); color: var(--blue);
+      display: grid; place-items: center; font-size: 14px; flex-shrink: 0;
+    }
+    .saved-item-info { flex: 1; min-width: 0; }
+    .saved-item-name { font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .saved-item-path { font-size: 11px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .saved-item-btns { display: flex; gap: 6px; }
+    .saved-icon-btn {
+      width: 30px; height: 30px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--ink-3); cursor: pointer;
+      display: grid; place-items: center; font-size: 12px; transition: .2s;
+    }
+    .saved-icon-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .saved-icon-btn.del:hover { border-color: var(--red); color: var(--red); }
+
+    .no-data {
+      padding: 32px; text-align: center; color: var(--ink-4);
+    }
+    .no-data i { font-size: 32px; margin-bottom: 10px; display: block; }
+    .no-data p { font-size: 13px; }
+
+    /* ══════════════════════════════════════════════
+       LOADING & EMPTY STATES
+    ══════════════════════════════════════════════ */
+    .skeleton-loader {
+      display: flex; flex-direction: column; gap: 12px; padding: 14px;
+    }
+    .sk-card {
+      height: 160px; border-radius: var(--radius-lg);
+      background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .empty-state {
+      padding: 50px 24px; text-align: center;
+    }
+    .empty-state-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--surface-3); margin: 0 auto 16px;
+      display: grid; place-items: center; font-size: 36px; color: var(--ink-4);
+    }
+    .empty-state h3 { font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+    .empty-state p  { font-size: 14px; color: var(--ink-3); max-width: 340px; margin: 0 auto; line-height: 1.5; }
+
+    /* ══════════════════════════════════════════════
+       MODAL
+    ══════════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(15,23,42,.5);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      max-width: 600px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      animation: modalIn .3s var(--spring);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(.92) translateY(20px); }
+      to   { opacity: 1; transform: scale(1)  translateY(0); }
+    }
+    .modal-head {
+      padding: 20px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-head h3 { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--ink); }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface-2);
+      cursor: pointer; font-size: 16px; color: var(--ink-2);
+      display: grid; place-items: center; transition: .2s;
+    }
+    .modal-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
+    .modal-body { padding: 22px; }
+
+    /* ══════════════════════════════════════════════
+       LEAFLET CUSTOM MARKERS
+    ══════════════════════════════════════════════ */
+    .user-dot {
+      width: 16px; height: 16px;
+      background: #2563eb; border: 3px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(37,99,235,.5);
+    }
+    .user-ring {
+      width: 40px; height: 40px;
+      border: 2px solid rgba(37,99,235,.4);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      animation: ring-expand 2s infinite;
+    }
+    @keyframes ring-expand {
+      0%   { transform: translate(-50%,-50%) scale(.4); opacity: 1; }
+      100% { transform: translate(-50%,-50%) scale(2);  opacity: 0; }
+    }
+    .user-arrow {
+      position: absolute;
+      top: 0; left: 50%;
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 10px solid #2563eb;
+      transform-origin: center 18px;
+      margin-left: -5px;
+    }
+
+    .bus-marker-wrap {
+      position: relative;
+    }
+    .bus-marker {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.25);
+      border: 2px solid rgba(255,255,255,.8);
+      transition: transform .5s var(--ease);
+    }
+    .bus-marker-label {
+      position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+      white-space: nowrap; font: 700 10px var(--font);
+      background: rgba(255,255,255,.95); color: var(--ink);
+      padding: 1px 6px; border-radius: 6px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .stop-marker-dot {
+      width: 12px; height: 12px;
+      background: var(--blue); border: 2px solid #fff;
+      border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,.25);
+    }
+
+    /* ══════════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════════ */
+    .footer {
+      background: var(--ink); color: rgba(255,255,255,.65);
+      padding: 40px 24px 24px;
+      margin-top: 40px;
+    }
+    .footer-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 32px;
+      margin-bottom: 28px;
+    }
+    .footer-logo { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 10px; }
+    .footer-desc { font-size: 13px; line-height: 1.6; }
+    .footer-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.5); margin-bottom: 12px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .footer-links a { color: rgba(255,255,255,.65); text-decoration: none; font-size: 13px; transition: color .2s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.1); padding-top: 20px; text-align: center; font-size: 12px; max-width: 1200px; margin: 0 auto; }
+
+    /* ══════════════════════════════════════════════
+       TOAST NOTIFICATIONS
+    ══════════════════════════════════════════════ */
+    .toasts {
+      position: fixed; bottom: 20px; right: 20px;
+      display: flex; flex-direction: column-reverse; gap: 8px;
+      z-index: 3000; pointer-events: none;
+    }
+    .toast {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      background: var(--ink); color: #fff; border-radius: var(--radius);
+      font: 600 13px var(--font);
+      box-shadow: var(--shadow-lg);
+      pointer-events: auto;
+      animation: toast-in .35s var(--spring);
+      max-width: 320px;
+    }
+    .toast.success { background: var(--green); }
+    .toast.error   { background: var(--red); }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(16px) scale(.96); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+    .toast.out { animation: toast-out .3s var(--ease) forwards; }
+    @keyframes toast-out {
+      to { opacity: 0; transform: translateY(8px) scale(.95); }
+    }
+
+    /* ══════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .workspace { grid-template-columns: 1fr; max-width: 760px; }
+      .sidebar { position: static; order: 2; }
+      .main-area { order: 1; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .nav-actions { display: none; }
+      .hamburger { display: flex; }
+      .nav { gap: 16px; }
+      .hero-strip h1 { font-size: 22px; }
+      .dt-row { grid-template-columns: 1fr; }
+      .type-grid { grid-template-columns: 1fr 1fr; }
+      .rc-stats { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .rc-actions { flex-wrap: wrap; }
+      #map { height: 320px; }
+      .eta-bar { flex-direction: row; }
+    }
+    @media (max-width: 480px) {
+      .workspace { padding: 12px; }
+      .sidebar-inner { padding: 16px; }
+      .hero-strip { padding: 20px 16px; }
+      .type-grid { grid-template-columns: 1fr 1fr; }
+      .rc-top { flex-direction: column; gap: 8px; }
+      .rc-time { align-self: flex-start; }
+    }
+
+    /* Mobile nav */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: var(--nav-h) 0 auto 0;
+      background: rgba(255,255,255,.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 999;
+      padding: 16px 20px;
+      flex-direction: column; gap: 8px;
+      box-shadow: var(--shadow-lg);
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      padding: 12px 16px; border-radius: var(--radius-sm);
+      color: var(--ink-2); text-decoration: none;
+      font: 600 15px var(--font);
+      display: flex; align-items: center; gap: 10px;
+      transition: .2s;
+    }
+    .mobile-nav a:hover { background: var(--surface-3); }
+    .mobile-nav a.active { background: var(--blue-light); color: var(--blue); }
+    .mobile-nav-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+  </style>
 </head>
 <body>
-    <header class="header">
-        <nav class="navbar">
-            <div class="logo-container">
-                <div class="logo">
-                    <i class="fas fa-bus"></i>
-                    <span class="logo-text">Sherbimijone</span>
-                </div>
-                <div class="tagline">Transporti Juaj në Tiranë</div>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Kryefaqja</a></li>
-                <li class="nav-item"><a href="map.html" class="nav-link"><i class="fas fa-map"></i> Harta</a></li>
-                <li class="nav-item"><a href="taxi.html" class="nav-link"><i class="fas fa-taxi"></i> Taksi</a></li>
-                <li class="nav-item"><a href="search.html" class="nav-link active"><i class="fas fa-search"></i> Kërko</a></li>
-                <li class="nav-item"><a href="driver.html" class="nav-link"><i class="fas fa-user-tie"></i> Shofer</a></li>
-            </ul>
-            <div class="auth-buttons" id="auth-buttons">
-                <a href="login.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
-                <a href="register.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Regjistrohu</a>
-            </div>
-            <div class="theme-toggle">
-                <input type="checkbox" id="theme-switch" class="theme-switch">
-                <label for="theme-switch" class="theme-label">
-                    <i class="fas fa-sun"></i>
-                    <i class="fas fa-moon"></i>
-                    <span class="theme-ball"></span>
-                </label>
-            </div>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-        </nav>
-    </header>
 
-    <main class="search-page">
-        <div class="page-header">
-            <h1><i class="fas fa-search"></i> Kërko Rrugën Më të Mirë</h1>
-            <p>Gjeni rrugën më të shpejtë, më të lirë ose më komode duke përdorur filtra të avancuar</p>
-        </div>
-
-        <div class="search-container">
-            <div class="search-sidebar">
-                <form class="search-form" id="advanced-search-form">
-                    <div class="form-group">
-                        <label><i class="fas fa-map-marker-alt"></i> Lokacioni</label>
-                        <div class="location-inputs">
-                            <div class="input-with-icon">
-                                <i class="fas fa-circle" style="color:#34A853;"></i>
-                                <input type="text" id="from-location" placeholder="Nga po niseni?" required>
-                            </div>
-                            <div class="swap-locations">
-                                <button type="button" class="swap-btn" id="swap-locations-btn">
-                                    <i class="fas fa-arrow-down-up-across-line"></i>
-                                </button>
-                            </div>
-                            <div class="input-with-icon">
-                                <i class="fas fa-flag-checkered" style="color:#ea4335;"></i>
-                                <input type="text" id="to-location" placeholder="Ku dëshironi të shkoni?" required>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="use-current-location">
-                                <div class="checkbox-custom"></div>
-                                <label for="use-current-location" class="checkbox-label">Përdor lokacionin aktual për nisje</label>
-                            </div>
-                            <div class="map-pick-buttons">
-                                <button type="button" class="map-pick-btn" id="pick-origin-btn">
-                                    <i class="fas fa-map-marker-alt"></i> Cakto nisjen nga harta
-                                </button>
-                                <button type="button" class="map-pick-btn" id="pick-dest-btn">
-                                    <i class="fas fa-flag-checkered"></i> Cakto destinacionin
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label><i class="fas fa-calendar-alt"></i> Data dhe Koha</label>
-                        <div class="date-time-group">
-                            <input type="date" id="travel-date">
-                            <select id="travel-time">
-                                <option value="now">Tani</option>
-                                <option value="departure">Nisje në kohë specifike</option>
-                                <option value="arrival">Arritje në kohë specifike</option>
-                            </select>
-                        </div>
-                        <div class="input-with-icon" id="specific-time-container" style="display: none; margin-top: 12px;">
-                            <i class="fas fa-clock"></i>
-                            <input type="time" id="specific-time" value="08:00">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label><i class="fas fa-sliders-h"></i> Çfarë po kërkoni?</label>
-                        <div class="options-grid" id="search-options">
-                            <div class="option-card" data-option="fastest">
-                                <div class="option-icon"><i class="fas fa-bolt"></i></div>
-                                <div class="option-name">Më e shpejta</div>
-                                <div class="option-desc">Koha më e shkurtër</div>
-                            </div>
-                            <div class="option-card" data-option="cheapest">
-                                <div class="option-icon"><i class="fas fa-coins"></i></div>
-                                <div class="option-name">Më e lira</div>
-                                <div class="option-desc">Çmimi më i ulët</div>
-                            </div>
-                            <div class="option-card" data-option="comfort">
-                                <div class="option-icon"><i class="fas fa-couch"></i></div>
-                                <div class="option-name">Më komode</div>
-                                <div class="option-desc">Më pak ndërrime</div>
-                            </div>
-                            <div class="option-card" data-option="accessible">
-                                <div class="option-icon"><i class="fas fa-wheelchair"></i></div>
-                                <div class="option-name">Aksesuese</div>
-                                <div class="option-desc">Për persona me aftësi të kufizuara</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="filter-section">
-                        <h4><i class="fas fa-filter"></i> Filtra Shtesë</h4>
-                        <div class="checkbox-group">
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="filter-direct" checked>
-                                <div class="checkbox-custom"></div>
-                                <label for="filter-direct" class="checkbox-label">Vetëm udhëtime direkte (pa ndërrime)</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="filter-walking">
-                                <div class="checkbox-custom"></div>
-                                <label for="filter-walking" class="checkbox-label">Lejo ecjen midis stacioneve</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="filter-taxi">
-                                <div class="checkbox-custom"></div>
-                                <label for="filter-taxi" class="checkbox-label">Përfshij taksi në opsione</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="filter-real-time">
-                                <div class="checkbox-custom"></div>
-                                <label for="filter-real-time" class="checkbox-label">Konsidero vonesat në kohë reale</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="search-btn" class="search-btn">
-                        <i class="fas fa-search"></i> Kërko Rrugë
-                    </button>
-                </form>
-                <div id="pick-status">
-                    <i class="fas fa-hand-pointer"></i> <span id="pick-status-text"></span>
-                </div>
-            </div>
-
-            <div class="search-main">
-                <div class="map-container">
-                    <div id="search-map"></div>
-                </div>
-
-                <div class="results-container" id="results-container">
-                    <div class="results-header">
-                        <h2><i class="fas fa-route"></i> Rezultatet e Kërkimit</h2>
-                        <div class="results-count" id="results-count">3 rrugë u gjetën</div>
-                    </div>
-                    <div class="sort-options">
-                        <button class="sort-btn active" data-sort="time">⏱ Koha</button>
-                        <button class="sort-btn" data-sort="price">💰 Çmimi</button>
-                        <button class="sort-btn" data-sort="transfers">🔄 Ndërrime</button>
-                        <button class="sort-btn" data-sort="comfort">🛋 Komoditeti</button>
-                    </div>
-                    <div id="route-results"></div>
-                </div>
-
-                <div class="saved-routes">
-                    <div class="saved-routes-header">
-                        <h3><i class="fas fa-bookmark"></i> Rrugët e Mia të Ruajtura</h3>
-                        <button class="btn btn-outline" id="view-all-saved-btn">
-                            <i class="fas fa-eye"></i> Shiko të Gjitha
-                        </button>
-                    </div>
-                    <div class="saved-routes-list" id="saved-routes-list"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="driver-modal" id="route-details-modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Detajet e Plotë të Rrugës</h3>
-                    <button class="modal-close" id="close-route-modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div id="route-details-content"></div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo"><i class="fas fa-bus"></i><span class="logo-text">Sherbimijone</span></div>
-                    <p class="footer-description">Platforma kryesore për transportin publik dhe taksi në Tiranë.</p>
-                </div>
-                <div class="footer-section">
-                    <h3 class="footer-title">Lidhje të Shpejta</h3>
-                    <ul class="footer-links">
-                        <li><a href="../index.html">Kryefaqja</a></li>
-                        <li><a href="map.html">Harta</a></li>
-                        <li><a href="taxi.html">Taksi</a></li>
-                        <li><a href="search.html">Kërko</a></li>
-                        <li><a href="driver.html">Shofer</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3 class="footer-title">Ndihmë</h3>
-                    <div class="contact-info">
-                        <p><i class="fas fa-phone"></i> +355 4X XXX XXXX</p>
-                        <p><i class="fas fa-envelope"></i> support@sherbimijone.com</p>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 Sherbimijone. Të gjitha të drejtat e rezervuara.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-    </script>
-    <script src="../config.js">
-    </script>
-    <script src="../assets/js/auth.js">
-    </script>
-    <script src="../script.js">
-    </script>
-
-    <script>
-        (function() {
-            'use strict';
-
-            // ── State ──────────────────────────────────────────────────────────────
-            let map;
-            let routeLayers = [];
-            let walkingRouteLayers = [];
-            let markerUserLocation = null;
-            let markerStartStation = null;
-            let markerStopStation = null;
-            let markerOrigin = null;
-            let markerDest = null;
-            let userHeading = null;
-            let geolocationWatchId = null;
-            let currentResults = [];
-            let savedRoutes = [];
-            let selectedRouteId = null;
-            let pickingMode = null;
-            let pendingOriginCoords = null;
-            let pendingDestCoords = null;
-            let userCurrentPosition = null;
-
-            // ── Utility Functions ────────────────────────────────────────────────────────────
-            function escapeHtml(str) {
-                if (!str) return '';
-                const div = document.createElement('div');
-                div.textContent = str;
-                return div.innerHTML;
-            }
-
-            // ── Map init ───────────────────────────────────────────────────────────
-            function initMap() {
-                map = L.map('search-map', {
-                    zoomControl: true,
-                    zoomControlOptions: { position: 'topright' }
-                }).setView([41.3275, 19.8187], 13);
-
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors',
-                    maxZoom: 19,
-                }).addTo(map);
-
-                // Click for picking mode
-                map.on('click', async (e) => {
-                    if (!pickingMode) return;
-                    const { lat, lng } = e.latlng;
-                    const statusDiv = document.getElementById('pick-status');
-                    const statusSpan = document.getElementById('pick-status-text');
-
-                    if (pickingMode === 'origin') {
-                        statusSpan.innerText = 'Duke vendosur nisjen...';
-                        await setPickedLocation(lat, lng, 'origin');
-                    } else if (pickingMode === 'dest') {
-                        statusSpan.innerText = 'Duke vendosur destinacionin...';
-                        await setPickedLocation(lat, lng, 'dest');
-                    }
-                    pickingMode = null;
-                    document.getElementById('pick-origin-btn').classList.remove('active');
-                    document.getElementById('pick-dest-btn').classList.remove('active');
-                    statusDiv.style.display = 'none';
-                });
-
-                // Start geolocation watch
-                startGeolocationWatch();
-            }
-
-            // ── Geolocation ────────────────────────────────────────────────────────
-            function startGeolocationWatch() {
-                if (!navigator.geolocation) return;
-                geolocationWatchId = navigator.geolocation.watchPosition(
-                    (position) => {
-                        userCurrentPosition = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                            heading: position.coords.heading,
-                            speed: position.coords.speed,
-                        };
-                        userHeading = position.coords.heading;
-                        updateUserLocationMarker();
-                    },
-                    (err) => {
-                        console.warn('Geolocation error:', err.message);
-                    }, {
-                        enableHighAccuracy: true,
-                        maximumAge: 5000,
-                        timeout: 15000,
-                    }
-                );
-            }
-
-            function updateUserLocationMarker() {
-                if (!userCurrentPosition || !map) return;
-                const { lat, lng, heading } = userCurrentPosition;
-                if (markerUserLocation) {
-                    markerUserLocation.setLatLng([lat, lng]);
-                    // Update direction arrow
-                    updateDirectionArrow(heading);
-                } else {
-                    markerUserLocation = createUserLocationMarker(lat, lng, heading);
-                    markerUserLocation.addTo(map);
-                }
-            }
-
-            function createUserLocationMarker(lat, lng, heading) {
-                const headingDeg = (heading !== null && heading !== undefined && !isNaN(heading)) ?
-                    heading : 0;
-                const hasHeading = (heading !== null && heading !== undefined && !isNaN(heading));
-
-                const html = `
-              <div class="user-location-marker">
-                <div class="user-location-pulse"></div>
-                <div class="user-location-dot"></div>
-                ${hasHeading ? `<div class="user-direction-arrow" style="transform: translateX(-50%) rotate(${headingDeg}deg); transform-origin: center bottom;"></div>` : ''}
-              </div>`;
-
-                return L.marker([lat, lng], {
-                    icon: L.divIcon({
-                        html: html,
-                        iconSize: [36, 44],
-                        iconAnchor: [18, 22],
-                        className: 'user-location-icon-container',
-                    }),
-                    zIndexOffset: 1000,
-                    interactive: false,
-                }).bindPopup('<b>📍 Lokacioni juaj aktual</b>');
-            }
-
-            function updateDirectionArrow(heading) {
-                if (!markerUserLocation) return;
-                const iconEl = markerUserLocation.getElement();
-                if (!iconEl) return;
-                const arrow = iconEl.querySelector('.user-direction-arrow');
-                if (!arrow) {
-                    // Recreate marker with heading if it wasn't there before
-                    if (heading !== null && heading !== undefined && !isNaN(heading) && userCurrentPosition) {
-                        const { lat, lng } = userCurrentPosition;
-                        map.removeLayer(markerUserLocation);
-                        markerUserLocation = createUserLocationMarker(lat, lng, heading);
-                        markerUserLocation.addTo(map);
-                    }
-                    return;
-                }
-                if (heading !== null && heading !== undefined && !isNaN(heading)) {
-                    arrow.style.display = '';
-                    arrow.style.transform = `translateX(-50%) rotate(${heading}deg)`;
-                } else {
-                    arrow.style.display = 'none';
-                }
-            }
-
-            // ── Reverse geocode ────────────────────────────────────────────────────
-            async function reverseGeocode(lat, lng) {
-                try {
-                    const url =
-                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&countrycodes=al`;
-                    const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
-                    const data = await res.json();
-                    return data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-                } catch {
-                    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
-                }
-            }
-
-            async function setPickedLocation(lat, lng, type) {
-                const address = await reverseGeocode(lat, lng);
-                if (type === 'origin') {
-                    document.getElementById('from-location').value = address;
-                    pendingOriginCoords = { lat, lng };
-                    clearSingleMarker('origin');
-                    markerOrigin = createOriginMarker(lat, lng, address);
-                    markerOrigin.addTo(map);
-                    if (markerStartStation) { map.removeLayer(markerStartStation);
-                        markerStartStation = null; }
-                    clearWalkingRoutes();
-                } else {
-                    document.getElementById('to-location').value = address;
-                    pendingDestCoords = { lat, lng };
-                    clearSingleMarker('dest');
-                    markerDest = createDestinationMarker(lat, lng, address);
-                    markerDest.addTo(map);
-                    if (markerStopStation) { map.removeLayer(markerStopStation);
-                        markerStopStation = null; }
-                    clearWalkingRoutes();
-                }
-            }
-
-            // ── Marker creation ────────────────────────────────────────────────────
-            function createOriginMarker(lat, lng, label) {
-                return L.marker([lat, lng], {
-                    icon: L.divIcon({
-                        html: `<div style="width:16px;height:16px;background:#1a73e8;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(26,115,232,0.5);"></div>`,
-                        iconSize: [22, 22],
-                        iconAnchor: [11, 11],
-                        className: 'origin-dot-marker',
-                    }),
-                    zIndexOffset: 900,
-                }).bindPopup(`<b>📍 Nisja:</b> ${label}`);
-            }
-
-            function createDestinationMarker(lat, lng, label) {
-                return L.marker([lat, lng], {
-                    icon: L.divIcon({
-                        html: `<div class="dest-marker-final"><i class="fas fa-flag-checkered"></i></div>`,
-                        iconSize: [36, 36],
-                        iconAnchor: [18, 32],
-                        className: 'dest-final-icon',
-                    }),
-                    zIndexOffset: 900,
-                }).bindPopup(`<b>🏁 Destinacioni:</b> ${label}`);
-            }
-
-            function createStartStationMarker(lat, lng, name) {
-                return L.marker([lat, lng], {
-                    icon: L.divIcon({
-                        html: `
-                            <div style="position: relative; width: 40px; height: 46px;">
-                                <svg width="40" height="46" viewBox="0 0 40 46">
-                                    <path d="M20 0C10 8 0 16 0 28c0 10 8 18 20 18s20-8 20-18C40 16 30 8 20 0z" fill="#34A853" stroke="#fff" stroke-width="2"/>
-                                    <text x="20" y="26" text-anchor="middle" fill="#fff" font-size="18">🚌</text>
-                                </svg>
-                                <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 11px; font-weight: 700; color: #202124; background: rgba(255,255,255,0.95); padding: 2px 8px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.2);">${escapeHtml(name)}</div>
-                            </div>`,
-                        iconSize: [40, 60],
-                        iconAnchor: [20, 30],
-                        className: '',
-                    }),
-                    zIndexOffset: 850,
-                }).bindPopup(`<b>🚏 Stacioni i nisjes:</b> ${name}`);
-            }
-
-            function createStopStationMarker(lat, lng, name) {
-                return L.marker([lat, lng], {
-                    icon: L.divIcon({
-                        html: `
-                            <div style="position: relative; width: 40px; height: 46px;">
-                                <svg width="40" height="46" viewBox="0 0 40 46">
-                                    <path d="M20 0C10 8 0 16 0 28c0 10 8 18 20 18s20-8 20-18C40 16 30 8 20 0z" fill="#ea4335" stroke="#fff" stroke-width="2"/>
-                                    <text x="20" y="26" text-anchor="middle" fill="#fff" font-size="18">🏁</text>
-                                </svg>
-                                <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 11px; font-weight: 700; color: #202124; background: rgba(255,255,255,0.95); padding: 2px 8px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.2);">${escapeHtml(name)}</div>
-                            </div>`,
-                        iconSize: [40, 60],
-                        iconAnchor: [20, 30],
-                        className: '',
-                    }),
-                    zIndexOffset: 850,
-                }).bindPopup(`<b>🚏 Stacioni i mbërritjes:</b> ${name}`);
-            }
-
-            // ── Clear helpers ──────────────────────────────────────────────────────
-            function clearAllMarkers() {
-                [markerUserLocation, markerStartStation, markerStopStation, markerOrigin, markerDest].forEach(m => {
-                    if (m && map) map.removeLayer(m);
-                });
-                markerStartStation = null;
-                markerStopStation = null;
-                markerOrigin = null;
-                markerDest = null;
-                // Keep user location marker if we have position
-                if (userCurrentPosition && markerUserLocation) {
-                    map.removeLayer(markerUserLocation);
-                    markerUserLocation = null;
-                    updateUserLocationMarker();
-                }
-            }
-
-            function clearSingleMarker(type) {
-                if (type === 'origin' && markerOrigin) { map.removeLayer(markerOrigin);
-                    markerOrigin = null; }
-                if (type === 'dest' && markerDest) { map.removeLayer(markerDest);
-                    markerDest = null; }
-                if (type === 'startStation' && markerStartStation) { map.removeLayer(markerStartStation);
-                    markerStartStation = null; }
-                if (type === 'stopStation' && markerStopStation) { map.removeLayer(markerStopStation);
-                    markerStopStation = null; }
-            }
-
-            function clearBusRoutes() {
-                routeLayers.forEach(l => map.removeLayer(l));
-                routeLayers = [];
-            }
-
-            function clearWalkingRoutes() {
-                walkingRouteLayers.forEach(l => map.removeLayer(l));
-                walkingRouteLayers = [];
-            }
-
-            function clearAllMapLayers() {
-                clearBusRoutes();
-                clearWalkingRoutes();
-                clearAllMarkers();
-            }
-
-            // ── Walking route (OSRM foot) ──────────────────────────────────────────
-            async function fetchWalkingRoute(fromLat, fromLng, toLat, toLng) {
-                try {
-                    const url =
-                        `https://routing.openstreetmap.de/routed-foot/route/v1/foot/${fromLng},${fromLat};${toLng},${toLat}?overview=full&geometries=geojson`;
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 8000);
-                    const res = await fetch(url, { signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    if (!res.ok) throw new Error('OSRM not ok');
-                    const data = await res.json();
-                    if (data.routes && data.routes.length > 0) {
-                        return data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
-                    }
-                    return null;
-                } catch (err) {
-                    console.warn('Walking route fetch failed, using straight line:', err.message);
-                    return null;
-                }
-            }
-
-            async function drawWalkingRouteOnMap(fromLat, fromLng, toLat, toLng, color = '#34A853') {
-                const coords = await fetchWalkingRoute(fromLat, fromLng, toLat, toLng);
-                let layer;
-                if (coords && coords.length > 1) {
-                    layer = L.polyline(coords, {
-                        color: color,
-                        weight: 3.5,
-                        dashArray: '8 6',
-                        opacity: 0.8,
-                        lineCap: 'round',
-                    });
-                } else {
-                    // Fallback: straight dashed line
-                    layer = L.polyline([
-                        [fromLat, fromLng],
-                        [toLat, toLng]
-                    ], {
-                        color: color,
-                        weight: 3,
-                        dashArray: '8 6',
-                        opacity: 0.7,
-                        lineCap: 'round',
-                    });
-                }
-                layer.addTo(map);
-                walkingRouteLayers.push(layer);
-                return layer;
-            }
-
-            // ── Bus route drawing ──────────────────────────────────────────────────
-            function decodePolyline(encoded) {
-                if (!encoded) return [];
-                const points = [];
-                let index = 0,
-                    lat = 0,
-                    lng = 0;
-                while (index < encoded.length) {
-                    let b,
-                        shift = 0,
-                        result = 0;
-                    do {
-                        b = encoded.charCodeAt(index++) - 63;
-                        result |= (b & 0x1f) << shift;
-                        shift += 5;
-                    } while (b >= 0x20);
-                    const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
-                    lat += dlat;
-                    shift = 0;
-                    result = 0;
-                    do {
-                        b = encoded.charCodeAt(index++) - 63;
-                        result |= (b & 0x1f) << shift;
-                        shift += 5;
-                    } while (b >= 0x20);
-                    const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
-                    lng += dlng;
-                    points.push([lat * 1e-5, lng * 1e-5]);
-                }
-                return points;
-            }
-
-            function drawBusRoute(route, highlight = false) {
-                clearBusRoutes();
-                const bounds = [];
-
-                route.steps.forEach(step => {
-                    if (!step.fromCoords || !step.toCoords) return;
-                    const from = [step.fromCoords.lat, step.fromCoords.lng];
-                    const to = [step.toCoords.lat, step.toCoords.lng];
-                    let layer;
-                    let stepBounds = [from, to];
-
-                    if (step.type === 'walk') {
-                        layer = L.polyline([from, to], {
-                            color: '#34A853',
-                            weight: 3,
-                            dashArray: '6 6',
-                            opacity: 0.85,
-                            lineCap: 'round',
-                        });
-                    } else if (step.polyline) {
-                        const decodedPoints = decodePolyline(step.polyline);
-                        if (decodedPoints.length > 1) {
-                            layer = L.polyline(decodedPoints, {
-                                color: step.lineColor || '#1a73e8',
-                                weight: highlight ? 6 : 4,
-                                opacity: highlight ? 1.0 : 0.75,
-                                lineCap: 'round',
-                            });
-                            stepBounds = decodedPoints;
-                        } else {
-                            layer = L.polyline([from, to], {
-                                color: step.lineColor || '#1a73e8',
-                                weight: highlight ? 6 : 4,
-                                opacity: highlight ? 1.0 : 0.75,
-                                lineCap: 'round',
-                            });
-                        }
-                    } else {
-                        layer = L.polyline([from, to], {
-                            color: step.lineColor || '#1a73e8',
-                            weight: highlight ? 6 : 4,
-                            opacity: highlight ? 1.0 : 0.75,
-                            lineCap: 'round',
-                        });
-                    }
-                    layer.addTo(map);
-                    routeLayers.push(layer);
-                    bounds.push(...stepBounds);
-                });
-
-                if (bounds.length > 0) {
-                    map.fitBounds(bounds, { padding: [50, 50] });
-                }
-            }
-
-            // ── Geocoding ──────────────────────────────────────────────────────────
-            async function geocode(query) {
-                try {
-                    const url =
-                        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=al`;
-                    const res = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
-                    const data = await res.json();
-                    return data[0] || null;
-                } catch { return null; }
-            }
-
-            // ── Search ─────────────────────────────────────────────────────────────
-            async function performSearch() {
-                const fromVal = document.getElementById('from-location').value.trim();
-                const toVal = document.getElementById('to-location').value.trim();
-                if (!fromVal || !toVal) {
-                    alert('Ju lutem plotësoni të dyja fushat e lokacionit.');
-                    return;
-                }
-
-                const searchBtn = document.getElementById('search-btn');
-                const origText = searchBtn.innerHTML;
-                searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke kërkuar...';
-                searchBtn.disabled = true;
-
-                try {
-                    clearAllMapLayers();
-
-                    let fromGeo, toGeo;
-
-                    if (pendingOriginCoords) {
-                        fromGeo = {
-                            lat: pendingOriginCoords.lat,
-                            lon: pendingOriginCoords.lng,
-                            display_name: document.getElementById('from-location').value
-                        };
-                        pendingOriginCoords = null;
-                    } else {
-                        fromGeo = await geocode(fromVal);
-                    }
-
-                    if (pendingDestCoords) {
-                        toGeo = {
-                            lat: pendingDestCoords.lat,
-                            lon: pendingDestCoords.lng,
-                            display_name: document.getElementById('to-location').value
-                        };
-                        pendingDestCoords = null;
-                    } else {
-                        toGeo = await geocode(toVal);
-                    }
-
-                    if (!fromGeo) { alert('Nuk u gjet lokacioni i nisjes. Provoni emër tjetër.');
-                        searchBtn.innerHTML = origText;
-                        searchBtn.disabled = false; return; }
-                    if (!toGeo) { alert('Nuk u gjet destinacioni. Provoni emër tjetër.');
-                        searchBtn.innerHTML = origText;
-                        searchBtn.disabled = false; return; }
-
-                    // Place origin & destination markers
-                    markerOrigin = createOriginMarker(parseFloat(fromGeo.lat), parseFloat(fromGeo.lon), fromGeo
-                        .display_name);
-                    markerOrigin.addTo(map);
-                    markerDest = createDestinationMarker(parseFloat(toGeo.lat), parseFloat(toGeo.lon), toGeo.display_name);
-                    markerDest.addTo(map);
-
-                    const dateVal = document.getElementById('travel-date').value;
-                    const timeMode = document.getElementById('travel-time').value;
-                    let deptTime = new Date();
-                    if (timeMode !== 'now' && dateVal) {
-                        const specificTime = document.getElementById('specific-time')?.value || '08:00';
-                        deptTime = new Date(`${dateVal}T${specificTime}:00`);
-                    }
-
-                    const selectedCard = document.querySelector('.option-card.selected');
-                    const searchType = selectedCard?.getAttribute('data-option') || 'fastest';
-
-                    const res = await fetch('/.netlify/functions/search-routes', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            fromLat: parseFloat(fromGeo.lat),
-                            fromLng: parseFloat(fromGeo.lon),
-                            toLat: parseFloat(toGeo.lat),
-                            toLng: parseFloat(toGeo.lon),
-                            searchType,
-                            departureTime: deptTime.toISOString(),
-                            maxWalkingMin: 15,
-                            accessibleOnly: false,
-                        }),
-                    });
-
-                    const data = await res.json();
-                    if (!res.ok) { alert(data.error || 'Gabim gjatë kërkimit.');
-                        displayNoResults();
-                        searchBtn.innerHTML = origText;
-                        searchBtn.disabled = false; return; }
-
-                    currentResults = data.results || [];
-                    if (currentResults.length > 0) {
-                        displayResults(currentResults, data.meta);
-                        // Draw the best route
-                        drawBusRoute(currentResults[0], true);
-
-                        // Draw walking routes: origin → start station, stop station → destination
-                        await drawWalkingConnections(data.meta, fromGeo, toGeo, currentResults[0]);
-                    } else {
-                        displayNoResults();
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert('Gabim në lidhje: ' + err.message);
-                    displayNoResults();
-                } finally {
-                    searchBtn.innerHTML = origText;
-                    searchBtn.disabled = false;
-                }
-            }
-
-            async function drawWalkingConnections(meta, fromGeo, toGeo, bestRoute) {
-                clearWalkingRoutes();
-                // Remove old station markers if any
-                if (markerStartStation) { map.removeLayer(markerStartStation); markerStartStation = null; }
-                if (markerStopStation) { map.removeLayer(markerStopStation); markerStopStation = null; }
-
-                // Determine boarding station coordinates (first bus step)
-                let boardingCoords = null;
-                let boardingName = null;
-                if (meta?.originStops?.[0]?.coords) {
-                    boardingCoords = meta.originStops[0].coords;
-                    boardingName = meta.originStops[0].name;
-                } else if (bestRoute?.steps) {
-                    const firstBus = bestRoute.steps.find(s => s.type !== 'walk');
-                    if (firstBus?.fromCoords) {
-                        boardingCoords = firstBus.fromCoords;
-                        boardingName = firstBus.fromStation;
-                    }
-                }
-                if (!boardingCoords && fromGeo) {
-                    // fallback: use the origin itself, but that's not ideal; we'll skip
-                }
-
-                // Determine alighting station coordinates (last bus step)
-                let alightingCoords = null;
-                let alightingName = null;
-                if (meta?.destStops?.[0]?.coords) {
-                    alightingCoords = meta.destStops[0].coords;
-                    alightingName = meta.destStops[0].name;
-                } else if (bestRoute?.steps) {
-                    const lastBus = [...bestRoute.steps].reverse().find(s => s.type !== 'walk');
-                    if (lastBus?.toCoords) {
-                        alightingCoords = lastBus.toCoords;
-                        alightingName = lastBus.toStation;
-                    }
-                }
-                if (!alightingCoords && toGeo) {
-                    // fallback
-                }
-
-                // Place start station marker
-                if (boardingCoords) {
-                    markerStartStation = createStartStationMarker(
-                        boardingCoords.lat, boardingCoords.lng,
-                        boardingName || 'Stacioni i nisjes'
-                    );
-                    markerStartStation.addTo(map);
-                    // Draw walking route from origin to boarding station
-                    await drawWalkingRouteOnMap(
-                        parseFloat(fromGeo.lat), parseFloat(fromGeo.lon),
-                        boardingCoords.lat, boardingCoords.lng,
-                        '#34A853'
-                    );
-                }
-
-                // Place stop station marker
-                if (alightingCoords) {
-                    markerStopStation = createStopStationMarker(
-                        alightingCoords.lat, alightingCoords.lng,
-                        alightingName || 'Stacioni i mbërritjes'
-                    );
-                    markerStopStation.addTo(map);
-                    // Draw walking route from alighting station to destination
-                    await drawWalkingRouteOnMap(
-                        alightingCoords.lat, alightingCoords.lng,
-                        parseFloat(toGeo.lat), parseFloat(toGeo.lon),
-                        '#ea4335'
-                    );
-                }
-
-                // Fit bounds to include all markers
-                const allPoints = [];
-                if (markerOrigin) allPoints.push(markerOrigin.getLatLng());
-                if (markerDest) allPoints.push(markerDest.getLatLng());
-                if (markerStartStation) allPoints.push(markerStartStation.getLatLng());
-                if (markerStopStation) allPoints.push(markerStopStation.getLatLng());
-                if (allPoints.length > 0) {
-                    const group = L.featureGroup(allPoints.map(p => L.marker(p)));
-                    map.fitBounds(group.getBounds(), { padding: [60, 60] });
-                }
-            }
-
-            // ── Render routes ──────────────────────────────────────────────────────
-            function displayResults(routes, meta) {
-                document.getElementById('results-count').textContent = `${routes.length} rrugë u gjetën`;
-                const container = document.getElementById('route-results');
-                let metaBar = '';
-                if (meta?.originStops?.[0]) {
-                    metaBar = `<div class="route-meta-bar">
-                <span><i class="fas fa-walking"></i> Nisja pranë: <strong>${meta.originStops[0].name}</strong> (~${meta.originStops[0].distanceM || '?'}m)</span>
-                <span><i class="fas fa-flag-checkered"></i> Mbërritja pranë: <strong>${meta.destStops?.[0]?.name || '?'}</strong> (~${meta.destStops?.[0]?.distanceM || '?'}m)</span>
-              </div>`;
-                }
-                container.innerHTML = metaBar + routes.map(route => renderRouteCard(route)).join('');
-            }
-
-            function renderRouteCard(route) {
-                const lineBadges = (route.busLines || []).map(l =>
-                    `<span class="line-badge" style="background:${l.color || '#1a73e8'}">${l.number}</span>`
-                ).join('');
-
-                const stepsHtml = route.steps.map((step, i) => {
-                    if (step.type === 'walk') {
-                        return `
-                  <div class="step-item step-walk">
-                    <div class="step-icon"><i class="fas fa-walking"></i></div>
-                    <div class="step-content">Ec <strong>${step.distanceM || Math.round(step.time * 66)}m</strong> drejt <strong>${step.toStation}</strong></div>
-                    <div class="step-time">${step.time} min</div>
-                  </div>`;
-                    } else {
-                        const stops = step.stopSequence?.length > 2 ?
-                            ` (${step.stopSequence.length - 1} stacione)` : '';
-                        return `
-                  <div class="step-item step-bus">
-                    <div class="step-icon" style="background:${step.lineColor || '#1a73e8'}"><i class="fas fa-bus"></i></div>
-                    <div class="step-content">Linja <strong>${step.lineNumber}</strong>${stops}<br><span class="step-sub">${step.fromStation} → ${step.toStation}</span></div>
-                    <div class="step-time">${step.time} min</div>
-                  </div>`;
-                    }
-                }).join('');
-
-                const transfersLabel = route.transfers === 0 ? 'Direkte' :
-                    `${route.transfers} ndërrim${route.transfers > 1 ? 'e' : ''}`;
-                const walkLabel = route.walkMin > 0 ? `${route.walkMin} min ecje` : 'Pa ecje';
-
-                return `
-              <div class="route-card" data-route-id="${route.id}"
-                   data-time="${route.totalTime}" data-transfers="${route.transfers}"
-                   data-fare="${route.fare}" data-walk="${route.walkMin}">
-                <div class="route-header">
-                  <div>
-                    <div class="route-title">${route.title}</div>
-                    <div class="route-badges">${lineBadges}</div>
-                  </div>
-                  <div class="route-time">${route.totalTime} min</div>
-                </div>
-                <div class="route-details">
-                  <div class="detail-item">
-                    <div class="detail-icon"><i class="fas fa-exchange-alt"></i></div>
-                    <div class="detail-content"><div class="detail-label">Ndërrime</div><div class="detail-value">${transfersLabel}</div></div>
-                  </div>
-                  <div class="detail-item">
-                    <div class="detail-icon"><i class="fas fa-walking"></i></div>
-                    <div class="detail-content"><div class="detail-label">Ecje</div><div class="detail-value">${walkLabel}</div></div>
-                  </div>
-                  <div class="detail-item">
-                    <div class="detail-icon"><i class="fas fa-coins"></i></div>
-                    <div class="detail-content"><div class="detail-label">Çmimi</div><div class="detail-value">${route.fare} L</div></div>
-                  </div>
-                </div>
-                <div class="route-steps">
-                  <div class="steps-header"><i class="fas fa-list-ol"></i> Udhëzimet</div>
-                  <div class="steps-list">${stepsHtml}</div>
-                </div>
-                <div class="route-actions">
-                  <button class="action-btn" onclick="window.showOnMap(${route.id})"><i class="fas fa-map-marked-alt"></i> Harta</button>
-                  <button class="action-btn" onclick="window.openRouteModal(${route.id})"><i class="fas fa-info-circle"></i> Detaje</button>
-                  <button class="action-btn btn-primary-action" onclick="window.selectRoute(${route.id})"><i class="fas fa-check-circle"></i> Zgjidh</button>
-                  <button class="action-btn" onclick="window.saveRoute(${route.id})"><i class="fas fa-bookmark"></i> Ruaj</button>
-                </div>
-              </div>`;
-            }
-
-            function displayNoResults() {
-                document.getElementById('results-count').textContent = '0 rrugë u gjetën';
-                document.getElementById('route-results').innerHTML = `
-              <div class="no-results">
-                <i class="fas fa-route"></i>
-                <h3>Nuk u gjetën rrugë</h3>
-                <p>Nuk u gjet asnjë rrugë. Provoni të rrisni kohën e ecjes ose lejoni ndërrime.</p>
-                <button class="btn btn-primary" onclick="document.getElementById('advanced-search-form').scrollIntoView()">
-                  <i class="fas fa-sliders-h"></i> Modifiko Filtra
+<!-- ══ NAVBAR ══ -->
+<nav class="nav">
+  <a class="nav-logo" href="../index.html">
+    <div class="nav-logo-icon"><i class="fas fa-bus"></i></div>
+    Sherbimijone
+  </a>
+  <ul class="nav-links">
+    <li><a href="../index.html"><i class="fas fa-home"></i> Kryefaqja</a></li>
+    <li><a href="map.html"><i class="fas fa-map"></i> Harta</a></li>
+    <li><a href="taxi.html"><i class="fas fa-taxi"></i> Taksi</a></li>
+    <li><a href="search.html" class="active"><i class="fas fa-search"></i> Kërko</a></li>
+    <li><a href="driver.html"><i class="fas fa-user-tie"></i> Shofer</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-ghost"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
+    <a href="register.html" class="btn-solid"><i class="fas fa-user-plus"></i> Regjistrohu</a>
+  </div>
+  <div class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile nav -->
+<nav class="mobile-nav" id="mobile-nav">
+  <a href="../index.html"><i class="fas fa-home"></i> Kryefaqja</a>
+  <a href="map.html"><i class="fas fa-map"></i> Harta</a>
+  <a href="taxi.html"><i class="fas fa-taxi"></i> Taksi</a>
+  <a href="search.html" class="active"><i class="fas fa-search"></i> Kërko Rrugë</a>
+  <a href="driver.html"><i class="fas fa-user-tie"></i> Shofer</a>
+  <div class="mobile-nav-divider"></div>
+  <a href="login.html"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
+  <a href="register.html"><i class="fas fa-user-plus"></i> Regjistrohu</a>
+</nav>
+
+<!-- ══ PAGE ══ -->
+<div class="page">
+  <div class="hero-strip">
+    <h1><i class="fas fa-route"></i> Planifikuesi i Udhëtimit</h1>
+    <p>Gjeni rrugën tuaj ideale — me autobuz, duke ecur, ose si kombinim i të dyjave</p>
+  </div>
+
+  <div class="workspace">
+
+    <!-- ━━ SIDEBAR ━━ -->
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <form id="search-form" autocomplete="off">
+
+          <!-- LOCATION -->
+          <div>
+            <div class="section-label">Lokacioni</div>
+            <div class="loc-block">
+              <div class="loc-line"></div>
+              <div class="loc-field" id="from-field">
+                <div class="loc-dot origin"></div>
+                <input type="text" id="from-loc" placeholder="Nga po niseni?" required>
+                <button type="button" class="loc-action" id="from-gps-btn" title="Lokacioni juaj">
+                  <i class="fas fa-crosshairs"></i>
                 </button>
-              </div>`;
-            }
+              </div>
+              <div class="swap-row">
+                <button type="button" class="swap-btn" id="swap-btn" title="Ndrysho">
+                  <i class="fas fa-arrows-up-down"></i>
+                </button>
+              </div>
+              <div class="loc-field" id="to-field">
+                <div class="loc-dot dest"></div>
+                <input type="text" id="to-loc" placeholder="Ku dëshironi të shkoni?" required>
+                <button type="button" class="loc-action" id="to-clear-btn" title="Pastro">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div class="gps-row" style="margin-top:12px;">
+              <label class="toggle">
+                <input type="checkbox" id="use-gps">
+                <div class="toggle-track"></div>
+              </label>
+              <label class="toggle-label" for="use-gps">Përdor lokacionin tim aktual</label>
+            </div>
+            <div class="map-pick-row">
+              <button type="button" class="map-pick-btn" id="pick-origin-btn">
+                <i class="fas fa-map-marker-alt"></i> Cakto nisjen
+              </button>
+              <button type="button" class="map-pick-btn" id="pick-dest-btn">
+                <i class="fas fa-flag-checkered"></i> Cakto destinacionin
+              </button>
+            </div>
+            <div class="pick-hint" id="pick-hint">
+              <i class="fas fa-hand-pointer"></i>
+              <span id="pick-hint-text">Klikoni në hartë…</span>
+            </div>
+          </div>
 
-            // ── Sort ───────────────────────────────────────────────────────────────
-            function sortResults(sortType) {
-                const container = document.getElementById('route-results');
-                const cards = Array.from(container.querySelectorAll('.route-card'));
-                const keyMap = { time: 'time', price: 'fare', transfers: 'transfers', comfort: 'walk' };
-                const key = keyMap[sortType] || 'time';
-                cards.sort((a, b) => parseFloat(a.dataset[key]) - parseFloat(b.dataset[key]));
-                cards.forEach(c => container.appendChild(c));
-            }
+          <!-- DATE & TIME -->
+          <div>
+            <div class="section-label">Data &amp; Koha</div>
+            <div class="dt-row">
+              <div class="field-wrap">
+                <i class="field-icon fas fa-calendar"></i>
+                <input type="date" id="travel-date">
+              </div>
+              <div class="field-wrap">
+                <i class="field-icon fas fa-clock"></i>
+                <select id="time-mode">
+                  <option value="now">Tani</option>
+                  <option value="departure">Nisje specifike</option>
+                  <option value="arrival">Mbërritje specifike</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-wrap" id="specific-time-wrap" style="display:none; margin-top:8px;">
+              <i class="field-icon fas fa-clock"></i>
+              <input type="time" id="specific-time" value="08:00">
+            </div>
+          </div>
 
-            // ── Global button handlers ─────────────────────────────────────────────
-            window.showOnMap = function(routeId) {
-                const route = currentResults.find(r => r.id === routeId);
-                if (route) {
-                    drawBusRoute(route, true);
-                    document.getElementById('search-map').scrollIntoView({ behavior: 'smooth' });
-                }
-            };
+          <!-- SEARCH TYPE -->
+          <div>
+            <div class="section-label">Lloji i Kërkimit</div>
+            <div class="type-grid">
+              <div class="type-chip active" data-type="fastest">
+                <div class="type-chip-icon">⚡</div>
+                <div class="type-chip-name">Më e Shpejtë</div>
+                <div class="type-chip-desc">Kohë minimale</div>
+              </div>
+              <div class="type-chip" data-type="comfort">
+                <div class="type-chip-icon">🛋</div>
+                <div class="type-chip-name">Komoditet</div>
+                <div class="type-chip-desc">Pak ndërrime</div>
+              </div>
+              <div class="type-chip" data-type="cheapest">
+                <div class="type-chip-icon">💰</div>
+                <div class="type-chip-name">Më e Lirë</div>
+                <div class="type-chip-desc">Çmim i ulët</div>
+              </div>
+              <div class="type-chip" data-type="walking">
+                <div class="type-chip-icon">🚶</div>
+                <div class="type-chip-name">Pak Ecje</div>
+                <div class="type-chip-desc">Distancë min.</div>
+              </div>
+            </div>
+          </div>
 
-            window.openRouteModal = function(routeId) {
-                const route = currentResults.find(r => r.id === routeId);
-                if (!route) return;
-                const modal = document.getElementById('route-details-modal');
-                const contentDiv = document.getElementById('route-details-content');
-                contentDiv.innerHTML = renderRouteDetails(route);
-                modal.classList.add('active');
-            };
+          <!-- OPTIONS -->
+          <div>
+            <div class="section-label">Mundësi Shtesë</div>
+            <div class="opts-row">
+              <label class="opt-item">
+                <input type="checkbox" id="opt-accessible">
+                <div class="opt-box"></div>
+                <span class="opt-text"><i class="fas fa-wheelchair" style="color:var(--blue);margin-right:4px"></i> Vetëm linja të aksesueshme</span>
+              </label>
+              <label class="opt-item">
+                <input type="checkbox" id="opt-realtime" checked>
+                <div class="opt-box"></div>
+                <span class="opt-text"><i class="fas fa-satellite-dish" style="color:var(--green);margin-right:4px"></i> Konsidero vonesat në kohë reale</span>
+              </label>
+            </div>
+            <div style="margin-top:12px;">
+              <div style="font-size:12px;font-weight:600;color:var(--ink-3);margin-bottom:6px;">
+                <i class="fas fa-walking" style="color:var(--blue);"></i> Ecje maksimale
+              </div>
+              <div class="slider-row">
+                <input type="range" id="max-walk" min="5" max="30" value="12" step="1">
+                <div class="slider-val"><span id="walk-val">12</span> min</div>
+              </div>
+            </div>
+          </div>
 
-            function renderRouteDetails(route) {
-                const stepsHtml = route.steps.map((step, idx) => {
-                    if (step.type === 'walk') {
-                        return `<div class="step-item"><strong>Hapi ${idx + 1}:</strong> Ecni ${step.distanceM || Math.round(step.time * 66)} metra drejt ${step.toStation} (${step.time} min)</div>`;
-                    } else {
-                        return `<div class="step-item"><strong>Hapi ${idx + 1}:</strong> Linja ${step.lineNumber} nga ${step.fromStation} në ${step.toStation} (${step.time} min)</div>`;
-                    }
-                }).join('');
-                return `<h4>${route.title}</h4>
-            <p><i class="fas fa-clock"></i> Koha totale: ${route.totalTime} min</p>
-            <p><i class="fas fa-exchange-alt"></i> Ndërrime: ${route.transfers}</p>
-            <p><i class="fas fa-coins"></i> Çmimi: ${route.fare} L</p>
-            <div class="route-steps"><div class="steps-list">${stepsHtml}</div></div>`;
-            }
+          <button type="submit" class="search-cta" id="search-btn">
+            <i class="fas fa-search"></i> Kërko Rrugën
+          </button>
+        </form>
+      </div>
+    </aside>
 
-            window.selectRoute = function(routeId) {
-                selectedRouteId = routeId;
-                document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
-                const card = document.querySelector(`.route-card[data-route-id="${routeId}"]`);
-                if (card) { card.classList.add('selected');
-                    window.showOnMap(routeId); }
-            };
+    <!-- ━━ MAIN ━━ -->
+    <div class="main-area">
 
-            window.closeModal = function() {
-                document.getElementById('route-details-modal')?.classList.remove('active');
-            };
+      <!-- MAP -->
+      <div class="map-card">
+        <div class="map-card-header">
+          <div class="map-card-title"><i class="fas fa-map-marked-alt"></i> Harta Ndëraktive</div>
+          <div class="map-actions">
+            <button class="map-action-btn" id="toggle-vehicles-btn" title="Trego autobusët live">
+              <i class="fas fa-bus"></i> Live
+            </button>
+            <button class="map-action-btn" id="center-user-btn" title="Centro te unë">
+              <i class="fas fa-crosshairs"></i> Lokacioni im
+            </button>
+            <button class="map-action-btn" id="toggle-nav-btn" title="Mënyra e navigimit" style="display:none">
+              <i class="fas fa-location-arrow"></i> Navigo
+            </button>
+          </div>
+        </div>
+        <div id="map"></div>
+        <div class="live-badge" id="live-badge" style="display:none">
+          <div class="live-dot"></div>
+          <span id="live-count">0 autobusë live</span>
+        </div>
+      </div>
 
-            window.saveRoute = async function (routeId) {
-              const route = currentResults.find(r => r.id === routeId);
-              if (!route) return;
-              const routeName = prompt('Emri i rrugës:', `Rruga ${route.title || routeId}`);
-              if (!routeName) return;
-              const from = document.getElementById('from-location').value;
-              const to = document.getElementById('to-location').value;
-              const routeData = {
-                id: Date.now(),
-                name: routeName,
-                from: from,
-                to: to,
-                route: route,
-                createdAt: new Date().toISOString()
-              };
-              try {
-                await saveRouteToBackend(routeData);
-                alert(`Rruga "${routeName}" u ruajt!`);
-                await displaySavedRoutes();
-              } catch (err) {
-                alert('Gabim gjatë ruajtjes: ' + err.message);
-              }
-            };
+      <!-- NAVIGATION MODE PANEL -->
+      <div class="nav-mode" id="nav-mode-panel">
+        <div class="nm-header">
+          <div class="nm-icon">🧭</div>
+          <div class="nm-info">
+            <h3 id="nm-title">Navigim Aktiv</h3>
+            <p id="nm-subtitle">Ndiqni hapat e mëposhtëm</p>
+          </div>
+          <button class="nm-btn" style="flex:0 0 auto;padding:8px 14px;margin-left:auto" id="nm-close-btn">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="eta-bar">
+          <div class="eta-chip">
+            <div class="eta-chip-val" id="eta-total">—</div>
+            <div class="eta-chip-label">min mbetur</div>
+          </div>
+          <div class="eta-chip">
+            <div class="eta-chip-val" id="eta-step">—</div>
+            <div class="eta-chip-label">hapi aktual</div>
+          </div>
+          <div class="eta-chip">
+            <div class="eta-chip-val" id="eta-arrive">—</div>
+            <div class="eta-chip-label">mbërrij në</div>
+          </div>
+        </div>
+        <div class="nm-steps" id="nm-steps"></div>
+        <div class="nm-progress">
+          <div class="nm-progress-bar" id="nm-progress-bar" style="width:0%"></div>
+        </div>
+        <div class="nm-actions">
+          <button class="nm-btn" id="nm-prev-btn"><i class="fas fa-chevron-left"></i> Hapi Paraardhës</button>
+          <button class="nm-btn nm-btn-primary" id="nm-next-btn">Hapi Tjetër <i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
 
-            window.deleteSavedRoute = async function (savedId) {
-              if (!confirm('Fshi këtë rrugë të ruajtur?')) return;
-              try {
-                await deleteSavedRouteFromBackend(savedId);
-                await displaySavedRoutes();
-              } catch (err) {
-                alert('Gabim gjatë fshirjes: ' + err.message);
-              }
-            };
+      <!-- RESULTS -->
+      <div class="results-card" id="results-card">
+        <div class="results-head">
+          <h2><i class="fas fa-route"></i> Rrugët e Gjetura</h2>
+          <span class="results-count" id="results-count">—</span>
+        </div>
+        <div class="sort-bar">
+          <span class="sort-bar-label">Rendit:</span>
+          <button class="sort-chip active" data-sort="score">⭐ Rekomanduar</button>
+          <button class="sort-chip" data-sort="time">⏱ Koha</button>
+          <button class="sort-chip" data-sort="fare">💰 Çmimi</button>
+          <button class="sort-chip" data-sort="transfers">🔄 Ndërrime</button>
+          <button class="sort-chip" data-sort="walk">🚶 Ecje</button>
+        </div>
+        <div id="meta-strip-wrap"></div>
+        <div class="routes-list" id="routes-list">
+          <div class="empty-state">
+            <div class="empty-state-icon"><i class="fas fa-search"></i></div>
+            <h3>Filloni Kërkimin</h3>
+            <p>Plotësoni lokacionin e nisjes dhe destinacionin, pastaj klikoni "Kërko Rrugën"</p>
+          </div>
+        </div>
+      </div>
 
-            window.useSavedRoute = async function (savedId) {
-              const savedRoutes = await fetchSavedRoutes();
-              const r = savedRoutes.find(x => x.id === savedId);
-              if (!r) return;
-              document.getElementById('from-location').value = r.from;
-              document.getElementById('to-location').value = r.to;
-              // Auto search
-              document.getElementById('advanced-search-form').dispatchEvent(new Event('submit'));
-            };
+      <!-- SAVED ROUTES -->
+      <div class="saved-card">
+        <div class="saved-head">
+          <h3><i class="fas fa-bookmark"></i> Rrugët e Ruajtura</h3>
+          <button class="btn-ghost" id="view-all-saved" style="font-size:12px;padding:6px 12px">
+            <i class="fas fa-eye"></i> Të gjitha
+          </button>
+        </div>
+        <div class="saved-list" id="saved-list">
+          <div class="no-data">
+            <i class="fas fa-bookmark"></i>
+            <p>Nuk keni rrugë të ruajtura</p>
+          </div>
+        </div>
+      </div>
 
-            // ── Saved routes with backend support ─────────────────────────────────────
-            async function fetchSavedRoutes() {
-              // Try to get current user from global auth
-              let user = null;
-              if (window.auth && typeof window.auth.getCurrentUser === 'function') {
-                user = await window.auth.getCurrentUser();
-              } else if (window.currentUser) {
-                user = window.currentUser;
-              }
-              if (user && user.token) {
-                try {
-                  const res = await fetch('/.netlify/functions/get-saved-routes', {
-                    headers: { 'Authorization': `Bearer ${user.token}` }
-                  });
-                  if (res.ok) {
-                    const data = await res.json();
-                    return data.savedRoutes || [];
-                  }
-                } catch (err) {
-                  console.warn('Failed to fetch saved routes from backend', err);
-                }
-              }
-              // Fallback to localStorage
-              const local = localStorage.getItem('savedRoutes');
-              return local ? JSON.parse(local) : [];
-            }
+    </div><!-- /main-area -->
+  </div><!-- /workspace -->
+</div><!-- /page -->
 
-            async function saveRouteToBackend(routeData) {
-              let user = null;
-              if (window.auth && typeof window.auth.getCurrentUser === 'function') {
-                user = await window.auth.getCurrentUser();
-              } else if (window.currentUser) {
-                user = window.currentUser;
-              }
-              if (!user || !user.token) {
-                // Save to localStorage
-                let saved = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
-                saved.unshift(routeData);
-                localStorage.setItem('savedRoutes', JSON.stringify(saved));
-                return { success: true, local: true };
-              }
-              const res = await fetch('/.netlify/functions/save-route', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${user.token}`
-                },
-                body: JSON.stringify({
-                  from_location: routeData.from,
-                  to_location: routeData.to,
-                  route_data: routeData.route
-                })
-              });
-              if (!res.ok) throw new Error('Save failed');
-              return await res.json();
-            }
+<!-- ══ MODAL ══ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title">Detajet e Rrugës</h3>
+      <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
 
-            async function deleteSavedRouteFromBackend(routeId) {
-              let user = null;
-              if (window.auth && typeof window.auth.getCurrentUser === 'function') {
-                user = await window.auth.getCurrentUser();
-              } else if (window.currentUser) {
-                user = window.currentUser;
-              }
-              if (!user || !user.token) {
-                let saved = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
-                saved = saved.filter(r => r.id != routeId);
-                localStorage.setItem('savedRoutes', JSON.stringify(saved));
-                return { success: true };
-              }
-              const res = await fetch(`/.netlify/functions/delete-saved-route?id=${routeId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${user.token}` }
-              });
-              if (!res.ok) throw new Error('Delete failed');
-              return await res.json();
-            }
+<!-- ══ TOASTS ══ -->
+<div class="toasts" id="toasts"></div>
 
-            async function displaySavedRoutes() {
-              const savedRoutes = await fetchSavedRoutes();
-              const list = document.getElementById('saved-routes-list');
-              if (!savedRoutes.length) {
-                list.innerHTML = '<div class="no-data"><i class="fas fa-bookmark"></i><p>Nuk ka rrugë të ruajtura</p></div>';
-                return;
-              }
-              list.innerHTML = savedRoutes.slice(0, 3).map(r => `
-                <div class="saved-route" data-saved-id="${r.id}">
-                  <div class="saved-route-info">
-                    <div class="saved-route-name">${escapeHtml(r.name)}</div>
-                    <div class="saved-route-path">${escapeHtml(r.from)} → ${escapeHtml(r.to)}</div>
-                  </div>
-                  <div class="saved-route-actions">
-                    <button class="saved-btn" title="Përdor" onclick="window.useSavedRoute(${r.id})">
-                      <i class="fas fa-directions"></i>
-                    </button>
-                    <button class="saved-btn" title="Fshi" onclick="window.deleteSavedRoute(${r.id})">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </div>`).join('');
-            }
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><i class="fas fa-bus"></i> Sherbimijone</div>
+      <p class="footer-desc">Platforma kryesore për transportin publik dhe taksi në Tiranë. Planifikoni udhëtimin tuaj me lehtësi.</p>
+    </div>
+    <div>
+      <div class="footer-title">Lidhje</div>
+      <ul class="footer-links">
+        <li><a href="../index.html">Kryefaqja</a></li>
+        <li><a href="map.html">Harta</a></li>
+        <li><a href="taxi.html">Taksi</a></li>
+        <li><a href="search.html">Kërko</a></li>
+        <li><a href="driver.html">Shofer</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-title">Kontakti</div>
+      <ul class="footer-links">
+        <li><a href="#">+355 4X XXX XXXX</a></li>
+        <li><a href="#">support@sherbimijone.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 Sherbimijone. Të gjitha të drejtat e rezervuara.</p>
+  </div>
+</footer>
 
-            // ── Form & controls init ───────────────────────────────────────────────
-            function initForm() {
-                document.querySelectorAll('.option-card').forEach(c => {
-                    c.addEventListener('click', function() {
-                        document.querySelectorAll('.option-card').forEach(x => x.classList
-                            .remove('selected'));
-                        this.classList.add('selected');
-                    });
-                });
-                document.querySelector('.option-card')?.click();
+<!-- ══ SCRIPTS ══ -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../config.js" onerror="window.CONFIG={}"></script>
+<script src="../assets/js/auth.js" onerror="window.auth=null"></script>
+<script src="../script.js" onerror="void 0"></script>
 
-                const travelTimeSelect = document.getElementById('travel-time');
-                const specificTimeContainer = document.getElementById('specific-time-container');
-                travelTimeSelect?.addEventListener('change', function() {
-                    specificTimeContainer.style.display =
-                        (this.value === 'departure' || this.value === 'arrival') ? 'block' : 'none';
-                });
+<script>
+(function () {
+  'use strict';
 
-                document.getElementById('swap-locations-btn')?.addEventListener('click', function() {
-                    const f = document.getElementById('from-location');
-                    const t = document.getElementById('to-location');
-                    [f.value, t.value] = [t.value, f.value];
-                    [pendingOriginCoords, pendingDestCoords] = [pendingDestCoords,
-                        pendingOriginCoords
-                    ];
-                    clearAllMapLayers();
-                    if (pendingOriginCoords) {
-                        markerOrigin = createOriginMarker(pendingOriginCoords.lat,
-                            pendingOriginCoords.lng, f.value);
-                        markerOrigin.addTo(map);
-                    }
-                    if (pendingDestCoords) {
-                        markerDest = createDestinationMarker(pendingDestCoords.lat, pendingDestCoords
-                            .lng, t.value);
-                        markerDest.addTo(map);
-                    }
-                });
+  // ════════════════════════════════════════════════════
+  // STATE
+  // ════════════════════════════════════════════════════
+  const S = {
+    map: null,
+    originCoords:   null,   // {lat,lng}
+    destCoords:     null,
+    pickMode:       null,   // 'origin'|'dest'|null
+    markerOrigin:   null,
+    markerDest:     null,
+    markerUser:     null,
+    userPos:        null,   // {lat,lng,heading}
+    watchId:        null,
+    routeLayers:    [],
+    walkLayers:     [],
+    stopMarkers:    [],
+    vehicleMarkers: new Map(), // lineId → marker
+    vehiclePoll:    null,
+    showVehicles:   false,
+    results:        [],
+    activeRouteId:  null,
+    // Navigation mode
+    navActive:      false,
+    navRoute:       null,
+    navStep:        0,
+    navTimer:       null,
+    navStartTime:   null,
+  };
 
-                document.getElementById('from-location').addEventListener('input', () => { pendingOriginCoords =
-                        null; });
-                document.getElementById('to-location').addEventListener('input', () => { pendingDestCoords =
-                    null; });
+  // ════════════════════════════════════════════════════
+  // UTILITIES
+  // ════════════════════════════════════════════════════
+  const esc = s => {
+    if (!s) return '';
+    const d = document.createElement('div');
+    d.textContent = s; return d.innerHTML;
+  };
 
-                // Map picking buttons
-                const pickOriginBtn = document.getElementById('pick-origin-btn');
-                const pickDestBtn = document.getElementById('pick-dest-btn');
-                const pickStatus = document.getElementById('pick-status');
-                const pickStatusText = document.getElementById('pick-status-text');
+  const fmt = n => n < 60 ? `${n}m` : `${Math.floor(n/60)}h ${n%60}m`;
 
-                pickOriginBtn?.addEventListener('click', () => {
-                    pickingMode = 'origin';
-                    pickOriginBtn.classList.add('active');
-                    pickDestBtn.classList.remove('active');
-                    pickStatusText.innerText = 'Klikoni në hartë për të caktuar pikën e nisjes.';
-                    pickStatus.style.display = 'block';
-                });
+  function toast(msg, type = '', duration = 3000) {
+    const t = document.createElement('div');
+    t.className = `toast${type ? ' '+type : ''}`;
+    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':type==='error'?'exclamation-circle':'info-circle'}"></i> ${esc(msg)}`;
+    document.getElementById('toasts').prepend(t);
+    setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 350); }, duration);
+  }
 
-                pickDestBtn?.addEventListener('click', () => {
-                    pickingMode = 'dest';
-                    pickDestBtn.classList.add('active');
-                    pickOriginBtn.classList.remove('active');
-                    pickStatusText.innerText = 'Klikoni në hartë për të caktuar destinacionin.';
-                    pickStatus.style.display = 'block';
-                });
+  // ════════════════════════════════════════════════════
+  // MAP INIT
+  // ════════════════════════════════════════════════════
+  function initMap() {
+    S.map = L.map('map', {
+      zoomControl: false,
+      center: [41.3275, 19.8187],
+      zoom: 13,
+    });
 
-                // Current location
-                document.getElementById('use-current-location')?.addEventListener('change', function() {
-                    if (this.checked && navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(async pos => {
-                            const { latitude: lat, longitude: lon } = pos.coords;
-                            userCurrentPosition = { lat, lng: lon, heading: pos.coords
-                                    .heading, speed: pos.coords.speed };
-                            userHeading = pos.coords.heading;
-                            updateUserLocationMarker();
-                            const geo = await geocode(`${lat},${lon}`);
-                            document.getElementById('from-location').value =
-                                geo ? geo.display_name :
-                                `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
-                            pendingOriginCoords = { lat, lng: lon };
-                            if (markerOrigin) map.removeLayer(markerOrigin);
-                            markerOrigin = createOriginMarker(lat, lon, document
-                                .getElementById('from-location').value);
-                            markerOrigin.addTo(map);
-                        }, () => {
-                            alert('Nuk mundi të merret lokacioni juaj.');
-                            this.checked = false;
-                        });
-                    } else {
-                        pendingOriginCoords = null;
-                        if (markerOrigin) { map.removeLayer(markerOrigin);
-                            markerOrigin = null; }
-                    }
-                });
+    L.control.zoom({ position: 'topright' }).addTo(S.map);
 
-                document.getElementById('advanced-search-form')?.addEventListener('submit', e => {
-                    e.preventDefault();
-                    performSearch();
-                });
-            }
+    // Carto voyager tile — clean, modern look
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors, © <a href="https://carto.com/attributions">CARTO</a>',
+      maxZoom: 19,
+      subdomains: 'abcd',
+    }).addTo(S.map);
 
-            function initControls() {
-                document.querySelectorAll('.sort-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove(
-                            'active'));
-                        this.classList.add('active');
-                        sortResults(this.getAttribute('data-sort'));
-                    });
-                });
+    // Map click handler
+    S.map.on('click', async e => {
+      if (!S.pickMode) return;
+      const { lat, lng } = e.latlng;
+      if (S.pickMode === 'origin') await setLocation(lat, lng, 'origin');
+      else                          await setLocation(lat, lng, 'dest');
+      endPickMode();
+    });
 
-                const modal = document.getElementById('route-details-modal');
-                const closeBtn = document.getElementById('close-route-modal');
-                closeBtn?.addEventListener('click', () => modal?.classList.remove('active'));
-                modal?.addEventListener('click', e => { if (e.target === modal) modal.classList.remove(
-                        'active'); });
-            }
+    // Start geolocation watch
+    startGeoWatch();
+  }
 
-            // ── Boot ───────────────────────────────────────────────────────────────
-            document.addEventListener('DOMContentLoaded', () => {
-                initMap();
-                initForm();
-                initControls();
-                displaySavedRoutes().catch(console.warn);
-                document.getElementById('travel-date').valueAsDate = new Date();
+  // ════════════════════════════════════════════════════
+  // GEOLOCATION
+  // ════════════════════════════════════════════════════
+  function startGeoWatch() {
+    if (!navigator.geolocation) return;
+    S.watchId = navigator.geolocation.watchPosition(pos => {
+      S.userPos = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        heading: pos.coords.heading,
+        speed:   pos.coords.speed,
+        accuracy: pos.coords.accuracy,
+      };
+      updateUserMarker();
+      if (S.navActive) updateNavETA();
+    }, err => {
+      console.warn('Geo error:', err.message);
+    }, { enableHighAccuracy: true, maximumAge: 4000, timeout: 15000 });
+  }
 
-                const p = new URLSearchParams(window.location.search);
-                const from = p.get('from'),
-                    to = p.get('to'),
-                    type = p.get('type');
-                if (from && to) {
-                    document.getElementById('from-location').value = from;
-                    document.getElementById('to-location').value = to;
-                    if (type) document.querySelector(`.option-card[data-option="${type}"]`)?.click();
-                    document.getElementById('advanced-search-form').dispatchEvent(new Event('submit'));
-                }
-            });
+  function updateUserMarker() {
+    if (!S.userPos || !S.map) return;
+    const { lat, lng, heading } = S.userPos;
+    const headingDeg = (heading != null && !isNaN(heading)) ? heading : 0;
+    const hasHeading = heading != null && !isNaN(heading);
 
-            // Clean up geolocation watch on page unload
-            window.addEventListener('beforeunload', () => {
-                if (geolocationWatchId !== null) {
-                    navigator.geolocation.clearWatch(geolocationWatchId);
-                }
-            });
-        })();
-    </script>
+    const html = `
+      <div style="position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center">
+        <div class="user-ring"></div>
+        <div class="user-dot"></div>
+        ${hasHeading ? `<div class="user-arrow" style="transform:rotate(${headingDeg}deg);transform-origin:50% calc(50% + 14px)"></div>` : ''}
+      </div>`;
+
+    if (!S.markerUser) {
+      S.markerUser = L.marker([lat, lng], {
+        icon: L.divIcon({ html, iconSize: [40,40], iconAnchor: [20,20], className: '' }),
+        zIndexOffset: 2000,
+        interactive: false,
+      }).addTo(S.map);
+    } else {
+      S.markerUser.setLatLng([lat, lng]);
+      const el = S.markerUser.getElement();
+      if (el && hasHeading) {
+        const arrow = el.querySelector('.user-arrow');
+        if (arrow) arrow.style.transform = `rotate(${headingDeg}deg)`;
+      }
+    }
+  }
+
+  // ════════════════════════════════════════════════════
+  // PICK LOCATION MODE
+  // ════════════════════════════════════════════════════
+  function startPickMode(type) {
+    S.pickMode = type;
+    const hint = document.getElementById('pick-hint');
+    const text = document.getElementById('pick-hint-text');
+    text.textContent = type === 'origin'
+      ? 'Klikoni në hartë për pikën e nisjes'
+      : 'Klikoni në hartë për destinacionin';
+    hint.classList.add('show');
+    document.getElementById('pick-origin-btn').classList.toggle('active', type==='origin');
+    document.getElementById('pick-dest-btn').classList.toggle('active', type==='dest');
+    S.map.getContainer().style.cursor = 'crosshair';
+  }
+
+  function endPickMode() {
+    S.pickMode = null;
+    document.getElementById('pick-hint').classList.remove('show');
+    document.getElementById('pick-origin-btn').classList.remove('active');
+    document.getElementById('pick-dest-btn').classList.remove('active');
+    S.map.getContainer().style.cursor = '';
+  }
+
+  // ════════════════════════════════════════════════════
+  // GEOCODING
+  // ════════════════════════════════════════════════════
+  async function geocode(query) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&countrycodes=al`;
+    const r = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
+    const d = await r.json();
+    return d[0] || null;
+  }
+
+  async function reverseGeocode(lat, lng) {
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=17&countrycodes=al`;
+      const r = await fetch(url, { headers: { 'Accept-Language': 'sq' } });
+      const d = await r.json();
+      // Short name: road or neighbourhood
+      const a = d.address;
+      if (a) return a.road || a.suburb || a.city_district || d.display_name.split(',')[0];
+      return d.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    } catch {
+      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+  }
+
+  async function setLocation(lat, lng, type) {
+    const name = await reverseGeocode(lat, lng);
+    if (type === 'origin') {
+      document.getElementById('from-loc').value = name;
+      S.originCoords = { lat, lng };
+      placeOriginMarker(lat, lng, name);
+    } else {
+      document.getElementById('to-loc').value = name;
+      S.destCoords = { lat, lng };
+      placeDestMarker(lat, lng, name);
+    }
+  }
+
+  // ════════════════════════════════════════════════════
+  // MAP MARKERS
+  // ════════════════════════════════════════════════════
+  function placeOriginMarker(lat, lng, label) {
+    if (S.markerOrigin) S.map.removeLayer(S.markerOrigin);
+    S.markerOrigin = L.marker([lat, lng], {
+      icon: L.divIcon({
+        html: `<div style="width:16px;height:16px;background:#16A34A;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(22,163,74,.5)"></div>`,
+        iconSize: [22,22], iconAnchor: [11,11], className: '',
+      }),
+      zIndexOffset: 900,
+    }).bindPopup(`<b>📍 Nisja:</b> ${esc(label)}`).addTo(S.map);
+  }
+
+  function placeDestMarker(lat, lng, label) {
+    if (S.markerDest) S.map.removeLayer(S.markerDest);
+    S.markerDest = L.marker([lat, lng], {
+      icon: L.divIcon({
+        html: `<div style="width:22px;height:22px;background:#DC2626;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(220,38,38,.5);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);color:#fff;font-size:8px">🏁</span></div>`,
+        iconSize: [28,28], iconAnchor: [11,25], className: '',
+      }),
+      zIndexOffset: 900,
+    }).bindPopup(`<b>🏁 Destinacioni:</b> ${esc(label)}`).addTo(S.map);
+  }
+
+  function placeBusStopMarker(lat, lng, name, color = '#2563EB') {
+    const m = L.marker([lat, lng], {
+      icon: L.divIcon({
+        html: `<div style="position:relative">
+          <div style="width:14px;height:14px;background:${esc(color)};border:2.5px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.25)"></div>
+        </div>`,
+        iconSize: [14,14], iconAnchor: [7,7], className: '',
+      }),
+      zIndexOffset: 800,
+    }).bindPopup(`<b>🚏 ${esc(name)}</b>`).addTo(S.map);
+    S.stopMarkers.push(m);
+    return m;
+  }
+
+  function clearMapLayers() {
+    S.routeLayers.forEach(l => S.map.removeLayer(l));
+    S.walkLayers.forEach(l => S.map.removeLayer(l));
+    S.stopMarkers.forEach(l => S.map.removeLayer(l));
+    S.routeLayers = []; S.walkLayers = []; S.stopMarkers = [];
+  }
+
+  // ════════════════════════════════════════════════════
+  // POLYLINE DECODE
+  // ════════════════════════════════════════════════════
+  function decodePoly(encoded) {
+    if (!encoded) return [];
+    let idx = 0, lat = 0, lng = 0;
+    const pts = [];
+    while (idx < encoded.length) {
+      let b, sh = 0, res = 0;
+      do { b = encoded.charCodeAt(idx++) - 63; res |= (b & 0x1f) << sh; sh += 5; } while (b >= 0x20);
+      lat += (res & 1) ? ~(res >> 1) : (res >> 1); sh = 0; res = 0;
+      do { b = encoded.charCodeAt(idx++) - 63; res |= (b & 0x1f) << sh; sh += 5; } while (b >= 0x20);
+      lng += (res & 1) ? ~(res >> 1) : (res >> 1);
+      pts.push([lat * 1e-5, lng * 1e-5]);
+    }
+    return pts;
+  }
+
+  // ════════════════════════════════════════════════════
+  // OSRM WALKING ROUTE
+  // ════════════════════════════════════════════════════
+  async function fetchWalkRoute(aLat, aLng, bLat, bLng) {
+    try {
+      const url = `https://router.project-osrm.org/route/v1/foot/${aLng},${aLat};${bLng},${bLat}?overview=full&geometries=polyline`;
+      const r = await fetch(url);
+      if (!r.ok) return null;
+      const d = await r.json();
+      return d.routes?.[0]?.geometry ? decodePoly(d.routes[0].geometry) : null;
+    } catch { return null; }
+  }
+
+  // ════════════════════════════════════════════════════
+  // DRAW ROUTE ON MAP
+  // ════════════════════════════════════════════════════
+  async function drawRoute(route, fromGeo, toGeo, meta) {
+    clearMapLayers();
+    const bounds = [];
+
+    for (const step of route.steps) {
+      if (!step.fromCoords || !step.toCoords) continue;
+      const from = [step.fromCoords.lat, step.fromCoords.lng];
+      const to   = [step.toCoords.lat, step.toCoords.lng];
+
+      if (step.type === 'walk') {
+        // Try OSRM real walking route
+        const walkPts = await fetchWalkRoute(step.fromCoords.lat, step.fromCoords.lng, step.toCoords.lat, step.toCoords.lng);
+        const pts = walkPts || [from, to];
+        const layer = L.polyline(pts, {
+          color: '#16A34A', weight: 4, dashArray: '8 6',
+          opacity: .85, lineCap: 'round', lineJoin: 'round',
+        }).addTo(S.map);
+        S.walkLayers.push(layer);
+        bounds.push(...pts);
+
+      } else {
+        const rawPts = step.polyline ? decodePoly(step.polyline) : null;
+        const pts = (rawPts && rawPts.length > 1) ? rawPts : [from, to];
+
+        // Shadow layer
+        const shadow = L.polyline(pts, {
+          color: '#000', weight: 8, opacity: .08, lineCap: 'round',
+        }).addTo(S.map);
+        S.routeLayers.push(shadow);
+
+        const layer = L.polyline(pts, {
+          color: step.lineColor || '#2563EB',
+          weight: 5, opacity: .95, lineCap: 'round', lineJoin: 'round',
+        }).addTo(S.map);
+        S.routeLayers.push(layer);
+        bounds.push(...pts);
+
+        // Stop markers along bus leg
+        if (step.stopSequence && step.stopSequence.length > 0 && step.fromCoords && step.toCoords) {
+          placeBusStopMarker(step.fromCoords.lat, step.fromCoords.lng, step.fromStation, step.lineColor || '#2563EB');
+          placeBusStopMarker(step.toCoords.lat, step.toCoords.lng, step.toStation, step.lineColor || '#2563EB');
+        }
+      }
+    }
+
+    // Walking connections: user origin → first bus stop
+    if (fromGeo && meta?.originStops?.[0]?.coords) {
+      const oc = meta.originStops[0].coords;
+      const pts = await fetchWalkRoute(parseFloat(fromGeo.lat), parseFloat(fromGeo.lon), oc.lat, oc.lng);
+      if (pts) {
+        const l = L.polyline(pts, { color:'#16A34A', weight:3, dashArray:'6 5', opacity:.75, lineCap:'round' }).addTo(S.map);
+        S.walkLayers.push(l);
+        bounds.push(...pts);
+      }
+    }
+    if (toGeo && meta?.destStops?.[0]?.coords) {
+      const dc = meta.destStops[0].coords;
+      const pts = await fetchWalkRoute(dc.lat, dc.lng, parseFloat(toGeo.lat), parseFloat(toGeo.lon));
+      if (pts) {
+        const l = L.polyline(pts, { color:'#DC2626', weight:3, dashArray:'6 5', opacity:.75, lineCap:'round' }).addTo(S.map);
+        S.walkLayers.push(l);
+        bounds.push(...pts);
+      }
+    }
+
+    if (bounds.length > 1) {
+      S.map.fitBounds(L.latLngBounds(bounds), { padding: [60, 60] });
+    }
+  }
+
+  // ════════════════════════════════════════════════════
+  // LIVE VEHICLE TRACKING
+  // ════════════════════════════════════════════════════
+  async function fetchLiveVehicles() {
+    try {
+      const r = await fetch('/.netlify/functions/live-vehicles');
+      if (!r.ok) return null;
+      return await r.json();
+    } catch { return null; }
+  }
+
+  function updateVehicleMarkers(vehicles) {
+    if (!vehicles || !Array.isArray(vehicles)) return;
+    const seen = new Set();
+
+    for (const v of vehicles) {
+      seen.add(v.id);
+      const color = v.color || '#2563EB';
+      const lbl   = v.line_number || '?';
+
+      const markerHtml = `
+        <div class="bus-marker-wrap">
+          <div class="bus-marker" style="background:${esc(color)}">
+            <i class="fas fa-bus" style="font-size:13px"></i>
+          </div>
+          <div class="bus-marker-label" style="color:${esc(color)}">${esc(lbl)}</div>
+        </div>`;
+
+      if (S.vehicleMarkers.has(v.id)) {
+        const m = S.vehicleMarkers.get(v.id);
+        // Animate smooth movement
+        m.setLatLng([v.lat, v.lng]);
+      } else {
+        const m = L.marker([v.lat, v.lng], {
+          icon: L.divIcon({ html: markerHtml, iconSize: [36, 46], iconAnchor: [18, 16], className: '' }),
+          zIndexOffset: 600,
+        }).bindPopup(`<b>🚌 Linja ${esc(lbl)}</b><br>Drejtim: ${esc(v.direction||'—')}<br>Shpejtësia: ${v.speed ? Math.round(v.speed)+' km/h' : '—'}`).addTo(S.map);
+        S.vehicleMarkers.set(v.id, m);
+      }
+    }
+
+    // Remove gone vehicles
+    for (const [id, m] of S.vehicleMarkers) {
+      if (!seen.has(id)) { S.map.removeLayer(m); S.vehicleMarkers.delete(id); }
+    }
+
+    document.getElementById('live-count').textContent = `${vehicles.length} autobusë live`;
+    document.getElementById('live-badge').style.display = vehicles.length ? 'flex' : 'none';
+  }
+
+  function startVehicleTracking() {
+    S.showVehicles = true;
+    document.getElementById('toggle-vehicles-btn').classList.add('active');
+    const poll = async () => {
+      if (!S.showVehicles) return;
+      const v = await fetchLiveVehicles();
+      if (v) updateVehicleMarkers(v);
+    };
+    poll();
+    S.vehiclePoll = setInterval(poll, 6000);
+    toast('Ndjekja e autobusëve live u aktivizua', 'success');
+  }
+
+  function stopVehicleTracking() {
+    S.showVehicles = false;
+    document.getElementById('toggle-vehicles-btn').classList.remove('active');
+    clearInterval(S.vehiclePoll);
+    S.vehicleMarkers.forEach(m => S.map.removeLayer(m));
+    S.vehicleMarkers.clear();
+    document.getElementById('live-badge').style.display = 'none';
+    toast('Ndjekja e autobusëve u ndalua');
+  }
+
+  // ════════════════════════════════════════════════════
+  // NAVIGATION MODE
+  // ════════════════════════════════════════════════════
+  function startNavMode(route) {
+    S.navActive   = true;
+    S.navRoute    = route;
+    S.navStep     = 0;
+    S.navStartTime = Date.now();
+
+    document.getElementById('nav-mode-panel').classList.add('show');
+    document.getElementById('toggle-nav-btn').classList.add('active');
+    document.getElementById('nm-title').textContent = route.title || 'Navigim Aktiv';
+    document.getElementById('nm-subtitle').textContent = `${route.fromStation} → ${route.toStation}`;
+
+    renderNavSteps();
+    updateNavETA();
+    S.navTimer = setInterval(updateNavETA, 10000);
+    toast('Navigimi filloi!', 'success');
+  }
+
+  function stopNavMode() {
+    S.navActive = false;
+    S.navRoute  = null;
+    clearInterval(S.navTimer);
+    document.getElementById('nav-mode-panel').classList.remove('show');
+    document.getElementById('toggle-nav-btn').classList.remove('active');
+    document.getElementById('toggle-nav-btn').style.display = 'none';
+  }
+
+  function renderNavSteps() {
+    if (!S.navRoute) return;
+    const { steps } = S.navRoute;
+    const container = document.getElementById('nm-steps');
+    container.innerHTML = steps.map((step, i) => {
+      const isDone    = i < S.navStep;
+      const isCurrent = i === S.navStep;
+      const icon = step.type === 'walk' ? '🚶' : '🚌';
+      const desc = step.type === 'walk'
+        ? `Ec ${step.distanceM || Math.round(step.time*66)}m → ${esc(step.toStation)}`
+        : `Linja ${esc(step.lineNumber)}: ${esc(step.fromStation)} → ${esc(step.toStation)}`;
+      return `<div class="nm-step${isCurrent?' current':''}${isDone?' done':''}" onclick="window._navJump(${i})">
+        <div class="nm-step-icon">${icon}</div>
+        <div style="flex:1;font-size:13px">${desc}</div>
+        <div style="opacity:.7;font-size:12px">${step.time} min</div>
+      </div>`;
+    }).join('');
+
+    const progress = steps.length > 1 ? (S.navStep / (steps.length - 1)) * 100 : 0;
+    document.getElementById('nm-progress-bar').style.width = progress + '%';
+  }
+
+  window._navJump = function(idx) {
+    S.navStep = idx;
+    renderNavSteps();
+    // Focus map on this step
+    const step = S.navRoute?.steps?.[idx];
+    if (step?.fromCoords) S.map.setView([step.fromCoords.lat, step.fromCoords.lng], 16);
+  };
+
+  function updateNavETA() {
+    if (!S.navRoute) return;
+    const steps    = S.navRoute.steps;
+    const elapsed  = Math.floor((Date.now() - S.navStartTime) / 60000);
+    const stepsLeft= steps.slice(S.navStep);
+    const minLeft  = stepsLeft.reduce((s, x) => s + (x.time || 0), 0);
+    const curStep  = steps[S.navStep];
+    const arriveAt = new Date(Date.now() + minLeft * 60000);
+
+    document.getElementById('eta-total').textContent = minLeft;
+    document.getElementById('eta-step').textContent  = curStep?.type === 'walk' ? '🚶' : '🚌';
+    document.getElementById('eta-arrive').textContent = arriveAt.toLocaleTimeString('sq', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  // ════════════════════════════════════════════════════
+  // SEARCH
+  // ════════════════════════════════════════════════════
+  let _lastFromGeo = null, _lastToGeo = null;
+
+  async function performSearch() {
+    const fromVal = document.getElementById('from-loc').value.trim();
+    const toVal   = document.getElementById('to-loc').value.trim();
+    if (!fromVal || !toVal) { toast('Plotëso të dy fushat e lokacionit', 'error'); return; }
+
+    const btn = document.getElementById('search-btn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke kërkuar…';
+    btn.disabled = true;
+
+    // Show skeleton
+    document.getElementById('routes-list').innerHTML = `
+      <div class="skeleton-loader">
+        <div class="sk-card"></div><div class="sk-card"></div><div class="sk-card"></div>
+      </div>`;
+
+    try {
+      // Geocode if needed
+      let fromGeo, toGeo;
+      if (S.originCoords) {
+        fromGeo = { lat: S.originCoords.lat, lon: S.originCoords.lng, display_name: fromVal };
+        S.originCoords = null;
+      } else {
+        fromGeo = await geocode(fromVal);
+        if (!fromGeo) { toast('Lokacioni i nisjes nuk u gjet', 'error'); showEmpty(); return; }
+      }
+      if (S.destCoords) {
+        toGeo = { lat: S.destCoords.lat, lon: S.destCoords.lng, display_name: toVal };
+        S.destCoords = null;
+      } else {
+        toGeo = await geocode(toVal);
+        if (!toGeo) { toast('Destinacioni nuk u gjet', 'error'); showEmpty(); return; }
+      }
+
+      _lastFromGeo = fromGeo;
+      _lastToGeo   = toGeo;
+
+      // Place markers
+      placeOriginMarker(parseFloat(fromGeo.lat), parseFloat(fromGeo.lon), fromGeo.display_name);
+      placeDestMarker(parseFloat(toGeo.lat), parseFloat(toGeo.lon), toGeo.display_name);
+
+      // Build dept time
+      const dateVal    = document.getElementById('travel-date').value;
+      const timeMode   = document.getElementById('time-mode').value;
+      let   deptTime   = new Date();
+      if (timeMode !== 'now' && dateVal) {
+        const t = document.getElementById('specific-time').value || '08:00';
+        deptTime = new Date(`${dateVal}T${t}:00`);
+      }
+
+      const searchType     = document.querySelector('.type-chip.active')?.dataset.type || 'fastest';
+      const accessibleOnly = document.getElementById('opt-accessible').checked;
+      const maxWalkingMin  = parseInt(document.getElementById('max-walk').value) || 12;
+
+      const res = await fetch('/.netlify/functions/search-routes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fromLat: parseFloat(fromGeo.lat),
+          fromLng: parseFloat(fromGeo.lon),
+          toLat:   parseFloat(toGeo.lat),
+          toLng:   parseFloat(toGeo.lon),
+          searchType, departureTime: deptTime.toISOString(),
+          maxWalkingMin, accessibleOnly,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) { toast(data.error || 'Gabim gjatë kërkimit', 'error'); showEmpty(data.error); return; }
+
+      S.results = data.results || [];
+      if (S.results.length === 0) { showEmpty('Nuk u gjet asnjë rrugë. Provoni të rrisni ecjen maksimale.'); return; }
+
+      renderResults(S.results, data.meta);
+
+      // Draw best route
+      S.activeRouteId = S.results[0].id;
+      await drawRoute(S.results[0], fromGeo, toGeo, data.meta);
+
+      // Show nav button
+      document.getElementById('toggle-nav-btn').style.display = 'flex';
+
+    } catch (err) {
+      console.error(err);
+      toast('Gabim: ' + err.message, 'error');
+      showEmpty();
+    } finally {
+      btn.innerHTML = '<i class="fas fa-search"></i> Kërko Rrugën';
+      btn.disabled = false;
+    }
+  }
+
+  // ════════════════════════════════════════════════════
+  // RENDER RESULTS
+  // ════════════════════════════════════════════════════
+  function renderResults(routes, meta) {
+    document.getElementById('results-count').textContent = `${routes.length} rrugë`;
+
+    // Meta strip
+    const mw = document.getElementById('meta-strip-wrap');
+    if (meta?.originStops?.[0]) {
+      mw.innerHTML = `<div class="meta-strip">
+        <span><i class="fas fa-walking" style="color:var(--blue)"></i> Stacioni i nisjes: <strong>${esc(meta.originStops[0].name)}</strong> (~${meta.originStops[0].distanceM}m)</span>
+        <span><i class="fas fa-flag-checkered" style="color:var(--red)"></i> Stacioni i mbërritjes: <strong>${esc(meta.destStops?.[0]?.name||'?')}</strong> (~${meta.destStops?.[0]?.distanceM||'?'}m)</span>
+        <span><i class="fas fa-clock" style="color:var(--ink-3)"></i> Nisja: <strong>${new Date(meta.departureTime).toLocaleTimeString('sq',{hour:'2-digit',minute:'2-digit'})}</strong></span>
+      </div>`;
+    } else mw.innerHTML = '';
+
+    const list = document.getElementById('routes-list');
+    list.innerHTML = routes.map(r => buildRouteCard(r)).join('');
+
+    // First card selected
+    const first = list.querySelector('.route-card');
+    if (first) first.classList.add('selected');
+
+    // Bind click
+    list.querySelectorAll('.route-card').forEach(card => {
+      card.addEventListener('click', () => {
+        list.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        const id = parseInt(card.dataset.id);
+        const route = S.results.find(r => r.id === id);
+        if (route) {
+          S.activeRouteId = id;
+          drawRoute(route, _lastFromGeo, _lastToGeo, null);
+        }
+      });
+    });
+  }
+
+  function buildRouteCard(route) {
+    const badges = (route.busLines || []).map(l =>
+      `<span class="line-badge" style="background:${l.color||'#2563EB'}">${esc(l.number)}</span>`
+    ).join('');
+
+    const stepsHtml = route.steps.map((step, i) => {
+      if (step.type === 'walk') {
+        return `<div class="st-item">
+          <div class="st-icon-wrap"><div class="st-icon walk"><i class="fas fa-walking"></i></div></div>
+          <div class="st-text"><strong>Ec ${step.distanceM || Math.round(step.time*66)}m</strong> drejt <strong>${esc(step.toStation)}</strong></div>
+          <div class="st-duration">${step.time} min</div>
+        </div>`;
+      } else {
+        const seq = (step.stopSequence || []).slice(1,-1).map(s => `<span class="stop-pill">${esc(s)}</span>`).join('');
+        return `<div class="st-item">
+          <div class="st-icon-wrap"><div class="st-icon bus" style="background:${step.lineColor||'#2563EB'}"><i class="fas fa-bus"></i></div></div>
+          <div class="st-text">
+            <strong>Linja ${esc(step.lineNumber)}</strong>${step.lineName ? ` — ${esc(step.lineName)}` : ''}<br>
+            <span class="st-sub">${esc(step.fromStation)} → ${esc(step.toStation)}</span>
+            ${seq ? `<div class="stop-seq">${seq}</div>` : ''}
+          </div>
+          <div class="st-duration">${step.time} min</div>
+        </div>`;
+      }
+    }).join('');
+
+    const transferLabel = route.transfers === 0 ? '🟢 Direkte' : `🔄 ${route.transfers} ndërrim${route.transfers > 1 ? 'e' : ''}`;
+
+    return `<div class="route-card" data-id="${route.id}" data-score="${route.score||0}" data-time="${route.totalTime}" data-fare="${route.fare}" data-transfers="${route.transfers}" data-walk="${route.walkMin}">
+      <div class="rc-top">
+        <div>
+          <div class="rc-title">${esc(route.title)}</div>
+          <div class="rc-badges">${badges}</div>
+        </div>
+        <div class="rc-time">${route.totalTime} min</div>
+      </div>
+      <div class="rc-stats">
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-exchange-alt"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${transferLabel}</div><div class="stat-pill-label">Ndërrime</div></div></div>
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-walking"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${route.walkMin} min</div><div class="stat-pill-label">Ecje totale</div></div></div>
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-coins"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${route.fare} L</div><div class="stat-pill-label">Çmimi</div></div></div>
+        <div class="stat-pill"><div class="stat-pill-icon"><i class="fas fa-road"></i></div><div class="stat-pill-info"><div class="stat-pill-val">${Math.round(route.walkMin*66)} m</div><div class="stat-pill-label">Distanca ecje</div></div></div>
+      </div>
+      <div class="rc-steps">
+        <button class="steps-toggle" onclick="toggleSteps(this, event)"><i class="fas fa-chevron-down"></i> Shiko hapat e rrugës (${route.steps.length})</button>
+        <div class="steps-body">
+          <div class="step-timeline">${stepsHtml}</div>
+        </div>
+      </div>
+      <div class="rc-actions">
+        <button class="rc-btn" onclick="window._showOnMap(${route.id}, event)"><i class="fas fa-map"></i> Harta</button>
+        <button class="rc-btn" onclick="window._openModal(${route.id}, event)"><i class="fas fa-info-circle"></i> Detaje</button>
+        <button class="rc-btn" onclick="window._saveRoute(${route.id}, event)"><i class="fas fa-bookmark"></i> Ruaj</button>
+        <button class="rc-btn success" onclick="window._startNav(${route.id}, event)"><i class="fas fa-location-arrow"></i> Navigo</button>
+      </div>
+    </div>`;
+  }
+
+  window.toggleSteps = function(btn, e) {
+    e.stopPropagation();
+    const body = btn.nextElementSibling;
+    body.classList.toggle('open');
+    btn.querySelector('i').style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+  };
+
+  function showEmpty(msg) {
+    document.getElementById('routes-list').innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon"><i class="fas fa-map-marked-alt"></i></div>
+      <h3>Asnjë rrugë nuk u gjet</h3>
+      <p>${esc(msg || 'Provoni të ndryshoni vendndodhjet ose të rrisni kohën maksimale të ecjes.')}</p>
+    </div>`;
+    document.getElementById('results-count').textContent = '0 rrugë';
+    document.getElementById('meta-strip-wrap').innerHTML = '';
+  }
+
+  // ════════════════════════════════════════════════════
+  // SORT
+  // ════════════════════════════════════════════════════
+  function sortResults(key) {
+    const list = document.getElementById('routes-list');
+    const cards = [...list.querySelectorAll('.route-card')];
+    cards.sort((a, b) => parseFloat(a.dataset[key]) - parseFloat(b.dataset[key]));
+    cards.forEach(c => list.appendChild(c));
+  }
+
+  // ════════════════════════════════════════════════════
+  // GLOBAL HANDLERS
+  // ════════════════════════════════════════════════════
+  window._showOnMap = async function(id, e) {
+    e?.stopPropagation();
+    const route = S.results.find(r => r.id === id);
+    if (!route) return;
+    S.activeRouteId = id;
+    await drawRoute(route, _lastFromGeo, _lastToGeo, null);
+    document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  window._openModal = function(id, e) {
+    e?.stopPropagation();
+    const route = S.results.find(r => r.id === id);
+    if (!route) return;
+    document.getElementById('modal-title').textContent = route.title || 'Detajet e Rrugës';
+    document.getElementById('modal-body').innerHTML = buildModalBody(route);
+    document.getElementById('modal-overlay').classList.add('open');
+  };
+
+  function buildModalBody(route) {
+    const stepsHtml = route.steps.map((step, i) => {
+      const icon = step.type === 'walk' ? '🚶' : '🚌';
+      if (step.type === 'walk') {
+        return `<div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="width:36px;height:36px;border-radius:10px;background:var(--green-light);color:var(--green);display:grid;place-items:center;font-size:16px;flex-shrink:0">${icon}</div>
+          <div><div style="font-weight:700;font-size:14px">Ec ${step.distanceM||Math.round(step.time*66)} metra</div>
+          <div style="font-size:12px;color:var(--ink-3)">${esc(step.fromStation)} → ${esc(step.toStation)} · ${step.time} min</div></div>
+        </div>`;
+      } else {
+        return `<div style="display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="width:36px;height:36px;border-radius:10px;background:${step.lineColor||'#2563EB'};color:#fff;display:grid;place-items:center;font-size:16px;flex-shrink:0">${icon}</div>
+          <div><div style="font-weight:700;font-size:14px">Linja ${esc(step.lineNumber)} — ${esc(step.lineName||'')}</div>
+          <div style="font-size:12px;color:var(--ink-3)">${esc(step.fromStation)} → ${esc(step.toStation)} · ${step.time} min</div>
+          ${step.stopSequence?.length > 2 ? `<div style="font-size:11px;color:var(--ink-4);margin-top:3px">${step.stopSequence.length-1} stacione ndërmjetëse</div>` : ''}
+          </div>
+        </div>`;
+      }
+    }).join('');
+
+    return `
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+        <div style="text-align:center;padding:14px;background:var(--blue-light);border-radius:12px">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--blue)">${route.totalTime}</div>
+          <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em">minuta</div>
+        </div>
+        <div style="text-align:center;padding:14px;background:var(--green-light);border-radius:12px">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--green)">${route.fare}</div>
+          <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em">lekë</div>
+        </div>
+        <div style="text-align:center;padding:14px;background:var(--surface-3);border-radius:12px">
+          <div style="font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--ink)">${route.transfers}</div>
+          <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em">ndërrime</div>
+        </div>
+      </div>
+      <div style="font-weight:700;font-size:13px;color:var(--ink-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Hapat e Rrugës</div>
+      ${stepsHtml}
+      <div style="margin-top:16px;display:flex;gap:10px">
+        <button onclick="window._startNav(${route.id});document.getElementById('modal-overlay').classList.remove('open')" class="rc-btn success" style="flex:1"><i class="fas fa-location-arrow"></i> Fillo Navigimin</button>
+        <button onclick="window._saveRoute(${route.id})" class="rc-btn" style="flex:1"><i class="fas fa-bookmark"></i> Ruaj Rrugën</button>
+      </div>`;
+  }
+
+  window._startNav = function(id, e) {
+    e?.stopPropagation();
+    const route = S.results.find(r => r.id === id);
+    if (!route) return;
+    startNavMode(route);
+    document.getElementById('nav-mode-panel').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  window._saveRoute = async function(id, e) {
+    e?.stopPropagation();
+    const route = S.results.find(r => r.id === id);
+    if (!route) return;
+    const name = prompt('Emri i rrugës:', route.title || `Rruga ${id}`);
+    if (!name) return;
+    const data = {
+      id: Date.now(),
+      name,
+      from: document.getElementById('from-loc').value,
+      to:   document.getElementById('to-loc').value,
+      route,
+      createdAt: new Date().toISOString(),
+    };
+    try {
+      await saveRouteData(data);
+      toast(`"${name}" u ruajt!`, 'success');
+      loadSavedRoutes();
+    } catch(err) { toast('Gabim: ' + err.message, 'error'); }
+  };
+
+  // ════════════════════════════════════════════════════
+  // SAVED ROUTES
+  // ════════════════════════════════════════════════════
+  async function saveRouteData(data) {
+    let user = null;
+    if (window.auth?.getCurrentUser) user = await window.auth.getCurrentUser().catch(()=>null);
+    if (user?.token) {
+      const r = await fetch('/.netlify/functions/save-route', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${user.token}` },
+        body: JSON.stringify({ from_location: data.from, to_location: data.to, route_data: data.route }),
+      });
+      if (!r.ok) throw new Error('Server error');
+    } else {
+      const arr = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+      arr.unshift(data);
+      localStorage.setItem('savedRoutes', JSON.stringify(arr.slice(0, 20)));
+    }
+  }
+
+  async function getSavedRoutes() {
+    let user = null;
+    if (window.auth?.getCurrentUser) user = await window.auth.getCurrentUser().catch(()=>null);
+    if (user?.token) {
+      try {
+        const r = await fetch('/.netlify/functions/get-saved-routes', { headers: { 'Authorization':`Bearer ${user.token}` } });
+        if (r.ok) { const d = await r.json(); return d.savedRoutes || []; }
+      } catch {}
+    }
+    return JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+  }
+
+  async function deleteSavedRoute(id) {
+    let user = null;
+    if (window.auth?.getCurrentUser) user = await window.auth.getCurrentUser().catch(()=>null);
+    if (user?.token) {
+      await fetch(`/.netlify/functions/delete-saved-route?id=${id}`, { method:'DELETE', headers:{ 'Authorization':`Bearer ${user.token}` } });
+    } else {
+      let arr = JSON.parse(localStorage.getItem('savedRoutes') || '[]');
+      arr = arr.filter(r => r.id !== id);
+      localStorage.setItem('savedRoutes', JSON.stringify(arr));
+    }
+  }
+
+  async function loadSavedRoutes() {
+    const routes = await getSavedRoutes();
+    const list = document.getElementById('saved-list');
+    if (!routes.length) {
+      list.innerHTML = `<div class="no-data"><i class="fas fa-bookmark"></i><p>Nuk keni rrugë të ruajtura</p></div>`;
+      return;
+    }
+    list.innerHTML = routes.slice(0, 5).map(r => `
+      <div class="saved-item">
+        <div class="saved-item-icon"><i class="fas fa-route"></i></div>
+        <div class="saved-item-info">
+          <div class="saved-item-name">${esc(r.name)}</div>
+          <div class="saved-item-path">${esc(r.from)} → ${esc(r.to)}</div>
+        </div>
+        <div class="saved-item-btns">
+          <button class="saved-icon-btn" title="Përdor" onclick="window._useSaved('${esc(r.from)}', '${esc(r.to)}')"><i class="fas fa-directions"></i></button>
+          <button class="saved-icon-btn del" title="Fshi" onclick="window._deleteSaved(${r.id}, this)"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`).join('');
+  }
+
+  window._useSaved = function(from, to) {
+    document.getElementById('from-loc').value = from;
+    document.getElementById('to-loc').value = to;
+    performSearch();
+  };
+
+  window._deleteSaved = async function(id, btn) {
+    if (!confirm('Fshi këtë rrugë?')) return;
+    await deleteSavedRoute(id);
+    toast('Rruga u fshi', 'success');
+    loadSavedRoutes();
+  };
+
+  // ════════════════════════════════════════════════════
+  // CONTROLS & EVENTS
+  // ════════════════════════════════════════════════════
+  function initControls() {
+    // Hamburger
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('mobile-nav').classList.toggle('open');
+    });
+
+    // Search form
+    document.getElementById('search-form').addEventListener('submit', e => {
+      e.preventDefault();
+      performSearch();
+    });
+
+    // Swap
+    document.getElementById('swap-btn').addEventListener('click', () => {
+      const f = document.getElementById('from-loc');
+      const t = document.getElementById('to-loc');
+      [f.value, t.value] = [t.value, f.value];
+      [S.originCoords, S.destCoords] = [S.destCoords, S.originCoords];
+    });
+
+    // GPS for from
+    document.getElementById('from-gps-btn').addEventListener('click', () => {
+      if (!navigator.geolocation) { toast('Geolokacioni nuk mbështetet', 'error'); return; }
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const { latitude:lat, longitude:lng } = pos.coords;
+        S.userPos = { lat, lng };
+        updateUserMarker();
+        const name = await reverseGeocode(lat, lng);
+        document.getElementById('from-loc').value = name;
+        S.originCoords = { lat, lng };
+        placeOriginMarker(lat, lng, name);
+        S.map.setView([lat, lng], 15);
+        toast('Lokacioni juaj u caktua', 'success');
+      }, err => toast('Nuk mundi të merret lokacioni', 'error'));
+    });
+
+    // GPS toggle
+    document.getElementById('use-gps').addEventListener('change', function() {
+      if (!this.checked) { S.originCoords = null; return; }
+      if (!navigator.geolocation) { toast('Geolokacioni nuk mbështetet', 'error'); this.checked = false; return; }
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const { latitude:lat, longitude:lng } = pos.coords;
+        const name = await reverseGeocode(lat, lng);
+        document.getElementById('from-loc').value = name;
+        S.originCoords = { lat, lng };
+        S.userPos = { lat, lng };
+        updateUserMarker();
+        placeOriginMarker(lat, lng, name);
+        toast('Lokacioni juaj u caktua', 'success');
+      }, () => { this.checked = false; toast('Nuk mundi të merret lokacioni', 'error'); });
+    });
+
+    // Clear dest
+    document.getElementById('to-clear-btn').addEventListener('click', () => {
+      document.getElementById('to-loc').value = '';
+      S.destCoords = null;
+      if (S.markerDest) { S.map.removeLayer(S.markerDest); S.markerDest = null; }
+    });
+
+    // Map pick buttons
+    document.getElementById('pick-origin-btn').addEventListener('click', () => startPickMode('origin'));
+    document.getElementById('pick-dest-btn').addEventListener('click', () => startPickMode('dest'));
+
+    // Time mode
+    document.getElementById('time-mode').addEventListener('change', function() {
+      document.getElementById('specific-time-wrap').style.display =
+        (this.value !== 'now') ? 'block' : 'none';
+    });
+
+    // Walk slider
+    const sliderEl = document.getElementById('max-walk');
+    sliderEl.addEventListener('input', () => {
+      document.getElementById('walk-val').textContent = sliderEl.value;
+    });
+
+    // Type chips
+    document.querySelectorAll('.type-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    // Sort chips
+    document.querySelectorAll('.sort-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.sort-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        sortResults(chip.dataset.sort);
+      });
+    });
+
+    // Live vehicles toggle
+    document.getElementById('toggle-vehicles-btn').addEventListener('click', () => {
+      S.showVehicles ? stopVehicleTracking() : startVehicleTracking();
+    });
+
+    // Center user
+    document.getElementById('center-user-btn').addEventListener('click', () => {
+      if (S.userPos) S.map.setView([S.userPos.lat, S.userPos.lng], 16);
+      else toast('Lokacioni juaj nuk është i disponueshëm', 'error');
+    });
+
+    // Nav mode toggle
+    document.getElementById('toggle-nav-btn').addEventListener('click', () => {
+      if (S.navActive) {
+        stopNavMode();
+      } else {
+        const route = S.results.find(r => r.id === S.activeRouteId) || S.results[0];
+        if (route) startNavMode(route);
+      }
+    });
+
+    // Nav prev/next
+    document.getElementById('nm-prev-btn').addEventListener('click', () => {
+      if (!S.navRoute || S.navStep <= 0) return;
+      S.navStep--; renderNavSteps();
+    });
+    document.getElementById('nm-next-btn').addEventListener('click', () => {
+      if (!S.navRoute) return;
+      if (S.navStep >= S.navRoute.steps.length - 1) { stopNavMode(); toast('Udhëtimi u kompletua!', 'success'); return; }
+      S.navStep++; renderNavSteps(); updateNavETA();
+      const step = S.navRoute.steps[S.navStep];
+      if (step?.fromCoords) S.map.setView([step.fromCoords.lat, step.fromCoords.lng], 16, { animate: true });
+    });
+
+    document.getElementById('nm-close-btn').addEventListener('click', stopNavMode);
+
+    // Modal close
+    document.getElementById('modal-close').addEventListener('click', () =>
+      document.getElementById('modal-overlay').classList.remove('open'));
+    document.getElementById('modal-overlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('modal-overlay'))
+        document.getElementById('modal-overlay').classList.remove('open');
+    });
+
+    // Input changes clear coords
+    document.getElementById('from-loc').addEventListener('input', () => { S.originCoords = null; });
+    document.getElementById('to-loc').addEventListener('input', () => { S.destCoords = null; });
+
+    // View all saved
+    document.getElementById('view-all-saved').addEventListener('click', () =>
+      toast('Funksion në zhvillim', ''));
+
+    // URL params auto-search
+    const p = new URLSearchParams(window.location.search);
+    if (p.get('from') && p.get('to')) {
+      document.getElementById('from-loc').value = p.get('from');
+      document.getElementById('to-loc').value   = p.get('to');
+      const tp = p.get('type');
+      if (tp) {
+        document.querySelectorAll('.type-chip').forEach(c => c.classList.remove('active'));
+        document.querySelector(`.type-chip[data-type="${tp}"]`)?.classList.add('active');
+      }
+      setTimeout(performSearch, 500);
+    }
+  }
+
+  // ════════════════════════════════════════════════════
+  // BOOT
+  // ════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('travel-date').valueAsDate = new Date();
+    initMap();
+    initControls();
+    loadSavedRoutes().catch(() => {});
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (S.watchId) navigator.geolocation.clearWatch(S.watchId);
+    clearInterval(S.vehiclePoll);
+    clearInterval(S.navTimer);
+  });
+
+})();
+</script>
 </body>
 </html>
