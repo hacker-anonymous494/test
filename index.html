@@ -721,5 +721,125 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait for authManager to be ready (if using async)
+  function initNavbarAuth() {
+    const navActions = document.querySelector('.nav-actions');
+    const userMenu = document.querySelector('.user-menu');
+    const authButtons = document.querySelector('.auth-buttons');
+    
+    if (!navActions) return;
+    
+    // Determine if we have custom elements already
+    const hasUserMenu = !!userMenu;
+    const hasAuthBtns = !!authButtons;
+    
+    // Get current user
+    const user = window.authManager ? window.authManager.getCurrentUser() : null;
+    
+    if (user) {
+      // User is logged in – show profile dropdown
+      const displayName = user.firstName || user.email?.split('@')[0] || 'Përdorues';
+      const userHtml = `
+        <div class="user-dropdown">
+          <div class="user-avatar"><i class="fas fa-user-circle"></i></div>
+          <div class="user-name">${escapeHtml(displayName)}</div>
+          <i class="fas fa-chevron-down"></i>
+          <ul class="user-dropdown-menu">
+            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Paneli</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profili Im</a></li>
+            <li><a href="favorites.html"><i class="fas fa-heart"></i> Rrugët e Preferuara</a></li>
+            <li><hr></li>
+            <li><a href="#" id="logout-nav-btn"><i class="fas fa-sign-out-alt"></i> Dil</a></li>
+          </ul>
+        </div>
+      `;
+      
+      // Replace content of nav-actions
+      navActions.innerHTML = userHtml;
+      
+      // Add logout event
+      const logoutBtn = document.getElementById('logout-nav-btn');
+      if (logoutBtn && window.authManager) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.authManager.logout().then(() => {
+            window.location.href = 'index.html';
+          }).catch(() => {
+            window.location.href = 'index.html';
+          });
+        });
+      }
+      
+      // Add dropdown toggle
+      const dropdown = navActions.querySelector('.user-dropdown');
+      const menu = navActions.querySelector('.user-dropdown-menu');
+      if (dropdown && menu) {
+        dropdown.addEventListener('click', (e) => {
+          e.stopPropagation();
+          menu.classList.toggle('show');
+        });
+        document.addEventListener('click', () => {
+          menu.classList.remove('show');
+        });
+      }
+    } else {
+      // Not logged in – show login/register buttons
+      navActions.innerHTML = `
+        <a href="login.html" class="btn-ghost"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
+        <a href="register.html" class="btn-solid"><i class="fas fa-user-plus"></i> Regjistrohu</a>
+      `;
+    }
+  }
+  
+  // Helper to escape HTML
+  function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+  
+  // Hamburger menu for mobile (works on all pages)
+  function initMobileMenu() {
+    const hamburger = document.querySelector('.hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    if (hamburger && mobileNav) {
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        mobileNav.classList.toggle('open');
+      });
+      // Close when clicking a link
+      mobileNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          hamburger.classList.remove('active');
+          mobileNav.classList.remove('open');
+        });
+      });
+    }
+  }
+  
+  // If authManager exists and is ready, use it; otherwise wait
+  if (window.authManager && typeof window.authManager.getCurrentUser === 'function') {
+    // If authManager already has user (maybe from previous page)
+    initNavbarAuth();
+    // Also listen for auth changes if needed
+    if (window.authManager.onAuthChange) {
+      window.authManager.onAuthChange(() => initNavbarAuth());
+    }
+  } else {
+    // Wait for auth.js to load
+    const checkAuth = setInterval(() => {
+      if (window.authManager && typeof window.authManager.getCurrentUser === 'function') {
+        clearInterval(checkAuth);
+        initNavbarAuth();
+      }
+    }, 100);
+  }
+  
+  initMobileMenu();
+});
+</script>
 </body>
 </html>
