@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sherbimijone - Transporti Juaj në Tiranë</title>
+    <title>Sherbimijone - Transporti Juaj ne Tirane</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
@@ -20,7 +20,7 @@
     <li><a href="index.html" class="active"><i class="fas fa-home"></i> Kryefaqja</a></li>
     <li><a href="pages/map.html"><i class="fas fa-map"></i> Harta</a></li>
     <li><a href="pages/taxi.html"><i class="fas fa-taxi"></i> Taksi</a></li>
-    <li><a href="pages/search.html"><i class="fas fa-search"></i> Kërko</a></li>
+    <li><a href="pages/search.html"><i class="fas fa-search"></i> Kerko</a></li>
     <li><a href="pages/driver.html"><i class="fas fa-user-tie"></i> Shofer</a></li>
   </ul>
   <div class="nav-actions">
@@ -37,7 +37,7 @@
   <a href="index.html" class="active"><i class="fas fa-home"></i> Kryefaqja</a>
   <a href="pages/map.html"><i class="fas fa-map"></i> Harta</a>
   <a href="pages/taxi.html"><i class="fas fa-taxi"></i> Taksi</a>
-  <a href="pages/search.html"><i class="fas fa-search"></i> Kërko Rrugë</a>
+  <a href="pages/search.html"><i class="fas fa-search"></i> Kerko Rruge</a>
   <a href="pages/driver.html"><i class="fas fa-user-tie"></i> Shofer</a>
   <div class="mobile-nav-divider"></div>
   <a href="pages/login.html"><i class="fas fa-sign-in-alt"></i> Kyçu</a>
@@ -47,14 +47,14 @@
 <!-- Seksioni Hero -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">Gjeni Rrugën Më të Shpejtë në Tiranë</h1>
-            <p class="hero-subtitle">Platforma e parë inteligjente për transportin publik dhe taksi në kryeqytetin tuaj</p>
+            <h1 class="hero-title">Gjeni Rrugen Me te Shpejte ne Tirane</h1>
+            <p class="hero-subtitle">Platforma e pare inteligjente per transportin publik dhe taksi ne kryeqytetin tuaj</p>
             
             <div class="search-container">
                 <div class="search-box">
                     <div class="input-group">
                         <i class="fas fa-map-marker-alt"></i>
-                        <input type="text" id="from-location" placeholder="Nga po niseni? (ose përdorni lokacionin aktual)" autocomplete="off">
+                        <input type="text" id="from-location" placeholder="Nga po niseni? (ose perdorni lokacionin aktual)" autocomplete="off">
                         <button class="btn-current-location" id="current-location-btn">
                             <i class="fas fa-crosshairs"></i>
                         </button>
@@ -62,7 +62,7 @@
                     
                     <div class="input-group">
                         <i class="fas fa-flag-checkered"></i>
-                        <input type="text" id="to-location" placeholder="Ku dëshironi të shkoni?" autocomplete="off">
+                        <input type="text" id="to-location" placeholder="Ku deshironi te shkoni?" autocomplete="off">
                     </div>
                     <div class="map-pick-buttons" style="display: flex; gap: 10px; margin: 10px 0;">
                         <button type="button" class="btn btn-outline map-pick-btn" id="pick-origin-btn" style="flex:1; font-size:14px;">
@@ -79,20 +79,20 @@
                     <div class="search-options">
                         <div class="option">
                             <input type="radio" id="fastest" name="route-option" checked>
-                            <label for="fastest"><i class="fas fa-bolt"></i> Më e shpejta</label>
+                            <label for="fastest"><i class="fas fa-bolt"></i> Me e shpejta</label>
                         </div>
                         <div class="option">
                             <input type="radio" id="cheapest" name="route-option">
-                            <label for="cheapest"><i class="fas fa-coins"></i> Më e lira</label>
+                            <label for="cheapest"><i class="fas fa-coins"></i> Me e lira</label>
                         </div>
                         <div class="option">
                             <input type="radio" id="fewest-transfers" name="route-option">
-                            <label for="fewest-transfers"><i class="fas fa-exchange-alt"></i> Më pak ndërrime</label>
+                            <label for="fewest-transfers"><i class="fas fa-exchange-alt"></i> Me pak nderrime</label>
                         </div>
                     </div>
                     
                     <button class="btn btn-primary btn-search" id="search-route-btn">
-                        <i class="fas fa-search"></i> Gjej Rrugën
+                        <i class="fas fa-search"></i> Gjej Rrugen
                     </button>
                 </div>
                 
@@ -116,27 +116,27 @@
         <div class="hero-map" id="hero-map"></div>
     </section>
 
-    <!-- Seksioni Veçoritë -->
+    <!-- Seksioni Veçorite -->
     <section id="features" class="features">
         <div class="container">
-            <h2 class="section-title">Pse të Zgjidhni Sherbimijone?</h2>
-            <p class="section-subtitle">Platforma jonë ju ofron të gjitha mjetet e nevojshme për lëvizje të shpejtë dhe të sigurt në Tiranë</p>
+            <h2 class="section-title">Pse te Zgjidhni Sherbimijone?</h2>
+            <p class="section-subtitle">Platforma jone ju ofron te gjitha mjetet e nevojshme per levizje te shpejte dhe te sigurt ne Tirane</p>
             
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-route"></i>
                     </div>
-                    <h3 class="feature-title">Kërkimi i Rrugës</h3>
-                    <p class="feature-description">Gjeni rrugën më të shpejtë dhe më efikase duke përdorur algoritmin tonë inteligjent.</p>
+                    <h3 class="feature-title">Kerkimi i Rruges</h3>
+                    <p class="feature-description">Gjeni rrugen me te shpejte dhe me efikase duke perdorur algoritmin tone inteligjent.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-map-marked-alt"></i>
                     </div>
-                    <h3 class="feature-title">Harta në Kohë Reale</h3>
-                    <p class="feature-description">Ndjekni autobusët në kohë reale dhe shikoni trafikun në rrugët e Tiranës.</p>
+                    <h3 class="feature-title">Harta ne Kohe Reale</h3>
+                    <p class="feature-description">Ndjekni autobuset ne kohe reale dhe shikoni trafikun ne rruget e Tiranes.</p>
                 </div>
                 
                 <div class="feature-card">
@@ -144,23 +144,23 @@
                         <i class="fas fa-taxi"></i>
                     </div>
                     <h3 class="feature-title">Rezervim Taksi</h3>
-                    <p class="feature-description">Rezervoni taksi me çmim fiks ose lidhuni me kompanitë ekzistuese të taksive.</p>
+                    <p class="feature-description">Rezervoni taksi me çmim fiks ose lidhuni me kompanite ekzistuese te taksive.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-bell"></i>
                     </div>
-                    <h3 class="feature-title">Njoftime në Kohë Reale</h3>
-                    <p class="feature-description">Merrni njoftime për ndryshime në rrugë, vonesa të autobusëve dhe ngjarje të tjera.</p>
+                    <h3 class="feature-title">Njoftime ne Kohe Reale</h3>
+                    <p class="feature-description">Merrni njoftime per ndryshime ne rruge, vonesa te autobuseve dhe ngjarje te tjera.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-history"></i>
                     </div>
-                    <h3 class="feature-title">Oraret e Autobusëve</h3>
-                    <p class="feature-description">Aksesoni oraret e sakta të të gjitha linjave të autobusëve në Tiranë.</p>
+                    <h3 class="feature-title">Oraret e Autobuseve</h3>
+                    <p class="feature-description">Aksesoni oraret e sakta te te gjitha linjave te autobuseve ne Tirane.</p>
                 </div>
                 
                 <div class="feature-card">
@@ -168,7 +168,7 @@
                         <i class="fas fa-user-shield"></i>
                     </div>
                     <h3 class="feature-title">Profili Personal</h3>
-                    <p class="feature-description">Ruani rrugët tuaja të preferuara, historikun e kërkimeve dhe preferencat tuaja.</p>
+                    <p class="feature-description">Ruani rruget tuaja te preferuara, historikun e kerkimeve dhe preferencat tuaja.</p>
                 </div>
             </div>
         </div>
@@ -178,22 +178,22 @@
     <section id="how-it-works" class="how-it-works">
         <div class="container">
             <h2 class="section-title">Si Funksionon Sherbimijone?</h2>
-            <p class="section-subtitle">Vetëm 4 hapa të thjeshtë për të gjetur rrugën më të mirë</p>
+            <p class="section-subtitle">Vetem 4 hapa te thjeshte per te gjetur rrugen me te mire</p>
             
             <div class="steps-container">
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-content">
                         <h3>Regjistrohuni</h3>
-                        <p>Krijoni një llogari falas për të përdorur të gjitha veçoritë e platformës.</p>
+                        <p>Krijoni nje llogari falas per te perdorur te gjitha veçorite e platformes.</p>
                     </div>
                 </div>
                 
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3>Gjeni Rrugën</h3>
-                        <p>Shkruani pikën e nisjes dhe destinacionin për të gjetur rrugën më të mirë.</p>
+                        <h3>Gjeni Rrugen</h3>
+                        <p>Shkruani piken e nisjes dhe destinacionin per te gjetur rrugen me te mire.</p>
                     </div>
                 </div>
                 
@@ -201,7 +201,7 @@
                     <div class="step-number">3</div>
                     <div class="step-content">
                         <h3>Zgjidhni Opsionin</h3>
-                        <p>Zgjidhni mes rrugës më të shpejtë, më të lirë ose me më pak ndërrime.</p>
+                        <p>Zgjidhni mes rruges me te shpejte, me te lire ose me me pak nderrime.</p>
                     </div>
                 </div>
                 
@@ -209,7 +209,7 @@
                     <div class="step-number">4</div>
                     <div class="step-content">
                         <h3>Nisni Udhetimin</h3>
-                        <p>Ndiqni udhëzimet hap pas hapi dhe shijoni udhëtimin tuaj.</p>
+                        <p>Ndiqni udhezimet hap pas hapi dhe shijoni udhetimin tuaj.</p>
                     </div>
                 </div>
             </div>
@@ -222,7 +222,7 @@
             <div class="stats-grid">
                 <div class="stat">
                     <h3 class="stat-number" data-count="150">0</h3>
-                    <p class="stat-label">Linja Autobusësh</p>
+                    <p class="stat-label">Linja Autobusesh</p>
                 </div>
                 
                 <div class="stat">
@@ -232,79 +232,126 @@
                 
                 <div class="stat">
                     <h3 class="stat-number" data-count="50000">0</h3>
-                    <p class="stat-label">Përdorues Aktivë</p>
+                    <p class="stat-label">Perdorues Aktive</p>
                 </div>
                 
                 <div class="stat">
                     <h3 class="stat-number" data-count="98">0</h3>
-                    <p class="stat-label">% Kënaqësi</p>
+                    <p class="stat-label">% Kenaqesi</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Seksioni Kontakt -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Na Kontaktoni</h2>
-            <p class="section-subtitle">Keni pyetje ose sugjerime? Na dërgoni një mesazh</p>
-            
-            <div class="contact-container">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <h3>Adresa</h3>
-                            <p>Rr. "Myslym Shyri", Tirana, Albania</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
-                            <h3>Telefoni</h3>
-                            <p>+355 4X XXX XXXX</p>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
-                            <h3>Email</h3>
-                            <p>info@sherbimijone.com</p>
-                        </div>
-                    </div>
-                    
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                
-                <form class="contact-form" id="contact-form">
-                    <div class="form-group">
-                        <input type="text" placeholder="Emri Juaj" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <input type="email" placeholder="Email Juaj" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <input type="text" placeholder="Subjekti" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <textarea placeholder="Mesazhi Juaj" rows="5" required></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">Dërgo Mesazhin</button>
-                </form>
-            </div>
+    <!-- Contact Form Section -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-header">
+      <h2><i class="fas fa-envelope"></i> Na Kontaktoni</h2>
+      <p>Keni ndonje pyetje ose sugjerim? Na dergoni nje mesazh dhe do t'ju pergjigjemi sa me shpejt.</p>
+    </div>
+    <div class="contact-form-wrapper">
+      <form id="contact-form" class="contact-form">
+        <!-- Honeypot field (hidden, should remain empty) -->
+        <div style="position: absolute; left: -9999px; top: -9999px;">
+          <label for="website">Website</label>
+          <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
         </div>
-    </section>
+        
+        <div class="form-group">
+          <label for="contact-name"><i class="fas fa-user"></i> Emri juaj *</label>
+          <input type="text" id="contact-name" name="name" placeholder="Emri dhe Mbiemri" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="contact-email"><i class="fas fa-envelope"></i> Email *</label>
+          <input type="email" id="contact-email" name="email" placeholder="adresa@email.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="contact-message"><i class="fas fa-comment"></i> Mesazhi *</label>
+          <textarea id="contact-message" name="message" rows="5" placeholder="Shkruani mesazhin tuaj ketu..." required></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" id="contact-submit-btn">
+          <i class="fas fa-paper-plane"></i> Dergo Mesazhin
+        </button>
+        <div id="contact-form-status" class="form-status" style="display: none;"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+.contact-form-wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+.contact-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.contact-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.form-group label i {
+  color: var(--primary-color);
+  margin-right: 6px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+  background: #fff;
+}
+.form-status {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: var(--radius);
+  font-weight: 500;
+  text-align: center;
+}
+.form-status.success {
+  background: var(--green-light);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.form-status.error {
+  background: #fee2e2;
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+</style>
 
     <!-- Footer -->
     <footer class="footer">
@@ -315,14 +362,14 @@
                         <i class="fas fa-bus"></i>
                         <span class="logo-text">Sherbimijone</span>
                     </div>
-                    <p class="footer-description">Platforma kryesore për transportin publik dhe taksi në Tiranë. Ne bëjmë udhëtimin tuaj më të lehtë, më të shpejtë dhe më të sigurt.</p>
+                    <p class="footer-description">Platforma kryesore per transportin publik dhe taksi ne Tirane. Ne bejme udhetimin tuaj me te lehte, me te shpejte dhe me te sigurt.</p>
                 </div>
                 
                 <div class="footer-section">
-                    <h3 class="footer-title">Lidhje të Shpejta</h3>
+                    <h3 class="footer-title">Lidhje te Shpejta</h3>
                     <ul class="footer-links">
                         <li><a href="#home">Kryefaqja</a></li>
-                        <li><a href="#features">Veçoritë</a></li>
+                        <li><a href="#features">Veçorite</a></li>
                         <li><a href="#how-it-works">Si Funksionon</a></li>
                         <li><a href="pages/map.html">Harta</a></li>
                         <li><a href="pages/taxi.html">Taksi</a></li>
@@ -333,8 +380,8 @@
                     <h3 class="footer-title">Informacion</h3>
                     <ul class="footer-links">
                         <li><a href="#">Rreth Nesh</a></li>
-                        <li><a href="#">Politika e Privatësisë</a></li>
-                        <li><a href="#">Kushtet e Përdorimit</a></li>
+                        <li><a href="#">Politika e Privatesise</a></li>
+                        <li><a href="#">Kushtet e Perdorimit</a></li>
                         <li><a href="#">FAQ</a></li>
                         <li><a href="#contact">Kontakt</a></li>
                     </ul>
@@ -343,7 +390,7 @@
                 <div class="footer-section">
                     <h3 class="footer-title">Lajmet e Fundit</h3>
                     <div class="newsletter">
-                        <p>Regjistrohuni për të marrë lajmet dhe përditësimet më të fundit.</p>
+                        <p>Regjistrohuni per te marre lajmet dhe perditesimet me te fundit.</p>
                         <div class="newsletter-form">
                             <input type="email" placeholder="Email Juaj">
                             <button class="btn btn-primary">Regjistrohu</button>
@@ -353,7 +400,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2023 Sherbimijone. Të gjitha të drejtat e rezervuara.</p>
+                <p>&copy; 2023 Sherbimijone. Te gjitha te drejtat e rezervuara.</p>
                 <div class="payment-methods">
                     <i class="fab fa-cc-visa"></i>
                     <i class="fab fa-cc-mastercard"></i>
@@ -364,16 +411,16 @@
         </div>
     </footer>
 
-    <!-- Modal për Rezultatet e Kërkimit -->
+    <!-- Modal per Rezultatet e Kerkimit -->
     <div class="modal" id="search-results-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Rezultatet e Kërkimit</h3>
+                <h3>Rezultatet e Kerkimit</h3>
                 <button class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="route-options" id="route-options">
-                    <!-- Rezultatet do të shtohen këtu nga JavaScript -->
+                    <!-- Rezultatet do te shtohen ketu nga JavaScript -->
                 </div>
             </div>
         </div>
@@ -385,6 +432,7 @@
     <!--script src="security-measures.js"></script-->
     <script src="assets/js/auth.js"></script>
     <script src="script.js"></script>
+    
     <script>
     // ===== MAP PICKING FOR INDEX.HTML (IMPROVED) =====
     (function() {
@@ -480,7 +528,7 @@
                     pickingMode = 'origin';
                     pickOriginBtn.classList.add('active');
                     if (pickDestBtn) pickDestBtn.classList.remove('active');
-                    if (pickStatusText) pickStatusText.innerText = 'Klikoni në hartë për të caktuar pikën e nisjes.';
+                    if (pickStatusText) pickStatusText.innerText = 'Klikoni ne harte per te caktuar piken e nisjes.';
                     if (pickStatus) pickStatus.style.display = 'block';
                 });
             }
@@ -489,7 +537,7 @@
                     pickingMode = 'dest';
                     pickDestBtn.classList.add('active');
                     if (pickOriginBtn) pickOriginBtn.classList.remove('active');
-                    if (pickStatusText) pickStatusText.innerText = 'Klikoni në hartë për të caktuar destinacionin.';
+                    if (pickStatusText) pickStatusText.innerText = 'Klikoni ne harte per te caktuar destinacionin.';
                     if (pickStatus) pickStatus.style.display = 'block';
                 });
             }
@@ -538,7 +586,7 @@
                     }
 
                     if (!fromLatLng || !toLatLng) {
-                        alert('Ju lutem plotësoni ose klikoni në hartë për të dy vendndodhjet.');
+                        alert('Ju lutem plotesoni ose klikoni ne harte per te dy vendndodhjet.');
                         return;
                     }
 
@@ -594,6 +642,84 @@
       });
     }
   })();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('contact-submit-btn');
+  const statusDiv = document.getElementById('contact-form-status');
+  
+  if (!form) return;
+  
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Show loading state
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Duke derguar...';
+    statusDiv.style.display = 'none';
+    
+    const name = document.getElementById('contact-name').value.trim();
+    const email = document.getElementById('contact-email').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+    const website = document.getElementById('website').value; // honeypot
+    
+    // Client-side validation
+    if (!name || name.length < 2) {
+      showStatus('Ju lutem shkruani emrin tuaj te plote.', 'error');
+      resetButton();
+      return;
+    }
+    const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
+    if (!emailRegex.test(email)) {
+      showStatus('Ju lutem shkruani nje adrese email te vlefshme.', 'error');
+      resetButton();
+      return;
+    }
+    if (!message || message.length < 10) {
+      showStatus('Mesazhi duhet te permbaje te pakten 10 karaktere.', 'error');
+      resetButton();
+      return;
+    }
+    
+    try {
+      const response = await fetch('/.netlify/functions/send-contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, message, website })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Gabim gjate dergimit');
+      }
+      
+      showStatus('✅ Mesazhi u dergua me sukses! Do t\'ju pergjigjemi se shpejti.', 'success');
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      showStatus(err.message || 'Gabim ne lidhje. Ju lutem provoni perseri.', 'error');
+    } finally {
+      resetButton();
+    }
+    
+    function showStatus(msg, type) {
+      statusDiv.textContent = msg;
+      statusDiv.className = `form-status ${type}`;
+      statusDiv.style.display = 'block';
+      setTimeout(() => {
+        statusDiv.style.display = 'none';
+      }, 5000);
+    }
+    
+    function resetButton() {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+    }
+  });
+});
 </script>
 </body>
 </html>
