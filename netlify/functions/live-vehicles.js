@@ -1,6 +1,6 @@
 // netlify/functions/live-vehicles.js
 // Returns simulated real‑time bus positions for the map.
-// Uses existing bus_lines, line_schedules, and bus_line_stops.
+// Supports both encoded polylines (shape_encoded) and JSON coordinate arrays.
 // No database changes needed.
 
 'use strict';
@@ -8,23 +8,42 @@
 const { supabaseAdmin } = require('./_utils/supabase');
 const { addCorsHeaders, handleCors } = require('./_utils/cors');
 
-// Helper: decode polyline (same as in frontend)
-function decodePolyline(encoded) {
+// ─────────────────────────────────────────────────────────────────
+// Helper: decode Google polyline (longitude‑first order)
+// Returns array of { lat, lng } objects
+function decodeEncodedPolyline(encoded) {
   if (!encoded) return [];
-  let index = 0, lat = 0, lng = 0;
+  let idx = 0, lat = 0, lng = 0;
   const points = [];
-  while (index < encoded.length) {
+  while (idx < encoded.length) {
     let b, shift = 0, result = 0;
-    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
-    const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
-    lat += dlat;
-    shift = 0; result = 0;
-    do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
     const dlng = (result & 1) ? ~(result >> 1) : (result >> 1);
     lng += dlng;
+    shift = 0; result = 0;
+    do { b = encoded.charCodeAt(idx++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    const dlat = (result & 1) ? ~(result >> 1) : (result >> 1);
+    lat += dlat;
     points.push({ lat: lat * 1e-5, lng: lng * 1e-5 });
   }
   return points;
+}
+
+// Helper: parse shape_encoded (supports JSON array of [lat, lng] OR encoded polyline string)
+function getRoutePoints(shapeEncoded) {
+  if (!shapeEncoded) return [];
+  // Try to parse as JSON array (stored as '[[lat,lng],...]')
+  if (typeof shapeEncoded === 'string' && shapeEncoded.trim().startsWith('[')) {
+    try {
+      const arr = JSON.parse(shapeEncoded);
+      if (Array.isArray(arr) && arr.length && Array.isArray(arr[0])) {
+        // Convert [lat,lng] -> { lat, lng }
+        return arr.map(p => ({ lat: p[0], lng: p[1] }));
+      }
+    } catch (e) {}
+  }
+  // Fallback to encoded polyline
+  return decodeEncodedPolyline(shapeEncoded);
 }
 
 // Helper: get point on polyline at fraction (0..1)
@@ -58,14 +77,14 @@ exports.handler = async (event) => {
   if (corsResp) return corsResp;
 
   try {
-    // 1. Fetch all active bus lines with their shape and schedules
+    // 1. Fetch all active bus lines with shape data
     const { data: lines, error: linesErr } = await supabaseAdmin
       .from('bus_lines')
       .select('id, line_number, name, direction, color_hex, shape_encoded, headway_minutes')
       .not('shape_encoded', 'is', null);
     if (linesErr) throw linesErr;
 
-    // 2. Fetch schedules to know operating hours
+    // 2. Fetch schedules for operating hours
     const { data: schedules, error: schedErr } = await supabaseAdmin
       .from('line_schedules')
       .select('line_id, day_type, first_departure, last_departure, headway_minutes');
@@ -76,12 +95,16 @@ exports.handler = async (event) => {
     const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
 
     const vehicles = [];
+    const maxBusesPerLine = 6; // avoid overwhelming the map
 
     for (const line of lines) {
-      // Determine current headway from schedule or fallback
+      const routePoints = getRoutePoints(line.shape_encoded);
+      if (routePoints.length < 2) continue;
+
+      // Determine schedule
       const schedule = schedules.find(s => s.line_id === line.id && s.day_type === dayType);
       let headway = schedule?.headway_minutes ?? line.headway_minutes ?? 10;
-      let firstMin = 0, lastMin = 24*60;
+      let firstMin = 0, lastMin = 24 * 60;
       if (schedule) {
         const [fh, fm] = schedule.first_departure.split(':').map(Number);
         const [lh, lm] = schedule.last_departure.split(':').map(Number);
@@ -92,45 +115,40 @@ exports.handler = async (event) => {
       // Skip if not operating
       if (minutesSinceMidnight < firstMin || minutesSinceMidnight > lastMin) continue;
 
-      // Simulate number of buses on this line: (operating minutes / headway) * 0.7 (some slack)
+      // Number of buses = (operating minutes / headway) * 0.7 (realistic density)
       const operatingMins = lastMin - firstMin;
-      let busCount = Math.floor(operatingMins / headway) * 0.7;
+      let busCount = Math.floor((operatingMins / headway) * 0.7);
       if (busCount < 1) busCount = 1;
+      if (busCount > maxBusesPerLine) busCount = maxBusesPerLine;
 
-      // For each virtual bus, compute its position along the line based on time
-      const polyPoints = decodePolyline(line.shape_encoded);
-      if (polyPoints.length < 2) continue;
-
+      // Simulate each bus
       for (let i = 0; i < busCount; i++) {
-        // Cycle offset: each bus runs at a different phase
+        // Offset each bus by a fraction of headway
         const offset = (i * headway) % operatingMins;
-        const elapsed = minutesSinceMidnight - firstMin;
+        let elapsed = minutesSinceMidnight - firstMin;
+        // Ensure positive
+        if (elapsed < 0) elapsed = 0;
         let progress = (elapsed + offset) % operatingMins;
         const fraction = progress / operatingMins;
-        const pos = getPointAtFraction(polyPoints, fraction);
+        const pos = getPointAtFraction(routePoints, fraction);
         if (!pos) continue;
 
-        // Determine direction (from line name or direction field)
-        const direction = line.direction || (line.line_number.includes('a') ? 'drejt Allias' : 'drejt Selitë');
-
+        // Small random offset to avoid exact overlap
+        const jitter = 0.00005;
         vehicles.push({
-          id: `${line.line_number}-${i}-${now.getTime()}`,
+          id: `${line.line_number}-${i}-${Math.floor(Date.now() / 10000)}`,
           line_number: line.line_number,
           color: line.color_hex || '#2563EB',
-          lat: pos.lat,
-          lng: pos.lng,
-          heading: 0, // could be computed from next point, but optional
-          speed: 25,  // km/h, approximate
-          direction,
+          lat: pos.lat + (Math.random() - 0.5) * jitter,
+          lng: pos.lng + (Math.random() - 0.5) * jitter,
+          heading: 0,
+          speed: 30 + Math.random() * 10,
+          direction: line.direction || 'Standard',
         });
       }
     }
 
-    // Add some random variation to make it look lively
-    vehicles.forEach(v => {
-      v.lat += (Math.random() - 0.5) * 0.0005;
-      v.lng += (Math.random() - 0.5) * 0.0005;
-    });
+    // Optional: add a few "express" buses with different colors? Not needed.
 
     return addCorsHeaders({
       statusCode: 200,
