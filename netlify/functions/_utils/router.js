@@ -29,7 +29,7 @@ const WEIGHTS = {
 };
 
 const MAX_TRANSFERS = 4;
-const MAX_WALK_MIN  = 10;  // >10 min walks between stops are rarely optimal in a city network
+const MAX_WALK_MIN  = 15;  // >15 min walks between stops are rarely optimal in a city network
 
 // ── Binary Min-Heap ───────────────────────────────────────────────────────────
 class MinHeap {
