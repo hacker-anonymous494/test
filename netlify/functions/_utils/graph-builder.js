@@ -253,7 +253,8 @@ function calcWaitMinutes(lineId, departureTime, scheduleMap, lineMap) {
     const firstM   = fh * 60 + fm;
     const lastM    = lh * 60 + lm;
     if (nowM < firstM || nowM > lastM) {
-      return Infinity; // line not operating
+      // Return fallback headway instead of Infinity to avoid dead ends
+      return 30;
     }
   }
 

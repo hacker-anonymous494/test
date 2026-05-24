@@ -116,9 +116,8 @@ function findRoutes(opts) {
   for (const sid of originStopIds) {
     const wm    = walkingOriginMinutes;
     const score = W.walk * wm;
-    const bucket = Math.floor(wm / 15);
-    if (score >= getBest(sid, 0, null, bucket)) continue;
-    setBest(sid, 0, null, bucket, score);
+    if (score >= getBest(sid, 0, null, 0)) continue;
+    setBest(sid, 0, null, 0, score);
     const idx = store.length;
     store.push({
       stopId: sid, score, totalTime: wm, transfers: 0,
@@ -132,7 +131,7 @@ function findRoutes(opts) {
   const seenDestSigs       = new Set();
 
   // Safeguards: prevent endless search and guarantee return before Netlify's 10s limit
-  const MAX_LABELS = 100000;   // safety cap
+  const MAX_LABELS = 200000;   // safety cap
   let labelCount = 0;
   const startTime = Date.now();
   const MAX_TIME_MS = 9500;   // leave 500ms for response
@@ -149,8 +148,7 @@ function findRoutes(opts) {
     }
 
     // Stale check
-    const currBucket = Math.floor(curr.totalTime / 15);
-    if (heapScore > getBest(curr.stopId, curr.transfers, curr.boardedLineId, currBucket) * 1.001) continue;
+    if (heapScore > getBest(curr.stopId, curr.transfers, curr.boardedLineId, 0) * 1.001) continue;
 
     // ── Destination reached ──────────────────────────────────────────────
     if (destSet.has(curr.stopId)) {
@@ -203,10 +201,9 @@ function findRoutes(opts) {
         W.fare      * (isBoarding ? (fare ?? 0) : 0);
       const newScore = curr.score + addedScore;
 
-      const newBucket = Math.floor(newTotal / 15);
-      const existing = getBest(toStopId, newTransfers, newBoardedLine, newBucket);
-      if (newScore >= existing * 1.5) continue;
-      if (newScore < existing) setBest(toStopId, newTransfers, newBoardedLine, newBucket, newScore);
+      const existing = getBest(toStopId, newTransfers, newBoardedLine, 0);
+      if (newScore >= existing * 2.0) continue;
+      if (newScore < existing) setBest(toStopId, newTransfers, newBoardedLine, 0, newScore);
 
       const newIdx = store.length;
       store.push({
